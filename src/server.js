@@ -86,7 +86,20 @@ class Room {
     if (usr) usr.emit(cmd, msg)
   }
 
+  // emitFrom(socket, cmd, msg) {
+  //   socket.to(this.gameID).emit(cmd, msg)
+  // }
+
 }
+
+const mockSocket = {
+  userID: 'Aurium',
+  emit: ()=>0,
+  join: ()=>0,
+  to: ()=> ({emit:()=>0})
+}
+const testRoom = new Room('test', mockSocket, 2, true)
+testRoom.disconnect(mockSocket)
 
 module.exports = {
 
@@ -104,6 +117,10 @@ module.exports = {
     socket.on('join', (gameID) => {
 			if (rooms[gameID]) rooms[gameID].addPlayer(socket)
 			else socket.emit('notifyErr', `The room "${gameID}" do not exists.`)
+    });
+
+    socket.on('chat', (msg) => {
+      if (socket.room) socket.room.emit('chat', {userID:socket.userID, msg})
 		});
 
 		socket.on('disconnect', () => {
@@ -111,6 +128,10 @@ module.exports = {
 			if (socket.room) socket.room.disconnect(socket)
       clearInterval(updateLobbyInterval)
 		});
+
+    socket.on('peeringMessage', peeringMessage.bind(socket));
+
+    socket.on('RTCStatus', (data)=> socket.room.emit('RTCStatus', data))
 
     let updateLobbyInterval = setInterval(()=> {
       if (!socket.room) {
@@ -126,4 +147,19 @@ module.exports = {
 		log(`Socket ${socket.id} connected.`);
 	},
 
+  stat: (req, res) => {
+    storage.get('games', 0).then(games => {
+      res.send(`<h1>Games played: ${games}</h1>`);
+    });
+  }
+
 };
+
+function peeringMessage(message) {
+    log('Client peeringMessage:', message?message.type:'<nullish>');
+  if (message.fromClient) {
+    this.room.owner.emit('peeringMessage', message);
+  } else {
+    this.room.emitTo(message.userID, 'peeringMessage', message);
+  }
+}

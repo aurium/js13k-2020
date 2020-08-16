@@ -15,40 +15,107 @@ body.debug {
   background-color: red;
 }
 
+canvas {
+  display: none;
+}
+.playing canvas {
+  cursor: none;
+}
+body.mouse-alive canvas {
+  cursor: default;
+}
+
+#gameCanvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  image-rendering: pixelated;
+}
+.firefox #gameCanvas {
+  image-rendering: crisp-edges;
+}
+
+#fps {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  font-family: monospace;
+  font-size: 20px;
+  color: #FFF;
+  display: none;
+}
+.debug #fps {
+  display: block;
+}
+
 #msgList {
   position: absolute;
-  top: 0px;
+  top: 5px;
   right: 10px;
+  text-align: right;
 }
 #msgList > div {
   position: relative;
   top: 0px;
   left: 0px;
-  margin: 10px 0;
-  padding: 8px 12px;
-  border-radius: 10px;
-  background: rgba(0,100,255,0.333);
-  box-shadow: inset 0 0 15px rgba(0,255,255,0.333);
-  color: #FFF;
-  text-shadow: 0 0 5px #FFF;
-  font-size: 20px;
+  padding: 3px 0;
   line-height: 20px;
-  overflow: hidden;
-  transition: 1.5s, top 1s 0.5s;
+  opacity: 1;
+  transition: 1.5s, top 1s 0.5s, padding 1s;
 }
 #msgList > div.new {
   top: 200px;
   left: -300px;
   opacity: 0;
   transform: scale(2);
-  background: rgba(0,100,255,1);
+  opacity: 0.1;
 }
 #msgList > div.remove {
-  margin: 0px;
-  padding: 0px 12px;
+  padding: 0px;
+  opacity: 0.1;
   line-height: 0px;
-  color: rgba(255,255,255,0);
-  text-shadow: 0 0 5px rgba(255,255,255,0);
+}
+#msgList > div.remove .logmsg {
+  transition: 1.5s;
+  padding: 0px 6px;
+  color: rgba(255,255,255,0.1);
+}
+
+.logmsg {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 8px 6px;
+  border-radius: 10px;
+  background: rgba(0,100,255,0.333);
+  box-shadow: inset 0 0 15px rgba(0,255,255,0.333);
+  color: #FFF;
+  text-shadow: 0 0 5px #FFF;
+  font-size: 20px;
+  overflow: hidden;
+}
+.logmsg span {
+  margin: 0 6px;
+}
+
+.logmsg.chat {
+  background: rgba(120,120,120,0.333);
+  box-shadow: inset 0 0 15px rgba(200,200,200,0.333);
+  font-size: 15px;
+}
+.logmsg.chat span:first-child {
+  letter-spacing: -1px;
+  text-shadow: 0 0 3px #000;
+}
+
+.logmsg.error {
+  background: rgba(200,0,0,0.5);
+  box-shadow: inset 0 0 15px rgba(255,0,0,0.5);
+}
+.logmsg.error span:first-child {
+  font-weight: bold;
 }
 
 #lobby {
@@ -94,6 +161,13 @@ h1, h2 { margin-bottom: 10px }
   width: 208px;
 }
 
+#players span {
+  opacity: 0.5;
+}
+#players span.conn {
+  opacity: 1;
+}
+
 #lobby label {
   margin-right: 1em;
 }
@@ -124,4 +198,33 @@ h1, h2 { margin-bottom: 10px }
   text-shadow: 0 0 10px #0F0;
   font-weight: bold;
   cursor: pointer;
+}
+
+#connStatus {
+  position: absolute;
+  display: table;
+  left: 10px;
+  bottom: -50px;
+  padding: 15px;
+  min-width: 600px;
+  border-radius: 25px 25px 0 0;
+  background: rgba(0,0,0,0.5);
+  font-size: 14px;
+}
+.lobby2 #connStatus {
+  bottom: 0px;
+  transition: 2s;
+}
+
+#connStatus div {
+  display: table-row;
+}
+#connStatus div > span {
+  display: table-cell;
+  padding: 5px;
+}
+
+#roomsList #chatNote {
+  text-align: right;
+  font-size: 12px;
 }

@@ -4,9 +4,10 @@ function updateRoomList() {
     <p>players:</p>
     <div id="players">${
       users
-      .map(u => `<span>${u.userID}</span>`)
+      .map(u => `<span class="${u.connected?'conn':''}">${u.userID}</span>`)
       .join(' &nbsp; ')
     }</div>
+    <p id="chatNote">Press enter to chat.</p>
   `
 }
 
@@ -14,6 +15,16 @@ if (queryString.match(/\bgame=/)) {
   // User is inside a game room.
 
   body.classList.add('lobby2')
+
+  window.addEventListener('keyup', ev => {
+    if (ev.key == 'Enter') {
+      let msg = prompt('Write a message to the other players:')
+      if (msg) socket.emit('chat', msg)
+    }
+  })
+  socket.on('chat', ({userID, msg})=> {
+    notify('chat', userID+':', msg)
+  })
 
   socket.on('youAreTheOwner', ()=> {
     isRoomOwner = true;
