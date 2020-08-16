@@ -6,8 +6,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "start:dev": "nodemon",
-    "test": "mocha test"
+    "start:dev": "nodemon build.sh start",
+    "test": "mocha test",
+    "build": "./build.sh"
   },
   "keywords": [
     "js13kgames",
@@ -17,7 +18,11 @@
     "node": "8.*"
   },
   "nodemonConfig": {
-    "ext": "js,mjs,ts,json,css,scss,sass,html,pug"
+    "ext": "js,mjs,ts,json,css,scss,sass,html,pug",
+    "ignore": "public/*",
+    "execMap": {
+      "sh": "bash"
+    }
   },
   "dependencies": {
     "archiver": "^4.0.2",
@@ -34,6 +39,7 @@
   },
   "devDependencies": {
     "mocha": "^8.0.1",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "terser": "^5.0.0"
   }
 }
