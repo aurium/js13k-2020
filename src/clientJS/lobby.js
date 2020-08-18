@@ -9,12 +9,20 @@ function updateRoomList() {
     }</div>
     <p id="chatNote">Press enter to chat.</p>
   `
+  if (users.length == numPlayers && !users.find(u=>!u.connected)) {
+    lobby.classList.add('hidden')
+    setTimeout(gameStart, 500)
+  }
 }
 
 if (queryString.match(/\bgame=/)) {
   // User is inside a game room.
 
-  body.classList.add('lobby2')
+  if (!gameStarted) {
+    zoom = 0.2
+    setTimeout(zoomIn, 1000)
+    body.classList.add('lobby2')
+  }
 
   window.addEventListener('keyup', ev => {
     if (ev.key == 'Enter') {

@@ -7,6 +7,12 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<canvas id="gameCanvas"></canvas>
+<canvas id="canvBG1"></canvas><canvas id="canvBG1Speed"></canvas>
+<canvas id="canvBG2"></canvas><canvas id="canvBG2Speed"></canvas>
+<canvas id="canvBG3" width="2048" height="2048"></canvas>
+<canvas id="canvBG3Speed" width="2048" height="2048"></canvas>
+<canvas id="canvBG4"></canvas><canvas id="canvBG4Speed"></canvas>
 <div id="lobby">
   <h1>Planetary &mdash; an starship fight game</h1>
   <div id="roomsList">Loading...</div>
@@ -21,6 +27,8 @@
 <script src="clientJS/ws.js"></script>
 <script src="clientJS/lobby.js"></script>
 <script src="clientJS/user-rtc.js"></script>
+<script src="clientJS/game.js"></script>
+<script src="clientJS/drawer.js"></script>
 <script src="clientJS/main.js"></script>
 </body>
 </html>
