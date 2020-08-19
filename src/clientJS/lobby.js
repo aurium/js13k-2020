@@ -19,7 +19,8 @@ if (queryString.match(/\bgame=/)) {
   // User is inside a game room.
 
   if (!gameStarted) {
-    zoom = 0.2
+    zoom = 0.1
+    playerY = sunR2
     setTimeout(zoomIn, 1000)
     body.classList.add('lobby2')
   }

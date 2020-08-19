@@ -28,10 +28,6 @@ var divScreen = 1
 var FPS = 30
 var stars1 = [], stars2 = [], stars3 = []
 // Speed Limits are the speed module power 2
-var speedLim1 = 2*2 + 2*2 // Where to start to arrast stars
-var speedLim2 = 4*4 + 4*4 // The maximum speed
-var speedLimDelta = speedLim2 - speedLim1
-var planets = []
 
 const seed1 = [
   '..F. ..F. ..F4 ..F. ..F. ..F. .... .... .... .... .... .... ..F. ..F. ..F. ..F.',
@@ -277,7 +273,7 @@ function plotBgTile(canvas, tileX, tileY, scale) {
 
 function updateBg(x, y) {
   const curQuadSpeed = pSpeedX**2 + pSpeedY**2
-  const itsFast = curQuadSpeed > speedLim1
+  const itsFast = curQuadSpeed > speedLim
 
   if (itsFast) {
     // Reduce in one point the color light, to slow clear old frames:
@@ -307,13 +303,13 @@ function updateBg(x, y) {
   // Plot level 1 stars
   const cBG1 = itsFast ? canvBG1Speed : canvBG1
   plotBgTile(cBG1, -x/2, -y/2, 1)
-  if (curQuadSpeed>speedLim1) plotBgTile(cBG1, (-x+pSpeedX/2)/2, (-y+pSpeedY/2)/2, 1)
+  if (curQuadSpeed>speedLim) plotBgTile(cBG1, (-x+pSpeedX/2)/2, (-y+pSpeedY/2)/2, 1)
 
   //debug({pSpeedX, pSpeedY, itsFast})
 }
 
 function drawSunRays(x,y,r1,r2,r3) {
-  const quartStep = PI/200;
+  const quartStep = PI/180;
   [0, quartStep*10].forEach((aInc) => {
     const grad = gameCtx.createRadialGradient(x,y,r1/3, x,y,r3)
     grad.addColorStop(0.00, '#FC0')
@@ -325,8 +321,8 @@ function drawSunRays(x,y,r1,r2,r3) {
     gameCtx.moveTo(cos(aInc)*r1+x, sin(aInc)*r1+y)
     for (let a=0; a<=PI*2; a+=quartStep*4) {
       let aa = a + aInc
-      let rayMoveX = cos(rayPos/7/PI+a*18) * 10/divScreen
-      let rayMoveY = sin(rayPos/7/PI+a*18) * 10/divScreen
+      let rayMoveX = cos(rayPos/7/PI+a*18) * 15*zoom/divScreen
+      let rayMoveY = sin(rayPos/7/PI+a*18) * 15*zoom/divScreen
       gameCtx.bezierCurveTo(
         cos(aa+quartStep)*r2+x,            sin(aa+quartStep)*r2+y,
         cos(aa+quartStep)*r2+x+rayMoveX,   sin(aa+quartStep)*r2+y+rayMoveY,
@@ -353,9 +349,9 @@ function relativeObjPos({x, y}) {
 
 function updateSun() {
   const [x, y] = relativeObjPos({x:0, y:0})
-  const r1 = 800*zoom / divScreen
-  const r2 = 850*zoom / divScreen
-  const r3 = 900*zoom / divScreen
+  const r1 = sunR1*zoom / divScreen
+  const r2 = sunR2*zoom / divScreen
+  const r3 = sunR3*zoom / divScreen
   drawSunRays(x,y,r1,r2,r3)
 
   const grad = gameCtx.createRadialGradient(x,y,r1/3, x,y,r3)
@@ -377,14 +373,13 @@ function bright(colorCompo, mult=3) {
   return colorCompo > 255 ? 255 : colorCompo
 }
 
-function cratePlanet({x,y,radius,a/*angulo rotação*/,d/*distancia*/,r,g,b,noize}) {
-  var planet = {
-    a, d, rot:0, r:radius,
-    c1: document.createElement('canvas'), // Base texture
-    c2: document.createElement('canvas'), // Shadow texture
-    c3: document.createElement('canvas'), // Light texture
-    c4: document.createElement('canvas')  // Sun light and shadow
-  }
+function drawPlanet(planet) {
+  var {radius,a/*angulo rotação*/,d/*distancia*/,r,g,b,noize} = planet
+  planet.c1 = document.createElement('canvas'), // Base texture
+  planet.c2 = document.createElement('canvas'), // Shadow texture
+  planet.c3 = document.createElement('canvas'), // Light texture
+  planet.c4 = document.createElement('canvas')  // Sun light and shadow
+
   ;['c1','c2','c3','c4'].forEach(c => {
     planet[c].width = radius*2
     planet[c].height = radius*2
@@ -466,48 +461,43 @@ function cratePlanet({x,y,radius,a/*angulo rotação*/,d/*distancia*/,r,g,b,noiz
       })
     }
   }
-  planets.push(planet)
 }
-cratePlanet({ radius: 200, a:-PI/12, d:1100, r:0, g:80, b:200, noize:30 })
-cratePlanet({ radius: 350, a:-PI/12, d:1650, r:100, g:50, b:30, noize:50 })
+planets.forEach(drawPlanet)
 
 function plotPlanet(p) {
-  const diameter = p.r*2*zoom / divScreen
-  //const x = winW/2 + (cos(p.a) * p.d)*zoom / divScreen - playerX
-  //const y = winH/2 + (sin(p.a) * p.d)*zoom / divScreen - playerY
-  const [x, y] = relativeObjPos({ x: cos(p.a)*p.d, y: sin(p.a)*p.d })
-  const c = -p.r*zoom / divScreen
-  p.a += 0.002
-  p.rot += 0.01
+  const {rot, radius, a, d} = p
+  const diameter = radius*2*zoom / divScreen
+  const [x, y] = relativeObjPos({ x: cos(a)*d, y: sin(a)*d })
+  const c = -radius*zoom / divScreen
   gameCtx.save()
   gameCtx.translate(x, y)
-  gameCtx.rotate(p.rot)
+  gameCtx.rotate(rot)
   // Plot base texture
-  gameCtx.drawImage(p.c1, 0, 0, p.r*2, p.r*2, c, c, diameter, diameter)
+  gameCtx.drawImage(p.c1, 0, 0, radius*2, radius*2, c, c, diameter, diameter)
   // Plot shadow texture
   gameCtx.drawImage(
     p.c2,
     0, 0,
-    p.r*2, p.r*2,
-    c-sin(p.rot-p.a-PI/2), c-cos(p.rot-p.a-PI/2),
+    radius*2, radius*2,
+    c-sin(rot-a-PI/2), c-cos(rot-a-PI/2),
     diameter, diameter
   )
   // Plot light texture
   gameCtx.drawImage(
     p.c3,
     0, 0,
-    p.r*2, p.r*2,
-    c+sin(p.rot-p.a-PI/2), c+cos(p.rot-p.a-PI/2),
+    radius*2, radius*2,
+    c+sin(rot-a-PI/2), c+cos(rot-a-PI/2),
     diameter, diameter
   )
-  gameCtx.rotate(-p.rot)
+  gameCtx.rotate(-rot)
   // Plot sun light and shadow
-  gameCtx.rotate(p.a)
+  gameCtx.rotate(a)
   gameCtx.globalCompositeOperation = 'overlay'
   gameCtx.drawImage(
     p.c4,
     0, 0,
-    p.r*2, p.r*2,
+    radius*2, radius*2,
     c, c,
     diameter, diameter
   )
@@ -523,8 +513,6 @@ function updateGameCanvas() {
   window.requestAnimationFrame(updateGameCanvas)
   //setTimeout(updateGameCanvas, 500)
   frameCounter++
-  playerX += pSpeedX
-  playerY += pSpeedY
   updateBg(playerX, playerY)
   gameCtx.globalCompositeOperation = 'source-over'
   updateSun()
