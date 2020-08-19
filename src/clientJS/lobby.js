@@ -50,6 +50,13 @@ if (queryString.match(/\bgame=/)) {
 } else {
   // User is in the public lobby.
 
+  zoom = 0.8
+  let a = PI
+  setInterval(()=> {
+    a -= 0.003
+    playerX = cos(a) * 4000
+    playerY = sin(a) * 1100
+  }, 33)
   body.classList.add('lobby1')
 
   socket.on('rooms', (rooms)=> {
