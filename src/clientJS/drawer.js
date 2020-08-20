@@ -518,6 +518,7 @@ function updateGameCanvas() {
   updateSun()
   gameCtx.globalCompositeOperation = 'source-over'
   planets.forEach(plotPlanet)
+  if (frameCounter%5) updateRadar()
   if (frameCounter%framesToCompute === 0) {
     let delay = Date.now() - lastUpdate
     FPS = round(framesToCompute*1000/delay)

@@ -9,6 +9,10 @@ const mkEl = (tag, txt='')=> {
   return el
 }
 
+var gameStarted = false
+var users = []
+var clentRTC = null
+
 var isRoomOwner = false
 var numPlayers = 0
 

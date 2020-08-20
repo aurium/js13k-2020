@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "start:dev": "nodemon build.sh start",
+    "start:dev:copy": "nodemon build.sh --copy start",
     "test": "mocha test",
     "build": "./build.sh"
   },

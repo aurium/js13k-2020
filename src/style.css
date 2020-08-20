@@ -38,6 +38,18 @@ body.mouse-alive canvas {
   image-rendering: crisp-edges;
 }
 
+#radarCanvas {
+  display: block;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  border-radius: 200px;
+  border: 2px solid #4E4;
+  border-radius: 200px;
+  box-shadow: 0 0 30px #000;
+  background: rgba(0,0,0,0.5);
+}
+
 #fps {
   position: absolute;
   right: 10px;

@@ -1,9 +1,5 @@
 "use strict";
 
-var gameStarted = false
-var users = []
-var clentRTC = null
-
 socket.on('disconnect', () => {
   users.forEach(u => usrDisconn(u.userID));
   users = [];
