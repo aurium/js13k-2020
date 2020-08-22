@@ -41,18 +41,22 @@ body.mouse-alive canvas {
 #radarCanvas {
   display: block;
   position: absolute;
-  top: 2px;
+  top: -410px;
   left: 2px;
   border-radius: 200px;
   border: 2px solid #4E4;
   border-radius: 200px;
   box-shadow: 0 0 30px #000;
   background: rgba(0,0,0,0.75);
-  transition: 1s;
+  transition: 4s;
 }
 .lobby1 #radarCanvas {
+  top: 2px;
   width: 170px;
   height: 170px;
+}
+.lobby2 #radarCanvas {
+  top: 2px;
 }
 
 #fps {
