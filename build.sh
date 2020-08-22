@@ -1,18 +1,35 @@
 #!/bin/bash -e
 
-test "$1" = "--copy" && COPY_ONLY=true || COPY_ONLY=false
+COPY_ONLY=false
+NO_DEBUG=false
+
+while (echo "$1" | egrep -q '^--(copy|no-debug)$'); do
+  test "$1" = "--copy" && COPY_ONLY=true
+  test "$1" = "--no-debug" && NO_DEBUG=true
+  shift
+done
+
+$COPY_ONLY && echo '>> Copy mode. It will be bigger.'
+$NO_DEBUG && echo '>> No-Debug mode. Not test friendly.'
 
 test -e public && rm -r public
 mkdir public
 
 if $COPY_ONLY; then
 
-  shift
   cp -r src/* public/
 
 else
 
-  echo $(grep -v 'clientJS' src/index.html) > public/index.html
+  index_step1=$(mktemp)
+  if $NO_DEBUG; then
+    grep -vi 'debug' src/index.html > $index_step1
+  else
+    cat src/index.html > $index_step1
+  fi
+  echo $(grep -v 'clientJS' $index_step1) > public/index.html
+  rm $index_step1
+
   sed -ri '
     s#</body>#<script src="client.js"></script></body>#;
     s#\s*/>#/>#g;
@@ -43,8 +60,12 @@ else
     sed -r 's#.*src="(.*)".*#src/\1#' |
     xargs cat
   )})()" |
+  ( $NO_DEBUG && sed -r 's#(const|var|let) DEBUG_MODE#//#g' || cat ) |
+  ( $NO_DEBUG && sed -r 's#(window.)?DEBUG_MODE#false#g' || cat ) |
+  ( $NO_DEBUG && sed -r 's#function debug\(#function neverUsedFunc(#g' || cat ) |
+  ( $NO_DEBUG && sed -r 's#debug\(#void(#g' || cat ) |
   terser --compress --mangle |
-  sed -r 's/\b(function|const|var|let|if\()/\n\1/g' > public/client.js
+  sed -r 's/\b(function |const |var |let |if\()/\n\1/g' > public/client.js
 
   terser src/shared.js --compress --mangle > public/shared.js
 

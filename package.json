@@ -8,6 +8,7 @@
     "start": "node index.js",
     "start:dev": "nodemon build.sh start",
     "start:dev:copy": "nodemon build.sh --copy start",
+    "start:dev:no-debug": "nodemon build.sh --no-debug start",
     "test": "mocha test",
     "build": "./build.sh"
   },
