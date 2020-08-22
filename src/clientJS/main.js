@@ -2,7 +2,7 @@
 
 socket.on('disconnect', () => {
   users.forEach(u => usrDisconn(u.userID));
-  users = [];
+  if (!gameStarted) users = [];
 });
 socket.on('usrsConn', (usrIDs) => usrsConn(usrIDs));
 socket.on('usrDisconn', (userID) => usrDisconn(userID));
@@ -17,7 +17,10 @@ function usrsConn(usrIDs) {
     if (!clentRTC) clentRTC = new UserRTCClient(localStorage.userID, true)
     usrIDs.forEach(userID => {
       let usr = getUserRTC(userID)
-      if (!usr) users.push( isRoomOwner ? new UserRTCHost(userID) : { userID } )
+      if (!usr) {
+        let Klass = isRoomOwner ? UserRTCHost : Player
+        users.push( new Klass(userID) )
+      }
       else if (usr.reconnect) usr.reconnect()
     })
   }

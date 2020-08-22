@@ -6,7 +6,7 @@ function log(...args) {
 }
 
 function debug(...args) {
-  if (DEBUG_MODE) log(...args)
+  if (DEBUG_MODE) _log(...args)
 }
 
 function notify(...args) {

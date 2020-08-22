@@ -65,7 +65,7 @@ if (queryString.match(/\bgame=/)) {
       roomsList.innerHTML = '<p>Public rooms:</p>'
       rooms.forEach( ([id, num, tot]) => {
         let link = mkEl('a')
-        link.href = '?game=' + id
+        link.href = `?game=${id}${DEBUG_MODE?'&debug=on':''}`
         link.innerText = `Players: ${num} of ${tot}`
         roomsList.appendChild(link)
       })

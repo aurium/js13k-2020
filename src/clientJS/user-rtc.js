@@ -19,6 +19,7 @@ class UserRTC {
       createConnDisplay.bind(this)()
       this.updateDisplayInterval = setInterval(updateConnDisplay.bind(this), 200)
     }
+    this.init()
   }
 
   get kind() {
@@ -56,6 +57,7 @@ class UserRTC {
     this.peerConn.close()
     clearInterval(this.updateDisplayInterval)
     removeConnDisplay.bind(this)()
+    if (this.onDisconnect) this.onDisconnect()
   }
 
   send(cmd, payload=null) {
@@ -76,26 +78,16 @@ class UserRTC {
 
 
 class UserRTCHost extends UserRTC {
-
-  broadcast(cmd, payload) {
-    users.forEach(u =>
-      u.dataChannel.send(
-        JSON.stringify([cmd, payload])
-      )
-    )
+  init() {
+    debug('UserRTC Host created.', this.userID)
   }
-
-  // cmd_chat({userID, payload}) {
-  //   this.broadcast('chat', {userID, msg:payload})
-  // }
-
 }
 
 
 class UserRTCClient extends UserRTC {
-  // cmd_chat({userID, msg}) {
-  //   notify(`${userID}: ${msg}`)
-  // }
+  init() {
+    debug('UserRTC Client created.', this.userID)
+  }
 }
 
 
@@ -172,18 +164,20 @@ function createRTCPeerConnection(usr) {
       debug(usr.kind, `End of ${usr.userID} candidates.`);
     }
   }
-  usr.peerConn.ontrack = (ev)=>
-    debug('TrackEvent', usr.userID, eventPhase[ev.eventPhase]);
-  usr.peerConn.onnegotiationneeded = (ev)=>
-    debug('NegotiationNeeded', usr.userID, eventPhase[ev.eventPhase]);
-  usr.peerConn.onremovetrack = (ev)=>
-    debug('RemoveTrack', usr.userID, eventPhase[ev.eventPhase]);
-  usr.peerConn.oniceconnectionstatechange = (ev)=>
-    debug('ICEConnection State Change', usr.userID, eventPhase[ev.eventPhase]);
-  usr.peerConn.onicegatheringstatechange = (ev)=>
-    debug('ICEGatheringStateChange', usr.userID, eventPhase[ev.eventPhase]);
-  usr.peerConn.onsignalingstatechange = (ev)=>
-    debug('SignalingStateChange', usr.userID, eventPhase[ev.eventPhase], '=>', usr.peerConn.signalingState);
+  if (DEBUG_MODE) {
+    usr.peerConn.ontrack = ev =>
+      debug('ON Track', usr.userID, ev)
+    usr.peerConn.onnegotiationneeded = ev =>
+      debug('ON Negotiation Needed', usr.userID, ev)
+    usr.peerConn.onremovetrack = ev =>
+      debug('ON Remove Track', usr.userID, ev)
+    usr.peerConn.oniceconnectionstatechange = ev =>
+      debug('ON ICE Connection State Change', usr.userID, ev)
+    usr.peerConn.onicegatheringstatechange = ev =>
+      debug('ON ICE Gathering State Change', usr.userID, ev)
+    usr.peerConn.onsignalingstatechange = ev =>
+      debug('ON Signaling State Change', usr.userID, usr.peerConn.signalingState, ev)
+  }
 }
 
 function getUserRTC(userID) {
