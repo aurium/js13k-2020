@@ -118,8 +118,9 @@ function plotBgTile(canvas, tileX, tileY, scale) {
   }
 }
 
-function updateBg(x, y) {
-  const curQuadSpeed = pSpeedX**2 + pSpeedY**2
+function updateBg() {
+  const {x, y, velX, velY} = mySelf
+  const curQuadSpeed = velX**2 + velY**2
   const itsFast = curQuadSpeed > speedLim
 
   if (itsFast) {
@@ -150,15 +151,13 @@ function updateBg(x, y) {
   // Plot level 1 stars
   const cBG1 = itsFast ? canvBG1Speed : canvBG1
   plotBgTile(cBG1, -x/2, -y/2, 1)
-  if (curQuadSpeed>speedLim) plotBgTile(cBG1, (-x+pSpeedX/2)/2, (-y+pSpeedY/2)/2, 1)
-
-  //debug({pSpeedX, pSpeedY, itsFast})
+  if (curQuadSpeed>speedLim) plotBgTile(cBG1, (-x+velX/2)/2, (-y+velY/2)/2, 1)
 }
 
 function relativeObjPos({x, y}) {
   return [
-    winW/2 + (x-playerX)*zoom / divScreen,
-    winH/2 + (y-playerY)*zoom / divScreen
+    winW/2 + (x-mySelf.x)*zoom / divScreen,
+    winH/2 + (y-mySelf.y)*zoom / divScreen
   ]
 }
 
@@ -177,11 +176,13 @@ function updateGameCanvas() {
   window.requestAnimationFrame(updateGameCanvas)
   //setTimeout(updateGameCanvas, 500)
   frameCounter++
-  updateBg(playerX, playerY)
+
+  updateBg()
   gameCtx.globalCompositeOperation = 'source-over'
   updateSun()
   gameCtx.globalCompositeOperation = 'source-over'
   planets.forEach(plotPlanet)
+  users.forEach(plotShip)
   if ((frameCounter%updateRadarRate)==0) updateRadar()
   if (frameCounter%framesToCompute === 0) {
     let delay = Date.now() - lastUpdate
@@ -218,8 +219,8 @@ setTimeout(()=> {
 }, 1)
 
 window.addEventListener('keydown', (ev)=> {
-  if (ev.key == 'ArrowUp')    pSpeedY -= 0.25
-  if (ev.key == 'ArrowDown')  pSpeedY += 0.25
-  if (ev.key == 'ArrowLeft')  pSpeedX -= 0.25
-  if (ev.key == 'ArrowRight') pSpeedX += 0.25
+  if (ev.key == 'ArrowUp')    player.velY -= 0.25
+  if (ev.key == 'ArrowDown')  player.velY += 0.25
+  if (ev.key == 'ArrowLeft')  player.velX -= 0.25
+  if (ev.key == 'ArrowRight') player.velX += 0.25
 })

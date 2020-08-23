@@ -8,16 +8,17 @@ class Player {
   init() {
     debug('Create Player', this.userID, this.constructor==Player?'class Player':'class UserRTCHost')
     this.isMySelf = this.userID === localStorage.userID
+    if (this.isMySelf) mySelf = this
     this.x = -200 + users.length * 100
     this.y = sunR3 + 100
-    if (this.isMySelf) setInterval(()=>this.x+=5, 33)
-    else setInterval(()=>this.y+=9, 33)
+    this.velX = this.isMySelf ? 5 : 0
+    this.velY = this.isMySelf ? 0 : 9
+    this.rot = 0 // Rotation angle
+    this.rotInc = 0.01
   }
 
   onDisconnect() {
     if (!gameStarted) {
-      this.initPlanet.initUser = null
-      this.initPlanet = null
     }
   }
 

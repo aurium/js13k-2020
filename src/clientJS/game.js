@@ -1,6 +1,4 @@
-var playerX = 0, playerY = 9999
-var pSpeedX = 0, pSpeedY = 0
-const speedLim = 3*3 + 3*3 // Where to start to arrast stars
+const speedLim = 5*5 + 5*5 // Where to start to arrast stars
 const sunR1 = 1040
 const sunR2 = 1120
 const sunR3 = 1200
@@ -19,11 +17,11 @@ const planets = [
   { radius: 400, a:PI, d:4e3, r:150, g:80,  b:130, noize:30 },
 
   { radius: 350, a:0     , d:8e3, r:0,   g:80,  b:200, noize:30 },
-  { radius: 450, a:PI*.66, d:8e3, r:50,  g:120, b:0,   noize:50 },
+  { radius: 450, a:PI*.66, d:8e3, r:30,  g:100, b:0,   noize:50 },
   { radius: 350, a:PI*1.3, d:8e3, r:180, g:60,  b:60,  noize:10 },
 
   { radius: 800, a:0    , d:12e3, r:0,   g:40,  b:220, noize:20 },
-  { radius: 700, a:PI*.9, d:12e3, r:180, g:170, b:60,  noize:30 },
+  { radius: 700, a:PI*.9, d:12e3, r:160, g:140, b:40,  noize:30 },
 
   { radius: 300, a:0    , d:16e3, r:120,  g:120,  b:120, noize:10 },
   { radius: 200, a:PI/2 , d:16e3, r:100,  g:80,   b:50,  noize:50 },
@@ -49,8 +47,11 @@ function zoomIn() {
 }
 
 function updateEntities() {
-  playerX += pSpeedX
-  playerY += pSpeedY
+  users.forEach(player => {
+    player.x += player.velX
+    player.y += player.velY
+    player.rot += player.rotInc
+  })
   planets.forEach(planet => {
     planet.a += planet.aInc
     planet.rot += planet.rotInc

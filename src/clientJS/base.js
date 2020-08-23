@@ -10,13 +10,21 @@ const mkEl = (tag, txt='')=> {
   return el
 }
 
+function repeat(num, func) {
+  for (let i=0; i<num; i++) func(i)
+}
+
 var gameStarted = false
 var users = []
 var clentRTC = null
 
 var isRoomOwner = false
 var numPlayers = 0
+var mySelf = { x:0, y:999 }
 
 const QUALITY = { GARBAGE: 1, LOW: 2, MEDIUM: 3, HIGH: 4 }
 var quality = 0
 var zoom = 1
+
+const shipRadius = 30
+const shipRadiusWithFire = 60

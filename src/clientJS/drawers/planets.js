@@ -1,10 +1,13 @@
-function drawPlanet(planet) {
-  var {radius,a/*angulo rotação*/,d/*distancia*/,r,g,b,noize} = planet
+function drawPlanet(planet, index) {
   planet.c1 = document.createElement('canvas'), // Base texture
   planet.c2 = document.createElement('canvas'), // Shadow texture
   planet.c3 = document.createElement('canvas'), // Light texture
   planet.c4 = document.createElement('canvas')  // Sun light and shadow
-
+//   setTimeout(()=> delayedDrawPlanet(planet), (index+1)*100)
+// }
+//
+// function delayedDrawPlanet(planet) {
+  var {radius,a/*angulo rotação*/,d/*distancia*/,r,g,b,noize} = planet
   ;['c1','c2','c3','c4'].forEach(c => {
     planet[c].width = radius*2
     planet[c].height = radius*2
@@ -17,15 +20,17 @@ function drawPlanet(planet) {
 
   // Draw round base planet texture:
   ctx1.beginPath()
-  ctx1.arc(radius, radius, radius, 0, 360)
+  ctx1.arc(radius, radius, radius, 0, 2*PI)
   ctx1.closePath()
   ctx1.clip()
   ctx1.fillStyle = `rgb(${r},${g},${b})`
   ctx1.fillRect(0,0,radius*2,radius*2)
-  const imgData = ctx1.getImageData(0, 0, radius*2, radius*2)
-  const pixels = imgData.data
-  pixels.forEach((c,i)=> pixels[i] = (i%4==3)? c : c-(rnd()-.5)*noize )
-  ctx1.putImageData(imgData, 0, 0)
+  //setTimeout(()=> {
+    const imgData = ctx1.getImageData(0, 0, radius*2, radius*2)
+    const pixels = imgData.data
+    pixels.forEach((c,i)=> pixels[i] = (i%4==3)? c : c-(rnd()-.5)*noize )
+    ctx1.putImageData(imgData, 0, 0)
+  //}, (8+index*3)*1000)
 
   // Draw sun light/shadow mask:
   let grad = ctx4.createLinearGradient(0, 0, radius*2, 0)
@@ -35,7 +40,7 @@ function drawPlanet(planet) {
   grad.addColorStop(1.0, '#505050')
   ctx4.fillStyle = grad
   ctx4.beginPath()
-  ctx4.arc(radius, radius, radius, 0, 360)
+  ctx4.arc(radius, radius, radius, 0, 2*PI)
   ctx4.closePath()
   ctx4.fill()
   grad = ctx4.createRadialGradient(
@@ -46,7 +51,7 @@ function drawPlanet(planet) {
   grad.addColorStop(1, 'rgba(  1,  1,  1, 1)')
   ctx4.fillStyle = grad
   ctx4.beginPath()
-  ctx4.arc(radius, radius, radius, 0, 360)
+  ctx4.arc(radius, radius, radius, 0, 2*PI)
   ctx4.closePath()
   ctx4.fill()
 
@@ -54,7 +59,7 @@ function drawPlanet(planet) {
     let numCrats = round((dist/15)*Math.log2(dist*6/radius))
     if (numCrats<1) numCrats = 1
     let z = sin(PI*(1-dist/radius)/2) // Inclinação da cratera. Achata na extremidade.
-    for (let i=0; i<numCrats; i++) {
+    repeat(numCrats, (i)=> { //setTimeout(()=> {
       let rndRotate = rnd()*PI*2
       let rCratY = 2+rnd()*8 * (z+0.5);
       let rCratX = rCratY * z;
@@ -84,7 +89,7 @@ function drawPlanet(planet) {
         ctx.stroke()
         ctx.restore()
       })
-    }
+    }) //}, rnd()*7e4+15e3))
   }
 }
 planets.forEach(drawPlanet)
@@ -94,6 +99,13 @@ function plotPlanet(p) {
   const diameter = radius*2*zoom / divScreen
   const [x, y] = relativeObjPos({ x: cos(a)*d, y: sin(a)*d })
   const c = -radius*zoom / divScreen
+  if (DEBUG_MODE) {
+    gameCtx.strokeStyle = '#0F0'
+    gameCtx.beginPath()
+    gameCtx.rect(x-diameter/2, y-diameter/2, diameter, diameter)
+    gameCtx.closePath()
+    gameCtx.stroke()
+  }
   gameCtx.save()
   gameCtx.translate(x, y)
   gameCtx.rotate(rot)

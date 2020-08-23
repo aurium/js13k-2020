@@ -46,7 +46,7 @@ function updateSun() {
   grad.addColorStop(0.99, 'rgba(200,100,0,0.0)')
   gameCtx.fillStyle = grad
   gameCtx.beginPath()
-  gameCtx.arc(x, y, r3, 0, 360)
+  gameCtx.arc(x, y, r3, 0, 2*PI)
   gameCtx.closePath()
   gameCtx.fill()
 }

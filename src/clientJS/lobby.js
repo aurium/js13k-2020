@@ -20,7 +20,7 @@ if (queryString.match(/\bgame=/)) {
 
   if (!gameStarted) {
     zoom = 0.1
-    playerY = sunR2
+    mySelf.y = sunR3
     setTimeout(zoomIn, 1000)
     body.classList.add('lobby2')
   }
@@ -51,12 +51,12 @@ if (queryString.match(/\bgame=/)) {
 } else {
   // User is in the public lobby.
 
-  zoom = 0.8
+  zoom = 0.5
   let a = PI
   setInterval(()=> {
     a -= 0.003
-    playerX = cos(a) * 4000
-    playerY = sin(a) * 1100
+    mySelf.x = cos(a) * 4000
+    mySelf.y = sin(a) * 1100
   }, 33)
   body.classList.add('lobby1')
 
