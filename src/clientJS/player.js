@@ -17,6 +17,7 @@ class Player {
     this.velY = 0
     this.rot = 0 // Rotation angle
     this.rotInc = 0
+    this.missilTot = 3
   }
 
   disconnect() { /* placeholder only */ }

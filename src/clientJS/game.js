@@ -39,6 +39,10 @@ planets.forEach(p => {
 })
 
 function gameStart() {
+  if (gameStarted) {
+    if (DEBUG_MODE) logErrToUsr('Double call gameStart()')()
+    return false
+  }
   gameStarted = true
   lobby.classList.add('hidden')
   bodyClass.remove('lobby2')
@@ -47,6 +51,15 @@ function gameStart() {
   targetZoom = 1
   targetZoomDelay = 10
   users.forEach((player) => player.fireIsOn = false )
+
+  delayedTip(2, "In sub-light speed you will have no friction...")
+  delayedTip(3, "...so you don't need to use your propellant all the time.")
+
+  delayedTip(10, `You have ${mySelf.missilTot} guided missiles. It will follow the neerest enemy.`)
+  delayedTip(11, "The missiles can't exceed the light speed.")
+  delayedTip(12, "And its lifetime is the amount of energy you will give to it.")
+
+  delayedTip(18, "Your people will send some aid boxes. Go get then!")
 
   window.addEventListener('keydown', (ev)=> {
     if (ev.key == 'ArrowUp') mySelf.fireIsOn = true
