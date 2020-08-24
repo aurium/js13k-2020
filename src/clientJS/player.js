@@ -12,11 +12,11 @@ class Player {
     this.isMySelf = this.userID === localStorage.userID
     if (this.isMySelf) mySelf = this
     this.x = 0
-    this.y = sunR3 + (this.isMySelf ? 100 :  0)
-    this.velX = 4
+    this.y = 0
+    this.velX = 0
     this.velY = 0
     this.rot = 0 // Rotation angle
-    this.rotInc = this.isMySelf ? 0 : 0.02
+    this.rotInc = 0
   }
 
   disconnect() { /* placeholder only */ }

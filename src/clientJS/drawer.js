@@ -80,12 +80,12 @@ window.addEventListener('resize', ()=> setQuality(quality, '', true))
 
 var hideMouseTimeout = null
 body.addEventListener('mousemove', ()=> {
-  body.classList.add('mouse-alive')
+  bodyClass.add('mouse-alive')
   clearTimeout(hideMouseTimeout)
-  hideMouseTimeout = setTimeout(()=> body.classList.remove('mouse-alive'), 1000)
+  hideMouseTimeout = setTimeout(()=> bodyClass.remove('mouse-alive'), 1000)
 })
 
-if (navigator.userAgent.match(/Firefox\//)) document.body.classList.add('firefox')
+if (navigator.userAgent.match(/Firefox\//)) bodyClass.add('firefox')
 
 function plotPix(pixelsArr, w, x,y, r,g,b,a) {
   let pos = (y*w + x) * 4
@@ -130,7 +130,7 @@ function updateBg() {
 
   // Plot level 3 stars
   gameCtx.globalCompositeOperation = 'screen'
-  plotBgTile(itsFast ? canvBG4Speed : canvBG4, -x/20, -y/20, 1)
+  plotBgTile(itsFast ? canvBG4Speed : canvBG4, -x/25, -y/25, 1)
 
   // Plot Nebulas
   gameCtx.globalCompositeOperation = 'lighten'
@@ -181,6 +181,10 @@ function updateGameCanvas() {
   window.requestAnimationFrame(updateGameCanvas)
   //setTimeout(updateGameCanvas, 500)
   frameCounter++
+
+  // Update zoom
+  zoom = (zoom*targetZoomDelay + targetZoom) / (targetZoomDelay+1)
+  if (1 < zoom && zoom < 1.001) zoom = 1
 
   updateBg()
   gameCtx.globalCompositeOperation = 'source-over'

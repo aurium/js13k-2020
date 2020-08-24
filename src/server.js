@@ -116,7 +116,7 @@ module.exports = {
 
     socket.on('join', (gameID) => {
       if (rooms[gameID]) rooms[gameID].addPlayer(socket)
-      else socket.emit('notifyErr', `The room "${gameID}" do not exists.`)
+      else socket.emit('roomNotFound', gameID)
     });
 
     socket.on('chat', (msg) => {
@@ -131,7 +131,7 @@ module.exports = {
 
     socket.on('peeringMessage', peeringMessage.bind(socket));
 
-    socket.on('RTCStatus', (data)=> socket.room.emit('RTCStatus', data))
+    socket.on('RTCStatus', (data)=> socket.room && socket.room.emit('RTCStatus', data))
 
     let updateLobbyInterval = setInterval(()=> {
       if (!socket.room) {

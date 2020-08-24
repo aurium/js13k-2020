@@ -2,7 +2,7 @@
 
 if (DEBUG_MODE) {
   window.setQuality = setQuality
-  window.setZoom = (z)=> zoom = z
+  window.setZoom = (z)=> { targetZoom = z; targetZoomDelay = 10 }
 }
 
 socket.on('disconnect', () => {
@@ -27,7 +27,6 @@ function usrsConn(usrIDs) {
         let Klass = isRoomOwner ? UserRTCHost : Player
         users.push( new Klass(userID) )
       }
-      else if (usr.reconnect) usr.reconnect()
     })
   }
   debug(`WS Users connected: ${users.map(u=>u.userID).join(', ')}`)

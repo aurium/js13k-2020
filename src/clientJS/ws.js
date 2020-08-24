@@ -5,10 +5,6 @@ if (!localStorage.userID) localStorage.userID = mkID()
 socket.on('connect', () => {
   notify('Conected to the server');
   socket.emit('myID', localStorage.userID);
-  if (queryString.match(/\bgame=/)) {
-    socket.room = queryString.replace(/.*\bgame=([^&]*).*/, '$1')
-    socket.emit('join', socket.room)
-  }
 });
 
 socket.on('disconnect', () => notify('Server Connection lost!'));

@@ -1,3 +1,10 @@
+"use strict";
+
+setTimeout(()=> {
+  roomsList.innerHTML = 'Loading...'
+  bodyClass.remove('before-init')
+}, 100)
+
 function updateRoomList() {
   roomsList.innerHTML = `
     <h2>Room ${socket.room} for ${numPlayers} players.</h2>
@@ -10,7 +17,6 @@ function updateRoomList() {
     <p id="chatNote">Press enter to chat.</p>
   `
   if (users.length == numPlayers && !users.find(u=>!u.connected)) {
-    lobby.classList.add('hidden')
     setTimeout(gameStart, 500)
   }
 }
@@ -19,11 +25,35 @@ if (queryString.match(/\bgame=/)) {
   // User is inside a game room.
 
   if (!gameStarted) {
-    zoom = 0.1
-    mySelf.y = sunR3
-    setTimeout(zoomIn, 1000)
-    body.classList.add('lobby2')
+    targetZoom = 0.2
+    mySelf.y = 6e3
+    flyArroundLobby2()
+    bodyClass.add('lobby2')
   }
+
+  function flyArroundLobby2() {
+    if (gameStarted) return
+    let baseRot = (Date.now() / 9e4) % 2*PI
+    users.forEach((player, i) => {
+      player.rot = baseRot + i*(2*PI/numPlayers)
+      player.fireIsOn = true
+      player.x = +sin(player.rot)*10e3
+      player.y = -cos(player.rot)*10e3
+      player.velX = cos(player.rot) * 4
+      player.velY = sin(player.rot) * 4
+    })
+    setTimeout(flyArroundLobby2, 33)
+  }
+
+  socket.room = queryString.replace(/.*\bgame=([^&]*).*/, '$1')
+  socket.emit('join', socket.room)
+  socket.on('roomNotFound', (gameID)=> {
+    notify(`The room "${gameID}" do not exists.`)
+    setTimeout(()=>
+      document.location.href = document.location.href.replace(/game=[^&]*/, '')
+    , 2000)
+  })
+
 
   window.addEventListener('keyup', ev => {
     if (ev.key == 'Enter') {
@@ -51,14 +81,16 @@ if (queryString.match(/\bgame=/)) {
 } else {
   // User is in the public lobby.
 
-  zoom = 0.5
-  let a = PI
+  zoom = 0.666
+  targetZoomDelay = 500
+  let a = PI/2
   setInterval(()=> {
-    a -= 0.003
-    mySelf.x = cos(a) * 4000
-    mySelf.y = sin(a) * 1100
+    a -= 0.001
+    targetZoom = (sign(cos(a)) != sign(sin(a))) ? 0.25 : 0.05
+    mySelf.x = (mySelf.x*49 + cos(a) * 6000) / 50
+    mySelf.y = (mySelf.y*49 + sin(a) * 2500) / 50
   }, 33)
-  body.classList.add('lobby1')
+  bodyClass.add('lobby1')
 
   socket.on('rooms', (rooms)=> {
     if (rooms.length) {
@@ -102,8 +134,10 @@ if (queryString.match(/\bgame=/)) {
   btCreate.id = 'btCreateRoom'
   btCreate.innerText = 'Create'
   lobby.appendChild(btCreate)
-  btCreateRoom.onclick = ()=> {
+  btCreate.onclick = ()=> {
     socket.emit('creteRoom', {num:inputNum.value, pub:inputPub.checked})
+    btCreate.style.opacity = 0.5
+    btCreate.onclick = ()=> alert('The request was sent.')
   }
   socket.on('romCreated', (gameID)=> {
     document.location.href = `?game=${gameID}${DEBUG_MODE?'&debug=on':''}`

@@ -40,13 +40,27 @@ planets.forEach(p => {
 
 function gameStart() {
   gameStarted = true
-}
+  lobby.classList.add('hidden')
+  bodyClass.remove('lobby2')
+  bodyClass.add('game-on')
 
-function zoomIn() {
-  zoom += gameStarted ? (1-zoom*zoom)/40 + 0.001 : 0.0003
-  if (zoom < 1) setTimeout(zoomIn, 40)
-  else zoom = 1
+  targetZoom = 1
+  targetZoomDelay = 10
+  users.forEach((player) => player.fireIsOn = false )
+
+  window.addEventListener('keydown', (ev)=> {
+    if (ev.key == 'ArrowUp') mySelf.fireIsOn = true
+    if (ev.key == 'ArrowLeft' && mySelf.rotInc>-0.1) mySelf.rotJetOnLeft = true
+    if (ev.key == 'ArrowRight' && mySelf.rotInc<0.1) mySelf.rotJetOnRight = true
+  })
+
+  window.addEventListener('keyup', (ev)=> {
+    if (ev.key == 'ArrowUp')    mySelf.fireIsOn = false
+    if (ev.key == 'ArrowLeft')  mySelf.rotJetOnLeft = false
+    if (ev.key == 'ArrowRight') mySelf.rotJetOnRight = false
+  })
 }
+if (DEBUG_MODE) window.gameStart = gameStart
 
 function updateEntities() {
   users.forEach(player => {
@@ -57,8 +71,8 @@ function updateEntities() {
       mySelf.velX += cos(mySelf.rot)/50
       mySelf.velY += sin(mySelf.rot)/50
     }
-    if (player.rotJetOnLeft)  mySelf.rotInc -= 0.001
-    if (player.rotJetOnRight) mySelf.rotInc += 0.001
+    if (player.rotJetOnLeft && player.rotInc>-0.1) mySelf.rotInc -= 0.001
+    if (player.rotJetOnRight && player.rotInc<0.1) mySelf.rotInc += 0.001
   })
   planets.forEach(planet => {
     planet.a += planet.aInc
@@ -66,15 +80,3 @@ function updateEntities() {
   })
 }
 setInterval(updateEntities, 17)
-
-window.addEventListener('keydown', (ev)=> {
-  if (ev.key == 'ArrowUp')    mySelf.fireIsOn = true
-  if (ev.key == 'ArrowLeft')  mySelf.rotJetOnLeft = true
-  if (ev.key == 'ArrowRight') mySelf.rotJetOnRight = true
-})
-
-window.addEventListener('keyup', (ev)=> {
-  if (ev.key == 'ArrowUp')    mySelf.fireIsOn = false
-  if (ev.key == 'ArrowLeft')  mySelf.rotJetOnLeft = false
-  if (ev.key == 'ArrowRight') mySelf.rotJetOnRight = false
-})
