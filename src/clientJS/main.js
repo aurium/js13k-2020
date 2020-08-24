@@ -1,7 +1,13 @@
 "use strict";
 
+if (DEBUG_MODE) {
+  window.setQuality = setQuality
+  window.setZoom = (z)=> zoom = z
+}
+
 socket.on('disconnect', () => {
-  users.forEach(u => usrDisconn(u.userID));
+  notify('Disconnected from my Web Socket.')
+  users.forEach(u => usrDisconn(u.userID, true));
   if (!gameStarted) users = [];
 });
 socket.on('usrsConn', (usrIDs) => usrsConn(usrIDs));
@@ -28,8 +34,8 @@ function usrsConn(usrIDs) {
   updateRoomList()
 }
 
-function usrDisconn(userID) {
-  debug(`WS User disconnected: ${userID}`)
+function usrDisconn(userID, lostMyWS) {
+  if (!lostMyWS) notify(`WS User disconnected: ${userID}`)
   if (!gameStarted) {
     let usr = getUserRTC(userID)
     if (usr && isRoomOwner) usr.disconnect()
@@ -49,3 +55,5 @@ socket.on('RTCStatus', (userStatuses) => {
   if (gameStarted) xxx()
   else updateRoomList()
 })
+
+initDrawer()

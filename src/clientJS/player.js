@@ -1,3 +1,5 @@
+"use strict";
+
 class Player {
 
   constructor(userID) {
@@ -9,13 +11,15 @@ class Player {
     debug('Create Player', this.userID, this.constructor==Player?'class Player':'class UserRTCHost')
     this.isMySelf = this.userID === localStorage.userID
     if (this.isMySelf) mySelf = this
-    this.x = -200 + users.length * 100
-    this.y = sunR3 + 100
-    this.velX = this.isMySelf ? 5 : 0
-    this.velY = this.isMySelf ? 0 : 9
+    this.x = 0
+    this.y = sunR3 + (this.isMySelf ? 100 :  0)
+    this.velX = 4
+    this.velY = 0
     this.rot = 0 // Rotation angle
-    this.rotInc = 0.01
+    this.rotInc = this.isMySelf ? 0 : 0.02
   }
+
+  disconnect() { /* placeholder only */ }
 
   onDisconnect() {
     if (!gameStarted) {

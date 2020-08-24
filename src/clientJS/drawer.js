@@ -1,19 +1,13 @@
 "use strict";
 
-/*
-Notes:
-Max Speed must give 5.5 px per frame
-*/
-
 const baseRndSeed = parseInt(Date.now().toString().replace(/0/g,''))
-
 
 var FORCE_QUALITY = false
 if (queryString.match(/.*\bquality=([0-9]).*/)) {
   FORCE_QUALITY = queryString.replace(/.*\bquality=([0-9]).*/, '$1')
   if (FORCE_QUALITY && Object.values(QUALITY).indexOf(parseInt(FORCE_QUALITY))==-1) {
     alert(
-      `⚠️ Bad qualit parameter (${FORCE_QUALITY}) ⚠️\n\n` +
+      `⚠️ Bad quality parameter (${FORCE_QUALITY}) ⚠️\n\n` +
       'The valid quality values are:\n' +
       Object.entries(QUALITY).map(([k,v])=>`   ${v} - ${k}`).join('\n')
     )
@@ -81,7 +75,6 @@ function setQuality(newQuality, msg='', force) {
     }
   }
 }
-window.setQuality = setQuality // DEBUG
 
 window.addEventListener('resize', ()=> setQuality(quality, '', true))
 
@@ -137,21 +130,33 @@ function updateBg() {
 
   // Plot level 3 stars
   gameCtx.globalCompositeOperation = 'screen'
-  plotBgTile(itsFast ? canvBG4Speed : canvBG4, -x/7, -y/7, 1)
+  plotBgTile(itsFast ? canvBG4Speed : canvBG4, -x/20, -y/20, 1)
 
   // Plot Nebulas
   gameCtx.globalCompositeOperation = 'lighten'
   const nebula = itsFast ? canvBG3Speed : canvBG3
-  plotBgTile(nebula, -(x+9000)/5, -(y+7000)/5, 2/divScreen)
+  plotBgTile(nebula, -(x+9000)/15, -(y+7000)/15, 2/divScreen)
 
   // Plot level 2 stars
   gameCtx.globalCompositeOperation = 'screen'
-  plotBgTile(itsFast ? canvBG2Speed : canvBG2, -x/3, -y/3, 1)
+  const cBG2 = itsFast ? canvBG2Speed : canvBG2
+  const divPosBG2 = 12
+  plotBgTile(cBG2, -x/divPosBG2, -y/divPosBG2, 1)
+  if (curQuadSpeed>speedLim && quality > QUALITY.LOW) {
+    plotBgTile(cBG2, (-x+velX*.333)/divPosBG2, (-y+velY*.333)/divPosBG2, 1)
+    plotBgTile(cBG2, (-x+velX*.666)/divPosBG2, (-y+velY*.666)/divPosBG2, 1)
+  }
 
   // Plot level 1 stars
   const cBG1 = itsFast ? canvBG1Speed : canvBG1
-  plotBgTile(cBG1, -x/2, -y/2, 1)
-  if (curQuadSpeed>speedLim) plotBgTile(cBG1, (-x+velX/2)/2, (-y+velY/2)/2, 1)
+  const divPosBG1 = 10
+  plotBgTile(cBG1, -x/divPosBG1, -y/divPosBG1, 1)
+  if (curQuadSpeed>speedLim && quality > QUALITY.LOW) {
+    plotBgTile(cBG1, (-x+velX*0.2)/divPosBG1, (-y+velY*0.2)/divPosBG1, 1)
+    plotBgTile(cBG1, (-x+velX*0.4)/divPosBG1, (-y+velY*0.4)/divPosBG1, 1)
+    plotBgTile(cBG1, (-x+velX*0.6)/divPosBG1, (-y+velY*0.6)/divPosBG1, 1)
+    plotBgTile(cBG1, (-x+velX*0.8)/divPosBG1, (-y+velY*0.8)/divPosBG1, 1)
+  }
 }
 
 function relativeObjPos({x, y}) {
@@ -190,37 +195,32 @@ function updateGameCanvas() {
     fps.innerText = 'FPS: ' + FPS
     if (FPS > 33) {
       alertFPS++
-    } else if (FPS < 20) {
+    } else if ((!gameStarted || quality < QUALITY.MEDIUM) && FPS > 22) {
+      alertFPS++
+    } else if (FPS < (gameStarted ? 20 : 12)) {
       alertFPS--
-      if (FPS < 12) alertFPS -= 5
+      if (gameStarted && FPS < 12) alertFPS -= 5
+      debug('FPS Merda', alertFPS)
     } else {
       alertFPS /= 2
     }
     lastUpdate = Date.now()
     if (alertFPS < -2) {
-      if (gameStarted && quality > 1) setQuality(quality - 1, 'Low FPS.')
+      if (quality > 1) setQuality(quality - 1, 'Low FPS.')
       alertFPS = 0
     }
-    if (alertFPS > 800/framesToCompute) {
+    if (alertFPS > 600/framesToCompute) {
       if (quality < QUALITY.HIGH) setQuality(quality + 1, 'High FPS.')
       alertFPS = 0
     }
   }
 }
 
-// Init Drawer:
-setTimeout(()=> {
-  setQuality(QUALITY.MEDIUM, '')
+function initDrawer() {
+  setQuality(QUALITY.HIGH, '')
   gameCtx.imageSmoothingEnabled = true
   gameCtx.imageSmoothingQuality = 'low'
   debug('Create BG 3 (Nebulas)')
   drawPlasma(seed1)
   updateGameCanvas()
-}, 1)
-
-window.addEventListener('keydown', (ev)=> {
-  if (ev.key == 'ArrowUp')    player.velY -= 0.25
-  if (ev.key == 'ArrowDown')  player.velY += 0.25
-  if (ev.key == 'ArrowLeft')  player.velX -= 0.25
-  if (ev.key == 'ArrowRight') player.velX += 0.25
-})
+}

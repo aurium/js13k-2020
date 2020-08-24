@@ -55,6 +55,7 @@ class UserRTC {
 
   disconnect() {
     this.peerConn.close()
+    this.peerConn = null
     clearInterval(this.updateDisplayInterval)
     removeConnDisplay.bind(this)()
     if (this.onDisconnect) this.onDisconnect()
@@ -70,7 +71,7 @@ class UserRTC {
     if (userID == this.userID) this.connected = true
     else return logErrToUsr(`${logKind(this)} Bad Conn confirmation.`)(userID+'≠'+this.userID)
     if (isRoomOwner) notify(`${logKind(this)} ${this.userID} is connected.`)
-    else notify(`Connected!`)
+    else notify(`You're Connected!`)
     updateUsersStatus()
   }
 
@@ -164,6 +165,18 @@ function createRTCPeerConnection(usr) {
       debug(usr.kind, `End of ${usr.userID} candidates.`);
     }
   }
+
+  const testICEConnectionState = (ev)=> {
+    if (!usr.peerConn) return;
+    if (DEBUG_MODE && ev) debug('ON ICE Connection State Change', usr.userID, usr.peerConn.iceConnectionState)
+    if (usr.peerConn.iceConnectionState === 'failed') {
+      notify(`WebRTC connection fail to ${usr.userID}. Let's try again!`)
+      // TODO...
+    }
+  }
+  setTimeout(testICEConnectionState.bind(usr), 1000)
+  usr.peerConn.oniceconnectionstatechange = testICEConnectionState
+
   if (DEBUG_MODE) {
     usr.peerConn.ontrack = ev =>
       debug('ON Track', usr.userID, ev)
@@ -171,12 +184,10 @@ function createRTCPeerConnection(usr) {
       debug('ON Negotiation Needed', usr.userID, ev)
     usr.peerConn.onremovetrack = ev =>
       debug('ON Remove Track', usr.userID, ev)
-    usr.peerConn.oniceconnectionstatechange = ev =>
-      debug('ON ICE Connection State Change', usr.userID, ev)
     usr.peerConn.onicegatheringstatechange = ev =>
-      debug('ON ICE Gathering State Change', usr.userID, ev)
+      debug('ON ICE Gathering State Change', usr.userID, usr.peerConn.iceGatheringState)
     usr.peerConn.onsignalingstatechange = ev =>
-      debug('ON Signaling State Change', usr.userID, usr.peerConn.signalingState, ev)
+      debug('ON Signaling State Change', usr.userID, usr.peerConn.signalingState)
   }
 }
 
@@ -200,7 +211,7 @@ socket.on('peeringMessage', function(message) {
   delete message.fromClient
   delete message.userID
 
-  if (message.type === 'offer') {
+  if (message.type === 'offer' && usr.peerConn.iceConnectionState != 'stable') {
     notify(`${logKind(this)} Got offer from ${userID}. Sending answer to peer.`);
     usr.peerConn.setRemoteDescription(new RTCSessionDescription(message))
     .then(()=> notify(`Remote Description Set Ok for ${userID}.`))
@@ -218,7 +229,10 @@ socket.on('peeringMessage', function(message) {
   } else if (message.type === 'candidate') {
     debug(`${usr.kind} got identity candidate from ${userID}:`, message.candidate)
     usr.peerConn.addIceCandidate(message)
-    .catch(logErrToUsr(`Add ICE Candidate FAIL for ${userID}.`));
+    .catch((err)=> {
+      logErrToUsr(`Add ICE Candidate FAIL for ${userID}.`)(err)
+      // TODO: restart negotiation
+    });
   }
 });
 
@@ -228,7 +242,7 @@ function initDataChannel(usr) {
     usr.send('connected')
   }
   usr.dataChannel.onclose = ()=> {
-    notify('Channel closed.');
+    notify(`${usr.userID}'s Channel closed.`);
     usr.connected = false;
     updateUsersStatus()
   }

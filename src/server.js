@@ -156,7 +156,7 @@ module.exports = {
 };
 
 function peeringMessage(message) {
-    log('Client peeringMessage:', message?message.type:'<nullish>');
+  log(`Client ${this.userID} peeringMessage:`, message?message.type:'<nullish>');
   if (message.fromClient) {
     this.room.owner.emit('peeringMessage', message);
   } else {

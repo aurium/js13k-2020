@@ -1,3 +1,5 @@
+"use strict";
+
 const radarCtx = radarCanvas.getContext('2d')
 
 const updateRadarRate = 5
@@ -9,22 +11,22 @@ function updateRadar() {
   // Soft clear radar data
   const imgData = radarCtx.getImageData(0, 0, radarSize, radarSize)
   const pixels = imgData.data
-  pixels.forEach((v,i)=> pixels[i]=(i%4==3)?v-2:v)
+  pixels.forEach((v,i)=> pixels[i]=(i%4==3)?v-5:v)
   radarCtx.putImageData(imgData, 0, 0)
 
   // Sum color light while drawing
   radarCtx.globalCompositeOperation = 'screen'
 
   // Draw sun
-  if ((frameCounter%(updateRadarRate*10))==updateRadarRate) {
-    radarCtx.strokeStyle = (frameCounter<=updateRadarRate) ? '#0F0' : '#040'
+  if ((frameCounter%(updateRadarRate*5))==updateRadarRate) {
+    radarCtx.strokeStyle = '#040'
     radarCtx.lineWidth = 2
     radarCtx.beginPath()
     radarCtx.moveTo(radarMid+sunR2*radarZoom, radarMid)
     let inc = PI/10
     for (let i=0; i<2*PI; i+=inc) {
       radarCtx.moveTo(radarMid+cos(i)*sunR2*radarZoom, radarMid+sin(i)*sunR2*radarZoom)
-      radarCtx.lineTo(radarMid+cos(i+inc/2)*sunR2*radarZoom, radarMid+sin(i+inc/2)*sunR2*radarZoom)
+      radarCtx.lineTo(radarMid+cos(i+inc/3)*sunR2*radarZoom, radarMid+sin(i+inc/3)*sunR2*radarZoom)
     }
     radarCtx.closePath()
     radarCtx.stroke()
@@ -49,7 +51,7 @@ function updateRadar() {
   radarCtx.lineWidth = 1.6
   users.forEach(usr => {
     radarCtx.strokeStyle = '#000'
-    radarCtx.fillStyle = usr.isMySelf ? '#00F' : '#F00'
+    radarCtx.fillStyle = usr.isMySelf ? '#00F' : '#C00'
     radarCtx.beginPath()
     //radarCtx.moveTo(radarMid+usr.x*radarZoom, radarMid+usr.y*radarZoom)
     radarCtx.arc(radarMid+usr.x*radarZoom, radarMid+usr.y*radarZoom, 2, 0, 2*PI)

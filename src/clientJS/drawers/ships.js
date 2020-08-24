@@ -1,3 +1,5 @@
+"use strict";
+
 const shipCanvasSize = 300
 
 function drawShipFire() {
@@ -145,15 +147,33 @@ drawShip(canvShip2)
 function plotShip(player) {
   const [x, y] = relativeObjPos(player)
   const totSize = shipRadiusWithFire * 2 * zoom / divScreen
+  const quarter = totSize / 4
   const radius = shipRadius*zoom/divScreen
   const canvas = player.isMySelf ? canvShip1 : canvShip2
   gameCtx.save()
   gameCtx.translate(x, y)
-  gameCtx.fillStyle = 'rgba(255,255,255,0.75)'
-  gameCtx.font = `normal ${12/divScreen+4}px sans-serif`
+  gameCtx.fillStyle = 'rgba(255,255,255,0.6)'
+  gameCtx.font = `normal ${8/divScreen+5}px sans-serif`
   gameCtx.textAlign = 'center'
   gameCtx.fillText(player.userID, 0, -radius - 16/divScreen)
   gameCtx.rotate(player.rot)
+  if (player.fireIsOn) {
+    gameCtx.fillStyle = '#F80'
+    gameCtx.beginPath()
+    gameCtx.moveTo(-quarter*.9, 0)
+    gameCtx.bezierCurveTo(
+      -quarter, -quarter*.6,
+      -quarter, -quarter*.1,
+      -quarter*2, 0
+    )
+    gameCtx.bezierCurveTo(
+      -quarter, quarter*.1,
+      -quarter, quarter*.6,
+      -quarter*.9, 0
+    )
+    gameCtx.closePath()
+    gameCtx.fill()
+  }
   gameCtx.drawImage(
     canvas,
     0, 0, shipCanvasSize, shipCanvasSize,

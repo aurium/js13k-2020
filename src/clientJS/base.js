@@ -1,3 +1,5 @@
+"use strict";
+
 const body = document.body
 const queryString = document.location.search.substr(1);
 

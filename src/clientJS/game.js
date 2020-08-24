@@ -1,4 +1,6 @@
-const speedLim = 5*5 + 5*5 // Where to start to arrast stars
+"use strict";
+
+const speedLim = 7*7 + 7*7 // Where to start to arrast stars
 const sunR1 = 1040
 const sunR2 = 1120
 const sunR3 = 1200
@@ -51,6 +53,12 @@ function updateEntities() {
     player.x += player.velX
     player.y += player.velY
     player.rot += player.rotInc
+    if (player.fireIsOn) {
+      mySelf.velX += cos(mySelf.rot)/50
+      mySelf.velY += sin(mySelf.rot)/50
+    }
+    if (player.rotJetOnLeft)  mySelf.rotInc -= 0.001
+    if (player.rotJetOnRight) mySelf.rotInc += 0.001
   })
   planets.forEach(planet => {
     planet.a += planet.aInc
@@ -58,3 +66,15 @@ function updateEntities() {
   })
 }
 setInterval(updateEntities, 17)
+
+window.addEventListener('keydown', (ev)=> {
+  if (ev.key == 'ArrowUp')    mySelf.fireIsOn = true
+  if (ev.key == 'ArrowLeft')  mySelf.rotJetOnLeft = true
+  if (ev.key == 'ArrowRight') mySelf.rotJetOnRight = true
+})
+
+window.addEventListener('keyup', (ev)=> {
+  if (ev.key == 'ArrowUp')    mySelf.fireIsOn = false
+  if (ev.key == 'ArrowLeft')  mySelf.rotJetOnLeft = false
+  if (ev.key == 'ArrowRight') mySelf.rotJetOnRight = false
+})
