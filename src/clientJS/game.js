@@ -71,8 +71,8 @@ function updateEntities() {
       mySelf.velX += cos(mySelf.rot)/50
       mySelf.velY += sin(mySelf.rot)/50
     }
-    if (player.rotJetOnLeft && player.rotInc>-0.1) mySelf.rotInc -= 0.001
-    if (player.rotJetOnRight && player.rotInc<0.1) mySelf.rotInc += 0.001
+    if (player.rotJetOnLeft && player.rotInc>-0.1) mySelf.rotInc -= 0.002
+    if (player.rotJetOnRight && player.rotInc<0.1) mySelf.rotInc += 0.002
   })
   planets.forEach(planet => {
     planet.a += planet.aInc
