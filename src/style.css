@@ -228,16 +228,23 @@ h1, h2 { margin-bottom: 10px }
   position: absolute;
   display: table;
   left: 10px;
-  bottom: -50px;
-  padding: 15px;
+  bottom: 0px;
+  padding: 5px;
   min-width: 600px;
-  border-radius: 25px 25px 0 0;
-  background: rgba(0,0,0,0.5);
-  font-size: 14px;
+  border-radius: 10px 10px 0 0;
+  background: rgba(0,0,0,0.9);
+  font-size: 12px;
+  opacity: 0.6;
+  transition: 2s;
+}
+.before-init #connStatus, .lobby1 #connStatus {
+  bottom: -100px;
 }
 .lobby2 #connStatus {
-  bottom: 0px;
-  transition: 2s;
+  padding: 15px;
+  border-radius: 25px 25px 0 0;
+  font-size: 16px;
+  opacity: 1;
 }
 
 #connStatus div {
