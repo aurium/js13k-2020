@@ -5,6 +5,7 @@ const bodyClass = body.classList
 const queryString = document.location.search.substr(1);
 
 const DEBUG_MODE = !!queryString.match(/\bdebug=on/);
+const BEAUTY_MODE = !queryString.match(/\braw=on/);
 
 if (DEBUG_MODE) bodyClass.add('debug')
 const mkEl = (tag, txt='')=> {

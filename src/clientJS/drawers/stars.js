@@ -35,7 +35,7 @@ function drawStars(canvas, canvasSpeed, stars, maxSize) {
     [{ pixels, ss: 7 }, { pixels: pixelsS, ss:(divScreen==1)?2:1 }]
     .forEach(({pixels, ss})=> {
       plotPix(pixels, w, x,y, r,g,b,a)
-      for (let i=0; i<ss; i++) {
+      if (BEAUTY_MODE) for (let i=0; i<ss; i++) {
         let a = (size-i)*255 / (maxSize/divScreen)
         plotPix(pixels, w, x+i,y, r,g,b,a)
         plotPix(pixels, w, x-i,y, r,g,b,a)

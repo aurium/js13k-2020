@@ -25,12 +25,12 @@ function drawPlanet(planet, index) {
   ctx1.clip()
   ctx1.fillStyle = `rgb(${r},${g},${b})`
   ctx1.fillRect(0,0,radius*2,radius*2)
-  //setTimeout(()=> {
+  if (BEAUTY_MODE) {
     const imgData = ctx1.getImageData(0, 0, radius*2, radius*2)
     const pixels = imgData.data
     pixels.forEach((c,i)=> pixels[i] = (i%4==3)? c : c-(rnd()-.5)*noize )
     ctx1.putImageData(imgData, 0, 0)
-  //}, (8+index*3)*1000)
+  }
 
   // Draw sun light/shadow mask:
   let grad = ctx4.createLinearGradient(0, 0, radius*2, 0)
@@ -55,7 +55,7 @@ function drawPlanet(planet, index) {
   ctx4.closePath()
   ctx4.fill()
 
-  for (let dist=10; dist<radius; dist+=5) {
+  if (BEAUTY_MODE) for (let dist=10; dist<radius; dist+=5) {
     let numCrats = round((dist/15)*Math.log2(dist*6/radius))
     if (numCrats<1) numCrats = 1
     let z = sin(PI*(1-dist/radius)/2) // Inclinação da cratera. Achata na extremidade.
@@ -111,32 +111,34 @@ function plotPlanet(p) {
   gameCtx.rotate(rot)
   // Plot base texture
   gameCtx.drawImage(p.c1, 0, 0, radius*2, radius*2, c, c, diameter, diameter)
-  // Plot shadow texture
-  gameCtx.drawImage(
-    p.c2,
-    0, 0,
-    radius*2, radius*2,
-    c-sin(rot-a-PI/2), c-cos(rot-a-PI/2),
-    diameter, diameter
-  )
-  // Plot light texture
-  gameCtx.drawImage(
-    p.c3,
-    0, 0,
-    radius*2, radius*2,
-    c+sin(rot-a-PI/2), c+cos(rot-a-PI/2),
-    diameter, diameter
-  )
-  gameCtx.rotate(-rot)
-  // Plot sun light and shadow
-  gameCtx.rotate(a)
-  gameCtx.globalCompositeOperation = 'overlay'
-  gameCtx.drawImage(
-    p.c4,
-    0, 0,
-    radius*2, radius*2,
-    c, c,
-    diameter, diameter
-  )
+  if (BEAUTY_MODE) {
+    // Plot shadow texture
+    gameCtx.drawImage(
+      p.c2,
+      0, 0,
+      radius*2, radius*2,
+      c-sin(rot-a-PI/2), c-cos(rot-a-PI/2),
+      diameter, diameter
+    )
+    // Plot light texture
+    gameCtx.drawImage(
+      p.c3,
+      0, 0,
+      radius*2, radius*2,
+      c+sin(rot-a-PI/2), c+cos(rot-a-PI/2),
+      diameter, diameter
+    )
+    gameCtx.rotate(-rot)
+    // Plot sun light and shadow
+    gameCtx.rotate(a)
+    gameCtx.globalCompositeOperation = 'overlay'
+    gameCtx.drawImage(
+      p.c4,
+      0, 0,
+      radius*2, radius*2,
+      c, c,
+      diameter, diameter
+    )
+  }
   gameCtx.restore()
 }

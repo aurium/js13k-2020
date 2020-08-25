@@ -133,9 +133,11 @@ function updateBg() {
   plotBgTile(itsFast ? canvBG4Speed : canvBG4, -x/25, -y/25, 1)
 
   // Plot Nebulas
-  gameCtx.globalCompositeOperation = 'lighten'
-  const nebula = itsFast ? canvBG3Speed : canvBG3
-  plotBgTile(nebula, -(x+9000)/15, -(y+7000)/15, 2/divScreen)
+  if (BEAUTY_MODE) {
+    gameCtx.globalCompositeOperation = 'lighten'
+    const nebula = itsFast ? canvBG3Speed : canvBG3
+    plotBgTile(nebula, -(x+9000)/15, -(y+7000)/15, 2/divScreen)
+  }
 
   // Plot level 2 stars
   gameCtx.globalCompositeOperation = 'screen'

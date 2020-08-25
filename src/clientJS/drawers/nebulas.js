@@ -41,7 +41,7 @@ function drawPlasma(seed) {
     pixels[pos+2] = b
     pixels[pos+3] = a
   }
-  while (step > 1) {
+  while (step > 1 && BEAUTY_MODE) {
     for (let y=0; y<size; y+=step) for (let x=0; x<size; x+=step) {
       let pos = (y*size + x) * 4
       let yUp = y==0 ? size-step : y-step
