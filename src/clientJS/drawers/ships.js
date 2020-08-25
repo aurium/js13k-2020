@@ -21,26 +21,21 @@ function drawShip(canvas, isMySelf) {
   }
 
   // Nacele Esq
-  ctx.beginPath()
-  ctx.moveTo(cos(PI*0.7)*quarter, -sin(PI*0.7)*quarter)
-  ctx.arc(0, 0, quarter, PI*0.7, PI*1.3)
-  ctx.closePath()
-  grad = ctx.createLinearGradient(-quarter,0, -quarter/2,0)
-  grad.addColorStop(0, '#BBB')
-  grad.addColorStop(1, '#000')
-  ctx.fillStyle = grad
-  ctx.fill()
-
-  // Nacele Dir
-  ctx.beginPath()
-  ctx.moveTo(cos(PI*0.3)*quarter, -sin(PI*0.3)*quarter)
-  ctx.arc(0, 0, quarter, PI*0.3, -PI*0.3, true)
-  ctx.closePath()
-  grad = ctx.createLinearGradient(quarter,0, quarter/2,0)
-  grad.addColorStop(0, '#BBB')
-  grad.addColorStop(1, '#000')
-  ctx.fillStyle = grad
-  ctx.fill()
+  function mkNacele(side) {
+    ctx.beginPath()
+    let ini = PI*(5-side*2)/10
+    ctx.moveTo(cos(ini)*quarter, -sin(ini)*quarter)
+    ctx.arc(0, 0, quarter, ini, PI*(5-side*8)/10, side>0)
+    ctx.closePath()
+    grad = ctx.createLinearGradient(quarter*side,0, quarter*side*.6,0)
+    grad.addColorStop( 0, '#BBB')
+    grad.addColorStop(.5, isMySelf ? '#369' : '#943')
+    grad.addColorStop( 1, '#222')
+    ctx.fillStyle = grad
+    ctx.fill()
+  }
+  mkNacele(-1) // Left
+  mkNacele(+1) // Right
 
   // wing support
   //ctx.fillRect(-quarter*0.7, 0, quarter*1.4, quarter/2)
@@ -61,7 +56,7 @@ function drawShip(canvas, isMySelf) {
   ctx.closePath()
   grad = ctx.createLinearGradient(0,0, 0,quarter/2)
   grad.addColorStop(0.0, '#333')
-  grad.addColorStop(0.5, '#AAA')
+  grad.addColorStop(0.5, '#999')
   grad.addColorStop(1.0, '#333')
   ctx.fillStyle = grad
   ctx.fill()
@@ -105,44 +100,40 @@ function drawShip(canvas, isMySelf) {
     0           , -quarter
   )
   ctx.closePath()
-  grad = ctx.createLinearGradient(-quarter/2,0, quarter/2,0)
+  grad = ctx.createLinearGradient(-quarter*.3,0, quarter*.3,0)
   grad.addColorStop(0.0, '#222')
-  grad.addColorStop(0.5, '#888')
+  grad.addColorStop(0.4, '#888')
+  grad.addColorStop(0.6, '#888')
   grad.addColorStop(1.0, '#222')
   ctx.fillStyle = grad
   ctx.fill()
 
   // Color
   ctx.globalCompositeOperation = 'multiply'
-  ctx.strokeStyle = isMySelf ? 'rgba(0,80,255,0.6)' : 'rgba(255,20,0,0.6)'
-  ctx.lineWidth = 4
   ctx.beginPath()
-  repeat(4, (i)=> {
-    ctx.moveTo(-quarter*0.3, quarter-(10*i)-10)
-    ctx.lineTo( quarter*0.3, quarter-(10*i)-10)
+  let lim = quarter*0.39
+  repeat(3, (i)=> {
+    ctx.moveTo(-lim, quarter-(14*i)-14)
+    ctx.lineTo( lim, quarter-(14*i)-14)
   })
-  ctx.moveTo(-quarter*0.3, quarter-50)
-  ctx.lineTo(-quarter*0.1, quarter-50)
-  ctx.lineTo(-quarter*0.1, -quarter/3)
-  ctx.moveTo( quarter*0.3, quarter-50)
-  ctx.lineTo( quarter*0.1, quarter-50)
-  ctx.lineTo( quarter*0.1, -quarter/3)
-  ctx.stroke()
+  function mkLLine(side) {
+    ctx.moveTo(side*lim        ,  quarter-56)
+    ctx.lineTo(side*quarter*0.1,  quarter-56)
+    ctx.lineTo(side*quarter*0.1,  quarter*.05)
+    ctx.moveTo(side*quarter*0.1, -quarter*.04)
+    ctx.lineTo(side*quarter*0.1, -quarter*.16)
+    ctx.moveTo(side*quarter*0.1, -quarter*.25)
+    ctx.lineTo(side*quarter*0.1, -quarter*.33)
+  }
+  mkLLine(-1)
+  mkLLine(+1)
 
-  ctx.beginPath()
-  ctx.rect(-quarter,-quarter, quarter*0.4,quarter*2)
-  ctx.rect(quarter*0.6,-quarter, quarter*0.4,quarter*2)
-  ctx.closePath()
-  ctx.clip()
-
-  ctx.beginPath()
-  ctx.arc(0, 0, quarter-5, 0, PI*2)
-  ctx.closePath()
+  ctx.strokeStyle = isMySelf ? 'rgba(0,100,255,0.4)' : 'rgba(255,60,0,0.4)'
+  ctx.lineWidth = 8
   ctx.stroke()
 }
 drawShip(canvShip1, true)
 drawShip(canvShip2)
-
 
 function plotShip(player) {
   const [x, y] = relativeObjPos(player)
@@ -181,7 +172,8 @@ function plotShip(player) {
   )
   gameCtx.restore()
   if (DEBUG_MODE) {
-    gameCtx.strokeStyle = '#0F0'
+    gameCtx.strokeStyle = 'rgba(0,255,0,.75)'
+    gameCtx.lineWidth = 0.6
     gameCtx.beginPath()
     //gameCtx.rect(x-totSize/2, y-totSize/2, totSize, totSize)
     gameCtx.moveTo(x+radius, y)
