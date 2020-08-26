@@ -1,12 +1,5 @@
-const _log = console.log
-console.log = ()=> { throw Error('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA') }
-
-function log(...args) {
-  _log((new Date).toJSON().replace(/.*T(.*)\..*/, '$1'), ...args)
-}
-
 function debug(...args) {
-  if (DEBUG_MODE) _log(...args)
+  if (DEBUG_MODE) log(...args)
 }
 
 function notify(...args) {

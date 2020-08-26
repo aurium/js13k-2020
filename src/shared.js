@@ -9,3 +9,7 @@ const sin = Math.sin
 const cos = Math.cos
 const PI = Math.PI
 const mkID = ()=> rnd().toString(36).split('.')[1]
+
+function log(...args) {
+  console.log((new Date).toJSON().replace(/.*T(.*)\..*/, '$1'), ...args)
+}

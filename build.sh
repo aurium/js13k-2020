@@ -21,6 +21,15 @@ if $COPY_ONLY; then
 
 else
 
+  function js_filter() {
+    ( $NO_DEBUG && sed -r 's#(const|var|let) DEBUG_MODE#//#g' || cat ) |
+    ( $NO_DEBUG && sed -r 's#(window.)?DEBUG_MODE#false#g' || cat ) |
+    ( $NO_DEBUG && sed -r 's#function debug\(#function neverUsedFunc(#g' || cat ) |
+    ( $NO_DEBUG && sed -r 's#debug\(#void(#g' || cat ) |
+    terser --compress --mangle |
+    sed -r 's/\b(function |const |var |let |if\()/\n\1/g'
+  }
+
   index_step1=$(mktemp)
   if $NO_DEBUG; then
     grep -vi 'debug' src/index.html > $index_step1
@@ -53,19 +62,18 @@ else
   sed -ri "s|<link .*href=\"style.css\">|<style>$STYLE</style>|" public/index.html
 
   echo "(()=>{ $(cat src/server.js) })()" |
+  js_filter |
   terser --compress --mangle > public/server.js
+
+  echo "(()=>{ $(cat src/game-worker.js) })()" |
+  js_filter |
+  terser --compress --mangle > public/game-worker.js
 
   echo "(()=>{$(
     grep 'clientJS' src/index.html    |
     sed -r 's#.*src="(.*)".*#src/\1#' |
     xargs cat
-  )})()" |
-  ( $NO_DEBUG && sed -r 's#(const|var|let) DEBUG_MODE#//#g' || cat ) |
-  ( $NO_DEBUG && sed -r 's#(window.)?DEBUG_MODE#false#g' || cat ) |
-  ( $NO_DEBUG && sed -r 's#function debug\(#function neverUsedFunc(#g' || cat ) |
-  ( $NO_DEBUG && sed -r 's#debug\(#void(#g' || cat ) |
-  terser --compress --mangle |
-  sed -r 's/\b(function |const |var |let |if\()/\n\1/g' > public/client.js
+  )})()" | js_filter > public/client.js
 
   terser src/shared.js --compress --mangle > public/shared.js
 

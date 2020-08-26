@@ -1,5 +1,41 @@
 "use strict";
 
+var gameWorker = null
+
+var startHostWebWorker = ()=> {
+  startHostWebWorker = (()=>0)
+  gameWorker = new Worker('game-worker.js')
+  gameWorker.onmessage = ({data:[cmd, payload]})=> {
+    if (cmd == 'started') initWebWorker()
+    if (cmd == 'update') updateFromWebWorker(payload)
+  }
+}
+
+const sendWWCmd = (cmd, payload)=> {
+  if (gameWorker) gameWorker.postMessage([cmd, payload])
+  else notifyErr(`WebWorker is not alive`)(`Command "${cmd}" was lost.`)
+}
+
+function initWebWorker() {
+  debug('WebWorker Started!')
+  sendWWCmd('init', {
+    players: users.map(u =>
+      ['userID', ...playerAttrs].reduce((m, a)=>(m[a]=u[a], m), {})
+    ),
+    planets: planets.map(p => ({ a:p.a, d:p.d })),
+    sun: { sunR1, sunR2, sunR3 }
+  })
+}
+
+function updateFromWebWorker(update) {
+  update.players.forEach(p => {
+    let player = getPlayer(p.userID)
+    if (player) Object.entries(p).forEach(([k, v]) => player[k] = v)
+  })
+}
+
+const getPlayer = (userID)=> users.find(u => u.userID == userID)
+
 const speedLim = 7*7 + 7*7 // Where to start to arrast stars
 const sunR1 = 1040
 const sunR2 = 1120
@@ -74,22 +110,3 @@ function gameStart() {
   })
 }
 if (DEBUG_MODE) window.gameStart = gameStart
-
-function updateEntities() {
-  users.forEach(player => {
-    player.x += player.velX
-    player.y += player.velY
-    player.rot += player.rotInc
-    if (player.fireIsOn) {
-      mySelf.velX += cos(mySelf.rot)/50
-      mySelf.velY += sin(mySelf.rot)/50
-    }
-    if (player.rotJetOnLeft && player.rotInc>-0.1) mySelf.rotInc -= 0.002
-    if (player.rotJetOnRight && player.rotInc<0.1) mySelf.rotInc += 0.002
-  })
-  planets.forEach(planet => {
-    planet.a += planet.aInc
-    planet.rot += planet.rotInc
-  })
-}
-setInterval(updateEntities, 17)

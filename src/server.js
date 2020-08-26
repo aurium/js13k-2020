@@ -1,6 +1,5 @@
 "use strict";
 
-const log = console.log
 const rooms = {}
 
 function forgotThisRoom(gameID, minutes) {

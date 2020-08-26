@@ -67,7 +67,8 @@ if (queryString.match(/\bgame=/)) {
 
   socket.on('youAreTheOwner', ()=> {
     isRoomOwner = true;
-    notify("You'r the owner. Don't disconnect.")
+    notify("You're the owner. Don't disconnect.")
+    startHostWebWorker()
   })
 
   socket.on('numPlayers', (num)=> {

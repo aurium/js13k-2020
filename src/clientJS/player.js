@@ -1,5 +1,7 @@
 "use strict";
 
+const playerAttrs = 'x y velX velY rot rotInc missilTot'.split(' ')
+
 class Player {
 
   constructor(userID) {
@@ -11,12 +13,7 @@ class Player {
     debug('Create Player', this.userID, this.constructor==Player?'class Player':'class UserRTCHost')
     this.isMySelf = this.userID === localStorage.userID
     if (this.isMySelf) mySelf = this
-    this.x = 0
-    this.y = 0
-    this.velX = 0
-    this.velY = 0
-    this.rot = 0 // Rotation angle
-    this.rotInc = 0
+    playerAttrs.forEach(a => this[a] = 0)
     this.missilTot = 3
   }
 
