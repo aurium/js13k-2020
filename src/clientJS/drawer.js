@@ -1,7 +1,5 @@
 "use strict";
 
-const baseRndSeed = parseInt(Date.now().toString().replace(/0/g,''))
-
 var FORCE_QUALITY = false
 if (queryString.match(/.*\bquality=([0-9]).*/)) {
   FORCE_QUALITY = queryString.replace(/.*\bquality=([0-9]).*/, '$1')
@@ -21,6 +19,7 @@ var winH = window.innerHeight
 var divScreen = 1
 var FPS = 30
 var stars1 = [], stars2 = [], stars3 = []
+var frameNow
 
 function setQuality(newQuality, msg='', force) {
   if (FORCE_QUALITY) newQuality = FORCE_QUALITY
@@ -149,6 +148,7 @@ function updateGameCanvas() {
   window.requestAnimationFrame(updateGameCanvas)
   //setTimeout(updateGameCanvas, 500)
   frameCounter++
+  frameNow = Date.now()
   updateEntities()
 
   // Update zoom
@@ -163,7 +163,7 @@ function updateGameCanvas() {
   users.forEach(plotShip)
   if ((frameCounter%updateRadarRate)==0) updateRadar()
   if (frameCounter%framesToCompute === 0) {
-    let delay = Date.now() - lastUpdate
+    let delay = frameNow - lastUpdate
     FPS = round(framesToCompute*1000/delay)
     fps.innerText = 'FPS: ' + FPS
     if (FPS > 33) {
@@ -177,7 +177,7 @@ function updateGameCanvas() {
     } else {
       alertFPS /= 2
     }
-    lastUpdate = Date.now()
+    lastUpdate = frameNow
     if (alertFPS < -2) {
       if (quality > 1) setQuality(quality - 1, 'Low FPS.')
       alertFPS = 0

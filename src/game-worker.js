@@ -46,10 +46,11 @@ onmessage = ({data:[cmd, payload]})=> {
 
 sendCmd('zoom', 0.2)
 
+const lobbyStart = Date.now()
 function flyArroundLobby2() {
   if (gameStarted) return players.forEach(p => p.fireIsOn = false)
   setTimeout(flyArroundLobby2, 100)
-  let baseRot = (Date.now() / 9e4) % 2*PI
+  let baseRot = (Date.now()-lobbyStart) / 9e4
   players.forEach((player, i) => {
     player.rot = baseRot + i*(2*PI/numPlayers)
     player.fireIsOn = true

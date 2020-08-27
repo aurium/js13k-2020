@@ -13,7 +13,7 @@ function drawShipFire(quarter) {
   gameCtx.bezierCurveTo(
     -quarter*wav, -quarter*.6,
     -quarter*wav, -quarter*.1,
-    -quarter*(2 + sin( (Date.now()/30) % (2*PI) ) / 20), 0
+    -quarter*(2 + sin( (frameNow/30) % (2*PI) ) / 20), 0
   )
   gameCtx.bezierCurveTo(
     -quarter*wav, quarter*.1,

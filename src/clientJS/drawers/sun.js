@@ -6,7 +6,7 @@ function drawSunRays(x,y,r1,r2,r3) {
     grad.addColorStop(0.84, '#FC0')
     grad.addColorStop(1.00, 'rgba(255,200,0,0.1)')
     gameCtx.fillStyle = grad
-    const rayPos = Date.now() / 10
+    const rayPos = frameNow / 10
     gameCtx.beginPath()
     gameCtx.moveTo(cos(aInc)*r1+x, sin(aInc)*r1+y)
     for (let a=0; a<=PI*2; a+=quartStep*4) {
