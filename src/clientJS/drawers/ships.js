@@ -2,7 +2,25 @@
 
 const shipCanvasSize = 300
 
-function drawShipFire() {
+function drawShipFire(quarter) {
+  let grad = gameCtx.createRadialGradient(-quarter*1.1,0, 2, -quarter*1.2,0, quarter/3)
+  grad.addColorStop(0, '#8FF')
+  grad.addColorStop(1, '#08F')
+  gameCtx.fillStyle = grad
+  gameCtx.beginPath()
+  const wav = 1.15
+  gameCtx.moveTo(-quarter*.8, 0)
+  gameCtx.bezierCurveTo(
+    -quarter*wav, -quarter*.6,
+    -quarter*wav, -quarter*.1,
+    -quarter*(2 + sin( (Date.now()/30) % (2*PI) ) / 20), 0
+  )
+  gameCtx.bezierCurveTo(
+    -quarter*wav, quarter*.1,
+    -quarter*wav, quarter*.6,
+    -quarter*.8, 0
+  )
+  gameCtx.fill()
 }
 function drawShipRotJet(dir) {
 }
@@ -16,8 +34,8 @@ function drawShip(canvas, isMySelf) {
   ctx.translate(quarter*2, quarter*2)
   ctx.rotate(PI/2)
   if (DEBUG_MODE) {
-    ctx.fillStyle = isMySelf ? 'rgba(0,80,255,0.2)' : 'rgba(255,0,0,0.2)'
-    ctx.fillRect(-quarter*2, -quarter*2, shipCanvasSize, shipCanvasSize)
+    //ctx.fillStyle = isMySelf ? 'rgba(0,80,255,0.2)' : 'rgba(255,0,0,0.2)'
+    //ctx.fillRect(-quarter*2, -quarter*2, shipCanvasSize, shipCanvasSize)
   }
 
   // Nacele Esq
@@ -148,23 +166,7 @@ function plotShip(player) {
   gameCtx.textAlign = 'center'
   gameCtx.fillText(player.userID, 0, -radius - 16/divScreen)
   gameCtx.rotate(player.rot)
-  if (player.fireIsOn) {
-    gameCtx.fillStyle = '#F80'
-    gameCtx.beginPath()
-    gameCtx.moveTo(-quarter*.9, 0)
-    gameCtx.bezierCurveTo(
-      -quarter, -quarter*.6,
-      -quarter, -quarter*.1,
-      -quarter*2, 0
-    )
-    gameCtx.bezierCurveTo(
-      -quarter, quarter*.1,
-      -quarter, quarter*.6,
-      -quarter*.9, 0
-    )
-    gameCtx.closePath()
-    gameCtx.fill()
-  }
+  if (player.fireIsOn) drawShipFire(quarter)
   gameCtx.drawImage(
     canvas,
     0, 0, shipCanvasSize, shipCanvasSize,
@@ -175,7 +177,6 @@ function plotShip(player) {
     gameCtx.strokeStyle = 'rgba(0,255,0,.75)'
     gameCtx.lineWidth = 0.6
     gameCtx.beginPath()
-    //gameCtx.rect(x-totSize/2, y-totSize/2, totSize, totSize)
     gameCtx.moveTo(x+radius, y)
     gameCtx.arc(x, y, radius, 0, 2*PI)
     gameCtx.closePath()
