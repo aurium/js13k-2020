@@ -25,7 +25,10 @@ function usrsConn(usrIDs) {
       let usr = getUserRTC(userID)
       if (!usr) {
         let Klass = isRoomOwner ? UserRTCHost : Player
-        users.push( new Klass(userID) )
+        let usr = new Klass(userID)
+        users.push(usr)
+        users[userID] = usr
+        sendUsersToWW()
       }
     })
   }
@@ -39,6 +42,8 @@ function usrDisconn(userID, lostMyWS) {
     let usr = getUserRTC(userID)
     if (usr && isRoomOwner) usr.disconnect()
     users = users.filter(u => u.userID != userID)
+    delete users[userID]
+    sendUsersToWW()
   }
   updateRoomList()
 }

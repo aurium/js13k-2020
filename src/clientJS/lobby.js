@@ -23,27 +23,9 @@ function updateRoomList() {
 
 if (queryString.match(/\bgame=/)) {
   // User is inside a game room.
+  currentLobby = 2
 
-  if (!gameStarted) {
-    targetZoom = 0.2
-    mySelf.y = 6e3
-    flyArroundLobby2()
-    bodyClass.add('lobby2')
-  }
-
-  function flyArroundLobby2() {
-    if (gameStarted) return
-    let baseRot = (Date.now() / 9e4) % 2*PI
-    users.forEach((player, i) => {
-      player.rot = baseRot + i*(2*PI/numPlayers)
-      player.fireIsOn = true
-      player.x = +sin(player.rot)*10e3
-      player.y = -cos(player.rot)*10e3
-      player.velX = cos(player.rot) * 4
-      player.velY = sin(player.rot) * 4
-    })
-    setTimeout(flyArroundLobby2, 33)
-  }
+  if (!gameStarted) bodyClass.add('lobby2')
 
   socket.room = queryString.replace(/.*\bgame=([^&]*).*/, '$1')
   socket.emit('join', socket.room)

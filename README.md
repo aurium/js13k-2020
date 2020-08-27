@@ -21,7 +21,7 @@ The controls are:
 * **Up arrow:** Accelerate the ship.
 * **Space bar:** Launch guided missiles.
 
-In sub-light speed you will have no friction, so you don't need to use your propellant all the time. However, to sustain upper-light speed you need continuous propulsion. It will cost a lot of energy, but can save you from missiles.
+You can't exceed light speed. As you become near to that, less you propulsion will take effect.
 
 And remember: your people can send only three ships. Try to not die.
 

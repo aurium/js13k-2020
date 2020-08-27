@@ -89,8 +89,4 @@ function drawPlasma(seed) {
     ctx.fillStyle = 'green'
     ctx.fillText('Nebulas', 50, 50)
   }
-  let ctxSpeed = canvBG3Speed.getContext('2d')
-  ctxSpeed.putImageData(imgData, 0, 0)
-  ctxSpeed.fillStyle = `rgba(0,0,0,0.2)`
-  ctxSpeed.fillRect(0, 0, size, size)
 }

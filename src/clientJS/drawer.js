@@ -21,7 +21,6 @@ var winH = window.innerHeight
 var divScreen = 1
 var FPS = 30
 var stars1 = [], stars2 = [], stars3 = []
-// Speed Limits are the speed module power 2
 
 function setQuality(newQuality, msg='', force) {
   if (FORCE_QUALITY) newQuality = FORCE_QUALITY
@@ -49,16 +48,14 @@ function setQuality(newQuality, msg='', force) {
     gameCtx.fillStyle = '#000'
     gameCtx.fillRect(0, 0, winW, winH)
 
-    canvBG1Speed.width = canvBG2Speed.width = canvBG4Speed.width =
     canvBG1.width = canvBG2.width = canvBG4.width = round(winW/3)*2
-    canvBG1Speed.height = canvBG2Speed.height = canvBG4Speed.height =
     canvBG1.height = canvBG2.height = canvBG4.height = round(winH/3)*2
     debug('Create BG 1 (stars)')
-    drawStars(canvBG1, canvBG1Speed, stars1, 7)
+    drawStars(canvBG1, stars1, 7)
     debug('Create BG 2 (stars)')
-    drawStars(canvBG2, canvBG2Speed, stars2, 5)
+    drawStars(canvBG2, stars2, 5)
     debug('Create BG 4 (stars)')
-    drawStars(canvBG4, canvBG4Speed, stars3, 2)
+    drawStars(canvBG4, stars3, 2)
     if (DEBUG_MODE) {
       canvBG1.getContext('2d').fillStyle = 'green'
       canvBG1.getContext('2d').fillText('Stars 1', 50, 50)
@@ -66,12 +63,6 @@ function setQuality(newQuality, msg='', force) {
       canvBG2.getContext('2d').fillText('Stars 2', 50, 50)
       canvBG4.getContext('2d').fillStyle = 'green'
       canvBG4.getContext('2d').fillText('Stars 3', 50, 50)
-      canvBG1Speed.getContext('2d').fillStyle = 'green'
-      canvBG1Speed.getContext('2d').fillText('S 1', 50, 50)
-      canvBG2Speed.getContext('2d').fillStyle = 'green'
-      canvBG2Speed.getContext('2d').fillText('S 2', 50, 50)
-      canvBG4Speed.getContext('2d').fillStyle = 'green'
-      canvBG4Speed.getContext('2d').fillText('S 3', 50, 50)
     }
   }
 }
@@ -113,52 +104,27 @@ function plotBgTile(canvas, tileX, tileY, scale) {
 
 function updateBg() {
   const {x, y, velX, velY} = mySelf
-  const curQuadSpeed = velX**2 + velY**2
-  const itsFast = curQuadSpeed > speedLim
 
-  if (itsFast) {
-    // Reduce in one point the color light, to slow clear old frames:
-    gameCtx.globalCompositeOperation = 'difference'
-    gameCtx.fillStyle = `#010101`
-    gameCtx.fillRect(0, 0, winW, winH)
-  } else {
-    // Instant clear old frame:
-    gameCtx.globalCompositeOperation = 'source-over'
-    gameCtx.fillStyle = `#000`
-    gameCtx.fillRect(0, 0, winW, winH)
-  }
+  gameCtx.globalCompositeOperation = 'source-over'
+  gameCtx.fillStyle = `#000`
+  gameCtx.fillRect(0, 0, winW, winH)
 
   // Plot level 3 stars
   gameCtx.globalCompositeOperation = 'screen'
-  plotBgTile(itsFast ? canvBG4Speed : canvBG4, -x/25, -y/25, 1)
+  plotBgTile(canvBG4, -x/15, -y/15, 1)
 
   // Plot Nebulas
   if (BEAUTY_MODE) {
     gameCtx.globalCompositeOperation = 'lighten'
-    const nebula = itsFast ? canvBG3Speed : canvBG3
-    plotBgTile(nebula, -(x+9000)/15, -(y+7000)/15, 2/divScreen)
+    plotBgTile(canvBG3, -(x+9000)/10, -(y+7000)/10, 2/divScreen)
   }
 
   // Plot level 2 stars
   gameCtx.globalCompositeOperation = 'screen'
-  const cBG2 = itsFast ? canvBG2Speed : canvBG2
-  const divPosBG2 = 12
-  plotBgTile(cBG2, -x/divPosBG2, -y/divPosBG2, 1)
-  if (curQuadSpeed>speedLim && quality > QUALITY.LOW) {
-    plotBgTile(cBG2, (-x+velX*.333)/divPosBG2, (-y+velY*.333)/divPosBG2, 1)
-    plotBgTile(cBG2, (-x+velX*.666)/divPosBG2, (-y+velY*.666)/divPosBG2, 1)
-  }
+  plotBgTile(canvBG2, -x/6, -y/6, 1)
 
   // Plot level 1 stars
-  const cBG1 = itsFast ? canvBG1Speed : canvBG1
-  const divPosBG1 = 10
-  plotBgTile(cBG1, -x/divPosBG1, -y/divPosBG1, 1)
-  if (curQuadSpeed>speedLim && quality > QUALITY.LOW) {
-    plotBgTile(cBG1, (-x+velX*0.2)/divPosBG1, (-y+velY*0.2)/divPosBG1, 1)
-    plotBgTile(cBG1, (-x+velX*0.4)/divPosBG1, (-y+velY*0.4)/divPosBG1, 1)
-    plotBgTile(cBG1, (-x+velX*0.6)/divPosBG1, (-y+velY*0.6)/divPosBG1, 1)
-    plotBgTile(cBG1, (-x+velX*0.8)/divPosBG1, (-y+velY*0.8)/divPosBG1, 1)
-  }
+  plotBgTile(canvBG1, -x/3, -y/3, 1)
 }
 
 function relativeObjPos({x, y}) {
@@ -183,6 +149,7 @@ function updateGameCanvas() {
   window.requestAnimationFrame(updateGameCanvas)
   //setTimeout(updateGameCanvas, 500)
   frameCounter++
+  updateEntities()
 
   // Update zoom
   zoom = (zoom*targetZoomDelay + targetZoom) / (targetZoomDelay+1)

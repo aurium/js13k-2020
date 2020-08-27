@@ -18,6 +18,7 @@ function repeat(num, func) {
   for (let i=0; i<num; i++) func(i)
 }
 
+var currentLobby = 1
 var gameStarted = false
 var users = []
 var clentRTC = null

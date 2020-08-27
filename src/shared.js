@@ -9,6 +9,7 @@ const sin = Math.sin
 const cos = Math.cos
 const PI = Math.PI
 const mkID = ()=> rnd().toString(36).split('.')[1]
+const upDalay = 200 // interval to the WebWorker send updates
 
 function log(...args) {
   console.log((new Date).toJSON().replace(/.*T(.*)\..*/, '$1'), ...args)

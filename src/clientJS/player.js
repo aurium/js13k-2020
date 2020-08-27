@@ -1,6 +1,10 @@
 "use strict";
 
-const playerAttrs = 'x y velX velY rot rotInc missilTot'.split(' ')
+const playerAttrsWithoutPos = [
+  'velX', 'velY', 'rotInc',
+  'missilTot', 'fireIsOn', 'rotJetLeft', 'rotJetRight'
+]
+const playerAttrs = [ 'x', 'y', 'rot', ...playerAttrsWithoutPos ]
 
 class Player {
 
@@ -14,6 +18,9 @@ class Player {
     this.isMySelf = this.userID === localStorage.userID
     if (this.isMySelf) mySelf = this
     playerAttrs.forEach(a => this[a] = 0)
+    this.x = (rnd()-.5)*2e4
+    this.y = (rnd()-.5)*2e4
+    this.rot = -PI*3
     this.missilTot = 3
   }
 
