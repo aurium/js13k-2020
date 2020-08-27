@@ -133,12 +133,6 @@ function relativeObjPos({x, y}) {
   ]
 }
 
-function bright(colorCompo, mult=3) {
-  colorCompo *= mult
-  return colorCompo > 255 ? 255 : colorCompo
-}
-
-
 var frameCounter = 0
 var fpsDelay = 0
 var lastUpdate = Date.now()
