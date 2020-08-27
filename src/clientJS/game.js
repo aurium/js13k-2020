@@ -24,7 +24,7 @@ var startHostWebWorker = ()=> {
 
 function sendWWCmd(cmd, payload) {
   if (gameWorker) gameWorker.postMessage([cmd, payload])
-  else notifyErr(`WebWorker is not alive`)(`Command "${cmd}" was lost.`)
+  else logErrToUsr(`WebWorker is not alive`)(`Command "${cmd}" was lost.`)
 }
 
 function initWebWorker() {
