@@ -24,11 +24,14 @@ function drawShipFire(quarter) {
 }
 function drawShipRotJet(quarter, dir) {
   gameCtx.beginPath()
-  gameCtx.moveTo( quarter*.8, -quarter*.65*dir)
-  gameCtx.lineTo( quarter*.5, -quarter*1.5*dir)
-  gameCtx.moveTo(-quarter*.8,  quarter*.65*dir)
-  gameCtx.lineTo(-quarter*.5,  quarter*1.5*dir)
-  gameCtx.strokeStyle = 'rgba(255,255,255,0.5)'
+  gameCtx.moveTo( quarter*.75, -quarter*.65*dir)
+  gameCtx.lineTo( quarter*.5,  -quarter*1.5*dir)
+  gameCtx.moveTo(-quarter*.75,  quarter*.65*dir)
+  gameCtx.lineTo(-quarter*.5,   quarter*1.5*dir)
+  const grad = gameCtx.createRadialGradient(0,0, quarter*.8, 0,0, quarter*1.5)
+  grad.addColorStop(0, 'rgba(255,255,255,0.5)')
+  grad.addColorStop(1, 'rgba(255,255,255,0)')
+  gameCtx.strokeStyle = grad
   gameCtx.lineWidth = 2
   gameCtx.stroke()
 }
