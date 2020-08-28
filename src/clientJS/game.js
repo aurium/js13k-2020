@@ -9,17 +9,22 @@ var startHostWebWorker = ()=> {
   gameWorker = new Worker('game-worker.js')
   gameWorker.onmessage = ({data:[cmd, payload]})=> {
     if (cmd == 'started') initWebWorker()
-    if (cmd == 'update') {
-      lastWWUpdate = Date.now()
-      newPlanets = payload.planets
-      newPlayers = payload.players
-      newPlayers.forEach(p => {
-        let player = users[p.userID]
-        if (player) playerAttrsWithoutPos.forEach(att => player[att] = p[att])
-      })
-    }
-    if (cmd == 'zoom') targetZoom = payload
+    if (cmd == 'update') broadcastRTC(cmd, payload)
   }
+}
+
+function updateFromRTC(payload) {
+  lastWWUpdate = Date.now()
+  newPlanets = payload.planets
+  newPlayers = payload.players
+  newPlayers.forEach(p => {
+    let player = users[p.userID]
+    if (player) playerAttrsWithoutPos.forEach(att => player[att] = p[att])
+  })
+}
+
+function broadcastRTC(cmd, payload) {
+  users.forEach(usr => usr.send(cmd, payload))
 }
 
 function sendWWCmd(cmd, payload) {
@@ -112,7 +117,7 @@ function gameStart() {
     if (DEBUG_MODE) logErrToUsr('Double call gameStart()')()
     return false
   }
-  sendWWCmd('startGame', true)
+  if (isRoomOwner) sendWWCmd('startGame', true)
   gameStarted = true
   lobby.classList.add('hidden')
   bodyClass.remove('lobby2')
@@ -130,15 +135,15 @@ function gameStart() {
   delayedTip(15, 'Your people will send some aid boxes. Go get then!')
 
   window.addEventListener('keydown', (ev)=> {
-    if (ev.key == 'ArrowUp') sendWWCmd('fireIsOn', [mySelf.userID, true])
-    if (ev.key == 'ArrowLeft') sendWWCmd('rotJetLeft', [mySelf.userID, true])
-    if (ev.key == 'ArrowRight') sendWWCmd('rotJetRight', [mySelf.userID, true])
+    if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn', true)
+    if (ev.key == 'ArrowLeft') clentRTC.send('rotJetLeft', true)
+    if (ev.key == 'ArrowRight') clentRTC.send('rotJetRight', true)
   })
 
   window.addEventListener('keyup', (ev)=> {
-    if (ev.key == 'ArrowUp') sendWWCmd('fireIsOn', [mySelf.userID, false])
-    if (ev.key == 'ArrowLeft') sendWWCmd('rotJetLeft', [mySelf.userID, false])
-    if (ev.key == 'ArrowRight') sendWWCmd('rotJetRight', [mySelf.userID, false])
+    if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn', false)
+    if (ev.key == 'ArrowLeft') clentRTC.send('rotJetLeft', false)
+    if (ev.key == 'ArrowRight') clentRTC.send('rotJetRight', false)
   })
 }
 if (DEBUG_MODE) window.gameStart = gameStart

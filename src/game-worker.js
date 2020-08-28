@@ -44,8 +44,6 @@ onmessage = ({data:[cmd, payload]})=> {
     cmdPlayer.rotJetRight = cmdPlayer.rotInc<0.1 ? cmdVal : false
 }
 
-sendCmd('zoom', 0.2)
-
 const lobbyStart = Date.now()
 function flyArroundLobby2() {
   if (gameStarted) return players.forEach(p => p.fireIsOn = false)

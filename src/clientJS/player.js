@@ -18,8 +18,8 @@ class Player {
     this.isMySelf = this.userID === localStorage.userID
     if (this.isMySelf) mySelf = this
     playerAttrs.forEach(a => this[a] = 0)
-    this.x = (rnd()-.5)*4e4
-    this.y = (rnd()-.5)*4e4
+    this.x = (rnd()-.5)*8e4
+    this.y = (rnd()-.5)*8e4
     this.rot = -PI*3
     this.missilTot = 3
   }

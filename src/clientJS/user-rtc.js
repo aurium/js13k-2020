@@ -62,9 +62,13 @@ class UserRTC {
   }
 
   send(cmd, payload=null) {
-    this.dataChannel.send(
-      JSON.stringify([cmd, {userID:this.userID, payload}])
-    )
+    try {
+      this.dataChannel.send(
+        JSON.stringify([cmd, {userID:this.userID, payload}])
+      )
+    } catch(err) {
+      debug(`Send "${cmd}" by RTC fail.`, err)
+    }
   }
 
   cmd_connected({userID}) {
@@ -82,12 +86,25 @@ class UserRTCHost extends UserRTC {
   init() {
     debug('UserRTC Host created.', this.userID)
   }
+  cmd_fireIsOn({userID, payload}) {
+    sendWWCmd('fireIsOn', [userID, payload])
+  }
+  cmd_rotJetLeft({userID, payload}) {
+    sendWWCmd('rotJetLeft', [userID, payload])
+  }
+  cmd_rotJetRight({userID, payload}) {
+    sendWWCmd('rotJetRight', [userID, payload])
+  }
+
 }
 
 
 class UserRTCClient extends UserRTC {
   init() {
     debug('UserRTC Client created.', this.userID)
+  }
+  cmd_update({userID, payload}) {
+    updateFromRTC(payload)
   }
 }
 

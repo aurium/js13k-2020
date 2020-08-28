@@ -24,6 +24,7 @@ function updateRoomList() {
 if (queryString.match(/\bgame=/)) {
   // User is inside a game room.
   currentLobby = 2
+  targetZoom = 0.3
 
   if (!gameStarted) bodyClass.add('lobby2')
 
