@@ -136,14 +136,14 @@ function gameStart() {
 
   window.addEventListener('keydown', (ev)=> {
     if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn', true)
-    if (ev.key == 'ArrowLeft') clentRTC.send('rotJetLeft', true)
-    if (ev.key == 'ArrowRight') clentRTC.send('rotJetRight', true)
+    if (ev.key == 'ArrowLeft') clentRTC.send('rotJet', -1)
+    if (ev.key == 'ArrowRight') clentRTC.send('rotJet', +1)
   })
 
   window.addEventListener('keyup', (ev)=> {
     if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn', false)
-    if (ev.key == 'ArrowLeft') clentRTC.send('rotJetLeft', false)
-    if (ev.key == 'ArrowRight') clentRTC.send('rotJetRight', false)
+    if (ev.key == 'ArrowLeft') clentRTC.send('rotJet', 0)
+    if (ev.key == 'ArrowRight') clentRTC.send('rotJet', 0)
   })
 }
 if (DEBUG_MODE) window.gameStart = gameStart

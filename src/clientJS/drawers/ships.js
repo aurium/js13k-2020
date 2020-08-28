@@ -22,9 +22,15 @@ function drawShipFire(quarter) {
   )
   gameCtx.fill()
 }
-function drawShipRotJet(dir) {
-}
-function drawShipLander() {
+function drawShipRotJet(quarter, dir) {
+  gameCtx.beginPath()
+  gameCtx.moveTo( quarter*.8, -quarter*.65*dir)
+  gameCtx.lineTo( quarter*.5, -quarter*1.5*dir)
+  gameCtx.moveTo(-quarter*.8,  quarter*.65*dir)
+  gameCtx.lineTo(-quarter*.5,  quarter*1.5*dir)
+  gameCtx.strokeStyle = 'rgba(255,255,255,0.5)'
+  gameCtx.lineWidth = 2
+  gameCtx.stroke()
 }
 
 function drawShip(canvas, isMySelf) {
@@ -167,6 +173,7 @@ function plotShip(player) {
   gameCtx.fillText(player.userID, 0, -radius - 16/divScreen)
   gameCtx.rotate(player.rot)
   if (player.fireIsOn) drawShipFire(quarter)
+  if (player.rotJet!=0) drawShipRotJet(quarter, player.rotJet)
   gameCtx.drawImage(
     canvas,
     0, 0, shipCanvasSize, shipCanvasSize,

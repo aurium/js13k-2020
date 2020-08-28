@@ -38,10 +38,11 @@ onmessage = ({data:[cmd, payload]})=> {
   const cmdVal = payload[1]
   if (cmd == 'fireIsOn')
     cmdPlayer.fireIsOn = cmdVal
-  if (cmd == 'rotJetLeft')
-    cmdPlayer.rotJetLeft = cmdPlayer.rotInc>-0.1 ? cmdVal : false
-  if (cmd == 'rotJetRight')
-    cmdPlayer.rotJetRight = cmdPlayer.rotInc<0.1 ? cmdVal : false
+  if (cmd == 'rotJet') {
+    cmdPlayer.rotJet = 0
+    if (cmdVal < 0 && cmdPlayer.rotInc >-0.1) cmdPlayer.rotJet = cmdVal
+    if (cmdVal > 0 && cmdPlayer.rotInc < 0.1) cmdPlayer.rotJet = cmdVal
+  }
 }
 
 const lobbyStart = Date.now()
@@ -69,10 +70,14 @@ function wwUpdateEntities() {
       player.velY += sin(player.rot)/50
       player.rotInc *= 0.995 // Helps to stabilize when accelerating.
     }
-    if (player.rotJetLeft && player.rotInc>-0.1) player.rotInc -= 0.002
-    else player.rotJetLeft = false
-    if (player.rotJetRight && player.rotInc<0.1) player.rotInc += 0.002
-    else player.rotJetRight = false
+    if (player.rotJet<0) {
+      if (player.rotInc>-0.1) player.rotInc -= 0.002
+      else player.rotJet = 0
+    }
+    if (player.rotJet>0) {
+      if (player.rotInc<0.1) player.rotInc += 0.002
+      else player.rotJet = 0
+    }
     if (-0.002 < player.rotInc && player.rotInc < 0.002) player.rotInc = 0
   })
   planets.forEach(planet => {

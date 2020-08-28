@@ -2,7 +2,7 @@
 
 const playerAttrsWithoutPos = [
   'velX', 'velY', 'rotInc',
-  'missilTot', 'fireIsOn', 'rotJetLeft', 'rotJetRight'
+  'missilTot', 'fireIsOn', 'rotJet'
 ]
 const playerAttrs = [ 'x', 'y', 'rot', ...playerAttrsWithoutPos ]
 
