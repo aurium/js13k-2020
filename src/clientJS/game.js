@@ -1,8 +1,9 @@
 "use strict";
 
 var gameWorker = null
-var lastWWUpdate = 0
+var lastGameUpdate = 0
 var newPlayers = [], newPlanets = []
+var shipStatusText = body.querySelector('#shipStatus p')
 
 var startHostWebWorker = ()=> {
   startHostWebWorker = (()=>0)
@@ -14,13 +15,18 @@ var startHostWebWorker = ()=> {
 }
 
 function updateFromRTC(payload) {
-  lastWWUpdate = Date.now()
+  lastGameUpdate = Date.now()
   newPlanets = payload.planets
   newPlayers = payload.players
   newPlayers.forEach(p => {
     let player = users[p.userID]
-    if (player) playerAttrsWithoutPos.forEach(att => player[att] = p[att])
+    if (player) {
+      playerAttrsWithoutPos.forEach(att => player[att] = p[att])
+      if (player.lifeEl) player.lifeEl.style.width = player.life + '%'
+    }
   })
+  if (mySelf.energyEl) mySelf.energyEl.style.width = mySelf.energy + '%'
+  shipStatusText.innerHTML = `Missiles: ${mySelf.missilTot} &nbsp; Lifes: ${mySelf.reborn}`
 }
 
 function broadcastRTC(cmd, payload) {
@@ -54,9 +60,9 @@ function sendUsersToWW() {
 }
 
 function updateEntities() {
-  if (lastWWUpdate == 0) return;
+  if (lastGameUpdate == 0) return;
   var now = Date.now()
-  var timeDelta = now - lastWWUpdate
+  var timeDelta = now - lastGameUpdate
   var timePct = timeDelta / upDalay
   if (timePct > 1) {
     if (DEBUG_MODE&&timePct>1.5) ('WebWorker is late! Delta time:', timeDelta)
@@ -117,6 +123,21 @@ function gameStart() {
     if (DEBUG_MODE) logErrToUsr('Double call gameStart()')()
     return false
   }
+  // Prepare Ship Status Display:
+  users.forEach(p => {
+    if (p != mySelf) {
+      let enemyEl = mkEl('a', p.userID)
+      enemyLife.appendChild(enemyEl)
+      let div = mkEl('div')
+      enemyEl.appendChild(div)
+      let lifeEl = mkEl('i')
+      div.appendChild(lifeEl)
+      p.lifeEl = lifeEl
+    }
+  })
+  mySelf.lifeEl = body.querySelector('#shipLife i')
+  mySelf.energyEl = body.querySelector('#shipEnergy i')
+
   if (isRoomOwner) sendWWCmd('startGame', true)
   gameStarted = true
   lobby.classList.add('hidden')

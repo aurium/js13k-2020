@@ -262,7 +262,7 @@ function initDataChannel(usr) {
   }
   usr.dataChannel.onmessage = (ev)=> {
     const [cmd, payload] = JSON.parse(ev.data)
-    debug(usr.kind, `Got game cmd ${cmd} payload:`, payload)
+    //debug(usr.kind, `Got game cmd ${cmd} payload:`, payload)
     if (usr['cmd_'+cmd]) usr['cmd_'+cmd](payload)
     else logErrToUsr('Bad game command:')(cmd)
   }
