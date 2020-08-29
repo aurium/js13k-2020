@@ -60,6 +60,10 @@ body.mouse-alive canvas {
   position: absolute;
   left: 400px;
   right: 400px;
+  top: -200px;
+  transition: 2s;
+}
+.game-on #shipStatus {
   top: 10px;
 }
 #shipStatus div {
@@ -74,7 +78,7 @@ body.mouse-alive canvas {
   box-shadow: inset 0 0 5px #004;
   border-radius: 10px;
   height: 14px;
-  width: 50%;
+  transition:.5s;
 }
 div#shipLife i, #enemyLife div i {
   background: #4E0;
