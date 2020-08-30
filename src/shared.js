@@ -8,6 +8,7 @@ const sign = Math.sign
 const sin = Math.sin
 const cos = Math.cos
 const PI = Math.PI
+const sqrt = Math.sqrt
 const mkID = ()=> rnd().toString(36).split('.')[1]
 const upDalay = 200 // interval to the WebWorker send updates
 

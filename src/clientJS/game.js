@@ -45,8 +45,7 @@ function initWebWorker() {
   debug('WebWorker Started!')
   sendWWCmd('init', {
     nP: numPlayers || 10,
-    planets: planets.map(p => ({ a:p.a, d:p.d })),
-    sun: { sunR1, sunR2, sunR3 }
+    planets: planets.map(p => ({ a:p.a, d:p.d, radius:p.radius })),
   })
   sendUsersToWW()
 }

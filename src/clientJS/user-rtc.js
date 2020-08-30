@@ -199,9 +199,9 @@ function createRTCPeerConnection(usr) {
     usr.peerConn.onremovetrack = ev =>
       debug('ON Remove Track', usr.userID, ev)
     usr.peerConn.onicegatheringstatechange = ev =>
-      debug('ON ICE Gathering State Change', usr.userID, usr.peerConn.iceGatheringState)
+      debug('ON ICE Gathering State Change', usr.userID, usr.peerConn&&usr.peerConn.iceGatheringState)
     usr.peerConn.onsignalingstatechange = ev =>
-      debug('ON Signaling State Change', usr.userID, usr.peerConn.signalingState)
+      debug('ON Signaling State Change', usr.userID, usr.peerConn&&usr.peerConn.signalingState)
   }
 }
 
