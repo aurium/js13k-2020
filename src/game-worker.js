@@ -90,7 +90,7 @@ function gravitAcceleration(player) {
     if (dist < (planet.radius + shipRadius)) {
       playerTouchPlanet(player, planet, i, dist, dirX, dirY)
     }
-    attraction = (planet.radius**3*constG) / dist**2
+    attraction = (planet.radius**2.5*constG) / dist**2
     player.velX += attraction * dirX
     player.velY += attraction * dirY
   })
@@ -128,11 +128,15 @@ function wwUpdateEntities() {
     }
     if (-0.001 < player.rotInc && player.rotInc < 0.001) player.rotInc = 0
     player.rot += player.rotInc
+    let myPlanet = planets[player.land]
     if (player.fireIsOn) {
-      let launchMultiplyer = (player.land > -1) ? 15 : 1
+      if (myPlanet) {
+        player.velX = -sin(myPlanet.a) * sunOrbitalSpeed(myPlanet.d)
+        player.velY = +cos(myPlanet.a) * sunOrbitalSpeed(myPlanet.d)
+      }
       player.land = -1
-      let newVelX = player.velX + cos(player.rot)/50 * launchMultiplyer
-      let newVelY = player.velY + sin(player.rot)/50 * launchMultiplyer
+      let newVelX = player.velX + cos(player.rot)/50
+      let newVelY = player.velY + sin(player.rot)/50
       let speed = calcSpeed(player.velX, player.velY)
       let newSpeed = calcSpeed(newVelX, newVelY)
       if (newSpeed > speed) {
@@ -148,14 +152,13 @@ function wwUpdateEntities() {
       player.velY = newVelY
       player.rotInc *= 0.995 // Helps to stabilize when accelerating.
     }
-    if (player.land>-1) {
-      let planet = planets[player.land]
-      let {x:planetX, y:planetY} = planetPos(planet)
-      let {x, y} = angleToVec(player.a, planet.radius+shipRadius)
+    if (player.land > -1) {
+      let {x:planetX, y:planetY} = planetPos(myPlanet)
+      let {x, y} = angleToVec(player.a, myPlanet.radius+shipRadius)
       player.x = planetX + x
       player.y = planetY + y
       player.rot = player.a
-      player.a += planet.rotInc
+      player.a += myPlanet.rotInc
       player.rotInc = player.velX = player.velY = 0
     } else {
       player.x += player.velX
