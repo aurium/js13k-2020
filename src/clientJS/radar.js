@@ -24,7 +24,7 @@ function updateRadar() {
     radarCtx.beginPath()
     radarCtx.moveTo(radarMid+sunR2*radarZoom, radarMid)
     let inc = PI/10
-    for (let i=0; i<2*PI; i+=inc) {
+    for (let i=0; i<PI2; i+=inc) {
       radarCtx.moveTo(radarMid+cos(i)*sunR2*radarZoom, radarMid+sin(i)*sunR2*radarZoom)
       radarCtx.lineTo(radarMid+cos(i+inc/3)*sunR2*radarZoom, radarMid+sin(i+inc/3)*sunR2*radarZoom)
     }
@@ -42,7 +42,7 @@ function updateRadar() {
     let x = radarMid + cos(planet.a) * dist
     let y = radarMid + sin(planet.a) * dist
     radarCtx.moveTo(x+radius, y)
-    radarCtx.arc(x, y, radius, 0, 2*PI)
+    radarCtx.arc(x, y, radius, 0, PI2)
   })
   radarCtx.closePath()
   radarCtx.stroke()
@@ -54,7 +54,7 @@ function updateRadar() {
     radarCtx.fillStyle = usr.isMySelf ? '#00F' : '#C00'
     radarCtx.beginPath()
     //radarCtx.moveTo(radarMid+usr.x*radarZoom, radarMid+usr.y*radarZoom)
-    radarCtx.arc(radarMid+usr.x*radarZoom, radarMid+usr.y*radarZoom, 2, 0, 2*PI)
+    radarCtx.arc(radarMid+usr.x*radarZoom, radarMid+usr.y*radarZoom, 2, 0, PI2)
     radarCtx.closePath()
     radarCtx.fill()
     radarCtx.stroke()

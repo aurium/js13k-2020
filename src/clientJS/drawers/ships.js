@@ -13,7 +13,7 @@ function drawShipFire(quarter) {
   gameCtx.bezierCurveTo(
     -quarter*wav, -quarter*.6,
     -quarter*wav, -quarter*.1,
-    -quarter*(2 + sin( (frameNow/30) % (2*PI) ) / 20), 0
+    -quarter*(2 + sin( (frameNow/30) % PI2 ) / 20), 0
   )
   gameCtx.bezierCurveTo(
     -quarter*wav, quarter*.1,
@@ -188,7 +188,7 @@ function plotShip(player) {
     gameCtx.lineWidth = 0.6
     gameCtx.beginPath()
     gameCtx.moveTo(x+radius, y)
-    gameCtx.arc(x, y, radius, 0, 2*PI)
+    gameCtx.arc(x, y, radius, 0, PI2)
     gameCtx.closePath()
     gameCtx.stroke()
   }

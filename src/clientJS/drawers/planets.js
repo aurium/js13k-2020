@@ -14,7 +14,7 @@ function drawPlanet(planet, index) {
 
   // Draw round base planet texture:
   ctx1.beginPath()
-  ctx1.arc(radius, radius, radius-1, 0, 2*PI)
+  ctx1.arc(radius, radius, radius-1, 0, PI2)
   ctx1.closePath()
   ctx1.clip()
   ctx1.fillStyle = `rgb(${r},${g},${b})`
@@ -38,7 +38,7 @@ function drawPlanet(planet, index) {
   grad.addColorStop(1, 'rgba(  1,  1,  1, 1)')
   ctx4.fillStyle = grad
   ctx4.beginPath()
-  ctx4.arc(radius, radius, radius, 0, 2*PI)
+  ctx4.arc(radius, radius, radius, 0, PI2)
   ctx4.closePath()
   ctx4.fill()
 
@@ -47,7 +47,7 @@ function drawPlanet(planet, index) {
     if (numCrats<1) numCrats = 1
     let z = sin(PI*(1-dist/radius)/2) // Inclinação da cratera. Achata na extremidade.
     repeat(numCrats, (i)=> {
-      let rndRotate = rnd()*PI*2
+      let rndRotate = rnd()*PI2
       let rCratY = 2+rnd()*8 * (z+0.5);
       let rCratX = rCratY * z;
       [

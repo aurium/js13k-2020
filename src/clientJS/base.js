@@ -35,3 +35,4 @@ var targetZoomDelay = 10
 
 const shipRadius = 30
 const shipRadiusWithFire = 60
+const speedLim = sqrt(7*7 + 7*7)

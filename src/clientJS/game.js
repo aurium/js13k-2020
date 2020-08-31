@@ -26,7 +26,9 @@ function updateFromRTC(payload) {
     }
   })
   if (mySelf.energyEl) mySelf.energyEl.style.width = mySelf.energy + '%'
-  shipStatusText.innerHTML = `Missiles: ${mySelf.missilTot} &nbsp; Lifes: ${mySelf.reborn}`
+  let speed = (sqrt(mySelf.velX**2 + mySelf.velY**2) / speedLim) * 100
+  if (speed > 99.999) speed = 99.999
+  shipStatusText.innerHTML = `Missiles: ${mySelf.missilTot} &nbsp; Lifes: ${mySelf.reborn} &nbsp; &nbsp; ${speed.toFixed(3)}% of light speed`
 }
 
 function broadcastRTC(cmd, payload) {
@@ -45,7 +47,7 @@ function initWebWorker() {
   debug('WebWorker Started!')
   sendWWCmd('init', {
     nP: numPlayers || 10,
-    planets: planets.map(p => ({ a:p.a, d:p.d, radius:p.radius })),
+    planets: planets.map(p => ({ a:p.a, d:p.d, rot:p.rot, radius:p.radius })),
   })
   sendUsersToWW()
 }
@@ -155,9 +157,9 @@ function gameStart() {
   delayedTip(15, 'Your people will send some aid boxes. Go get then!')
 
   window.addEventListener('keydown', (ev)=> {
-    if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn', true)
-    if (ev.key == 'ArrowLeft') clentRTC.send('rotJet', -1)
-    if (ev.key == 'ArrowRight') clentRTC.send('rotJet', +1)
+    if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn',  mySelf.fireIsOn = true)
+    if (ev.key == 'ArrowLeft') clentRTC.send('rotJet',  mySelf.rotJet = -1)
+    if (ev.key == 'ArrowRight') clentRTC.send('rotJet', mySelf.rotJet = +1)
   })
 
   window.addEventListener('keyup', (ev)=> {

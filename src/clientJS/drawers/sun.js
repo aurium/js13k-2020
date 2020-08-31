@@ -9,7 +9,7 @@ function drawSunRays(x,y,r1,r2,r3) {
     const rayPos = frameNow / 10
     gameCtx.beginPath()
     gameCtx.moveTo(cos(aInc)*r1+x, sin(aInc)*r1+y)
-    for (let a=0; a<=PI*2; a+=quartStep*4) {
+    for (let a=0; a<=PI2; a+=quartStep*4) {
       let aa = a + aInc
       let rayMoveX = cos(rayPos/7/PI+a*18) * 15*zoom/divScreen
       let rayMoveY = sin(rayPos/7/PI+a*18) * 15*zoom/divScreen
@@ -46,7 +46,7 @@ function updateSun() {
   grad.addColorStop(0.99, 'rgba(200,100,0,0.0)')
   gameCtx.fillStyle = grad
   gameCtx.beginPath()
-  gameCtx.arc(x, y, r3, 0, 2*PI)
+  gameCtx.arc(x, y, r3, 0, PI2)
   gameCtx.closePath()
   gameCtx.fill()
 }
