@@ -1,7 +1,7 @@
 "use strict";
 
 importScripts('shared.js')
-var numPlayers, players = [], planets, gameStarted
+var numPlayers, players = [], booms = [], planets, gameStarted
 const sunR3 = 1200
 const constG = 1e-4
 const shipRadius = 30
@@ -25,7 +25,7 @@ onmessage = ({data:[cmd, payload]})=> {
     })
     flyArroundLobby2()
     setInterval(wwUpdateEntities, 17)
-    setInterval(()=> sendCmd('update', {players, planets}), upDalay)
+    setInterval(()=> sendCmd('update', {players, planets, booms}), upDalay)
   }
   if (cmd == 'updadeUsers') {
     players = payload
@@ -42,6 +42,41 @@ onmessage = ({data:[cmd, payload]})=> {
     if (cmdVal < 0 && cmdPlayer.rotInc >-0.1) cmdPlayer.rotJet = cmdVal
     if (cmdVal > 0 && cmdPlayer.rotInc < 0.1) cmdPlayer.rotJet = cmdVal
   }
+}
+
+function updateEnergy(player, qtd) {
+  player.energy += qtd
+  if (player.energy <= 0) {
+    updateLife(player, -1)
+    player.energy = 0
+  }
+  if (player.energy > 100) player.energy = 100
+}
+
+function updateLife(player, qtd) {
+  player.life += qtd
+  if (player.life < 0) dye(player)
+  if (player.life > 100) player.life = 100
+}
+
+function dye(player) {
+  player.velX = player.velY = player.life = 0
+  player.alive = false
+  explode(player)
+}
+
+function explode(entity) {
+  const id = mkID()
+  const myPlanet = planets[entity.land]
+  entity = { ...entity, id, radius:0 }
+  if (myPlanet) planetSpeedToEntity(myPlanet, entity)
+  booms.push(entity)
+  setTimeout(()=> booms = booms.filter(b=>b.id!=id), 5000)
+}
+
+function planetSpeedToEntity(planet, entity) {
+  entity.velX = -sin(planet.a) * sunOrbitalSpeed(planet.d)
+  entity.velY = +cos(planet.a) * sunOrbitalSpeed(planet.d)
 }
 
 const lobbyStart = Date.now()
@@ -98,12 +133,16 @@ function gravitAcceleration(player) {
 
 function playerTouchPlanet(player, planet, planetIndex, dist, dirX, dirY) {
   player.land = planetIndex
-  let acos = Math.acos(-dirX)
-  let asin = Math.asin(-dirY)
-  player.a = asin > 0 ? acos : PI2 - acos
-  let pushBack = planet.radius + shipRadius - dist
-  player.x += -dirX * pushBack
-  player.y += -dirY * pushBack
+  if (calcSpeed(player.velX, player.velY) > speedLim/2) {
+    dye(player)
+  } else {
+    let acos = Math.acos(-dirX)
+    let asin = Math.asin(-dirY)
+    player.a = asin > 0 ? acos : PI2 - acos
+    let pushBack = planet.radius + shipRadius - dist
+    player.x += -dirX * pushBack
+    player.y += -dirY * pushBack
+  }
 }
 
 function sunOrbitalSpeed(dist) {
@@ -115,8 +154,12 @@ function calcSpeed(velX, velY) {
   return sqrt(velX**2 + velY**2)
 }
 
+function alivePlayers() {
+  return players.filter(p=>p.alive)
+}
+
 function wwUpdateEntities() {
-  players.forEach(player => {
+  alivePlayers().forEach(player => {
     gravitAcceleration(player)
     if (player.rotJet<0) {
       if (player.rotInc>-0.1) player.rotInc -= 0.001
@@ -130,10 +173,8 @@ function wwUpdateEntities() {
     player.rot += player.rotInc
     let myPlanet = planets[player.land]
     if (player.fireIsOn) {
-      if (myPlanet) {
-        player.velX = -sin(myPlanet.a) * sunOrbitalSpeed(myPlanet.d)
-        player.velY = +cos(myPlanet.a) * sunOrbitalSpeed(myPlanet.d)
-      }
+      updateEnergy(player, -.05)
+      if (myPlanet) planetSpeedToEntity(myPlanet, player)
       player.land = -1
       let newVelX = player.velX + cos(player.rot)/50
       let newVelY = player.velY + sin(player.rot)/50
@@ -168,5 +209,10 @@ function wwUpdateEntities() {
   planets.forEach(planet => {
     planet.a += planet.aInc
     planet.rot += planet.rotInc
+  })
+  booms.forEach(boom => {
+    boom.x += boom.velX
+    boom.y += boom.velY
+    boom.radius++
   })
 }

@@ -1,7 +1,7 @@
 "use strict";
 
 const playerAttrsWithoutPos = [
-  'energy', 'life', 'reborn',
+  'energy', 'life', 'alive', 'reborn',
   'velX', 'velY', 'rotInc',
   'missilTot', 'fireIsOn', 'rotJet'
 ]
@@ -24,6 +24,7 @@ class Player {
     this.rot = -PI*3
     this.life = 100
     this.energy = 100
+    this.alive = true
     this.reborn = 3
     this.missilTot = 3
   }

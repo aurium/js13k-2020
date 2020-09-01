@@ -193,3 +193,14 @@ function plotShip(player) {
     gameCtx.stroke()
   }
 }
+
+function plotExplosion(boom) {
+  const [x, y] = relativeObjPos(boom)
+  const radius = boom.radius
+  gameCtx.beginPath()
+  gameCtx.arc(x, y, (shipRadius/2)+radius*zoom/divScreen, 0, PI2)
+  gameCtx.closePath()
+  gameCtx.strokeStyle = `rgba(255,${255-radius},0,${1-(radius/255)**2})`
+  gameCtx.lineWidth = (shipRadius - radius/10)*zoom/divScreen
+  gameCtx.stroke()
+}

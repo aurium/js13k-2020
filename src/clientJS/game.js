@@ -2,7 +2,7 @@
 
 var gameWorker = null
 var lastGameUpdate = 0
-var newPlayers = [], newPlanets = []
+var newPlayers = [], newPlanets = [], newBooms = [], booms = []
 var shipStatusText = body.querySelector('#shipStatus p')
 
 var startHostWebWorker = ()=> {
@@ -16,6 +16,7 @@ var startHostWebWorker = ()=> {
 
 function updateFromRTC(payload) {
   lastGameUpdate = Date.now()
+  newBooms = payload.booms
   newPlanets = payload.planets
   newPlayers = payload.players
   newPlayers.forEach(p => {
@@ -81,12 +82,23 @@ function updateEntities() {
     }
     else debug(`Player ${p.userID} was deleted?`)
   })
-  newPlanets.forEach((p, i) => {
+  newPlanets.forEach((p, i)=> {
     let planet = planets[i]
     planet.a   = ( planet.a*step   + p.a   ) / (step+1)
     planet.rot = ( planet.rot*step + p.rot ) / (step+1)
   })
-
+  newBooms.forEach(nB => {
+    let boom = booms.find(b=>b.id==nB.id)
+    if (!boom) {
+      boom = {...nB}
+      booms.push(boom)
+    }
+    boom.x = ( boom.x*step + nB.x ) / (step+1)
+    boom.y = ( boom.y*step + nB.y ) / (step+1)
+    boom.radius = ( boom.radius*step + nB.radius ) / (step+1)
+  })
+  // Clean old explosions:
+  booms = booms.filter(b => newBooms.find(nB=>b.id==nB.id))
 }
 
 const sunR1 = 1040
