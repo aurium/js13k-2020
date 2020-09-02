@@ -44,11 +44,12 @@ onmessage = ({data:[cmd, payload]})=> {
   }
 }
 
-function updateEnergy(player, qtd) {
+function updateEnergy(player, qtd, canReduceLife) {
   player.energy += qtd
   if (player.energy <= 0) {
-    updateLife(player, -0.1)
+    if (canReduceLife) updateLife(player, -0.1)
     player.energy = 0
+    player.fireIsOn = false
   }
   if (player.energy > 100) player.energy = 100
 }
@@ -166,7 +167,7 @@ function alivePlayers() {
 
 function wwUpdateEntities() {
   alivePlayers().forEach(player => {
-    updateEnergy(player, 0.05 - calcVecToSun(player)[0]/4e5)
+    updateEnergy(player, 0.05 - calcVecToSun(player)[0]/4e5, true)
     gravitAcceleration(player)
     if (player.rotJet<0) {
       if (player.rotInc>-0.1) player.rotInc -= 0.001
@@ -201,6 +202,7 @@ function wwUpdateEntities() {
       player.rotInc *= 0.995 // Helps to stabilize when accelerating.
     }
     if (player.land > -1) {
+      updateLife(player, 0.02)
       let {x:planetX, y:planetY} = planetPos(myPlanet)
       let {x, y} = angleToVec(player.a, myPlanet.radius+shipRadius)
       player.x = planetX + x
