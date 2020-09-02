@@ -47,7 +47,7 @@ onmessage = ({data:[cmd, payload]})=> {
 function updateEnergy(player, qtd) {
   player.energy += qtd
   if (player.energy <= 0) {
-    updateLife(player, -1)
+    updateLife(player, -0.1)
     player.energy = 0
   }
   if (player.energy > 100) player.energy = 100
@@ -63,6 +63,7 @@ function dye(player) {
   player.velX = player.velY = player.life = 0
   player.alive = false
   explode(player)
+  player.land = -1
 }
 
 function explode(entity) {
@@ -91,6 +92,7 @@ function flyArroundLobby2() {
     player.velY = sin(player.rot) * 2
     player.x = +sin(player.rot)*10e3
     player.y = -cos(player.rot)*10e3
+    player.energy = 100
   })
 }
 
@@ -99,6 +101,10 @@ function calcVec(vec1, vec2) {
   const deltaY = vec1.y - vec2.y
   const dist = sqrt(deltaX**2 + deltaY**2)
   return [dist, -deltaX/dist, -deltaY/dist]
+}
+
+function calcVecToSun(vec) {
+  return calcVec(vec, {x:0, y:0})
 }
 
 function planetPos(planet) {
@@ -115,7 +121,7 @@ function angleToVec(a, size=1) {
 function gravitAcceleration(player) {
   if (player.land > -1) return;
   // Calcs sun attraction:
-  let [dist, dirX, dirY] = calcVec(player, {x:0, y:0})
+  let [dist, dirX, dirY] = calcVecToSun(player)
   let attraction = (sunR3**2*constG) / dist**1.5 // reduced pow 2 to long affect
   player.velX += attraction * dirX
   player.velY += attraction * dirY
@@ -160,6 +166,7 @@ function alivePlayers() {
 
 function wwUpdateEntities() {
   alivePlayers().forEach(player => {
+    updateEnergy(player, 0.05 - calcVecToSun(player)[0]/4e5)
     gravitAcceleration(player)
     if (player.rotJet<0) {
       if (player.rotInc>-0.1) player.rotInc -= 0.001

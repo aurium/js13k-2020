@@ -4,6 +4,7 @@ var gameWorker = null
 var lastGameUpdate = 0
 var newPlayers = [], newPlanets = [], newBooms = [], booms = []
 var shipStatusText = body.querySelector('#shipStatus p')
+var userNotifyedAwayFromSun
 
 var startHostWebWorker = ()=> {
   startHostWebWorker = (()=>0)
@@ -12,6 +13,10 @@ var startHostWebWorker = ()=> {
     if (cmd == 'started') initWebWorker()
     if (cmd == 'update') broadcastRTC(cmd, payload)
   }
+}
+
+function distToSun(vec) {
+  return sqrt(vec.x**2 + vec.y**2)
 }
 
 function updateFromRTC(payload) {
@@ -30,6 +35,12 @@ function updateFromRTC(payload) {
   let speed = (sqrt(mySelf.velX**2 + mySelf.velY**2) / speedLim) * 100
   if (speed > 99.999) speed = 99.999
   shipStatusText.innerHTML = `Missiles: ${mySelf.missilTot} &nbsp; Lifes: ${mySelf.reborn} &nbsp; &nbsp; ${speed.toFixed(3)}% of light speed`
+  if (gameStarted && distToSun(mySelf)>20e3 && !userNotifyedAwayFromSun) {
+    delayedTip(0, `You are far away from Sun! Good, you can't be found on radar.`)
+    delayedTip(3, `...but you can't recharge. Your life support will fail!`)
+    userNotifyedAwayFromSun = 1
+    setTimeout(()=> userNotifyedAwayFromSun = 0, 6e4)
+  }
 }
 
 function broadcastRTC(cmd, payload) {
@@ -67,7 +78,7 @@ function updateEntities() {
   var timeDelta = now - lastGameUpdate
   var timePct = timeDelta / upDalay
   if (timePct > 1) {
-    if (DEBUG_MODE&&timePct>1.5) ('WebWorker is late! Delta time:', timeDelta)
+    if (DEBUG_MODE&&timePct>1.5) debug('Host is late! Delta time:', timeDelta)
     timePct = 1
   }
   const framesPerUpdate = FPS*upDalay/1000
