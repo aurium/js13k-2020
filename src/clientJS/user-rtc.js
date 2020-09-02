@@ -92,7 +92,9 @@ class UserRTCHost extends UserRTC {
   cmd_rotJet({userID, payload}) {
     sendWWCmd('rotJet', [userID, payload])
   }
-
+  cmd_misOn({userID, payload}) {
+    sendWWCmd('misOn', [userID, payload])
+  }
 }
 
 
@@ -123,7 +125,7 @@ function onLocalSessionCreated(desc) {
 }
 
 function createConnDisplay() {
-  this.display = mkEl('div');
+  this.display = mkEl('div', connStatus);
   [
     ['User', 'userID'],
     ['Signal', 'signalingState'],
@@ -131,14 +133,11 @@ function createConnDisplay() {
     ['Gathering', 'iceGatheringState'],
     ['Connected', 'connected']
   ].forEach(([label, key])=> {
-    this.display[key] = mkEl('span', '...')
-    const el = mkEl('span', label + ': ')
-    el.appendChild(this.display[key])
     if (!this.isClient || key != 'userID') {
-      this.display.appendChild(el)
+      const el = mkEl('span', this.display, label + ': ')
+      this.display[key] = mkEl('span', el, '...')
     }
   })
-  connStatus.appendChild(this.display)
 }
 
 function removeConnDisplay() {

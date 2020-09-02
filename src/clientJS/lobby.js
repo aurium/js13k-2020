@@ -80,44 +80,37 @@ if (queryString.match(/\bgame=/)) {
     if (rooms.length) {
       roomsList.innerHTML = '<p>Public rooms:</p>'
       rooms.forEach( ([id, num, tot]) => {
-        let link = mkEl('a')
+        let link = mkEl('a', roomsList)
         link.href = `?game=${id}${DEBUG_MODE?'&debug=on':''}`
         link.innerText = `Players: ${num} of ${tot}`
-        roomsList.appendChild(link)
       })
     } else {
       roomsList.innerHTML = 'There are no public rooms yet.'
     }
   })
 
-  let label = mkEl('label')
+  let label = mkEl('label', lobby)
   label.style.fontWeight = 'bold'
   label.innerHTML = 'Create a new room:'
-  lobby.appendChild(label)
 
-  label = mkEl('label')
+  label = mkEl('label', lobby)
   label.innerText = 'Players:'
-  lobby.appendChild(label)
-  const inputNum = mkEl('input')
+  const inputNum = mkEl('input', lobby)
   inputNum.id = 'inputNum'
   inputNum.type = 'number'
   inputNum.min = 2
   inputNum.max = 10
   inputNum.value = 2
-  label.appendChild(inputNum)
 
-  label = mkEl('label')
-  lobby.appendChild(label)
-  const inputPub = mkEl('input')
+  label = mkEl('label', lobby)
+  const inputPub = mkEl('input', lobby)
   inputPub.type = 'checkbox'
   inputPub.checked = true
-  label.appendChild(inputPub)
-  label.appendChild(mkEl('span', 'Public'))
+  mkEl('span', lobby, 'Public')
 
-  const btCreate = mkEl('button')
+  const btCreate = mkEl('button', lobby)
   btCreate.id = 'btCreateRoom'
   btCreate.innerText = 'Create'
-  lobby.appendChild(btCreate)
   btCreate.onclick = ()=> {
     socket.emit('creteRoom', {num:inputNum.value, pub:inputPub.checked})
     btCreate.style.opacity = 0.5

@@ -4,6 +4,7 @@ var gameWorker = null
 var lastGameUpdate = 0
 var newPlayers = [], newPlanets = [], newBooms = [], booms = []
 var shipStatusText = body.querySelector('#shipStatus p')
+var missilEnergyEl = mkEl('i', missilBar)
 var userNotifyedAwayFromSun
 
 var startHostWebWorker = ()=> {
@@ -93,6 +94,13 @@ function updateEntities() {
     }
     else debug(`Player ${p.userID} was deleted?`)
   })
+  if (mySelf.misEn) {
+    missilBar.style.opacity =  1
+    missilEnergyEl.style.width = mySelf.misEn + '%'
+  } else {
+    missilBar.style.opacity =  0
+    setTimeout(()=> missilEnergyEl.style.width = 0, 500)
+  }
   newPlanets.forEach((p, i)=> {
     let planet = planets[i]
     planet.a   = ( planet.a*step   + p.a   ) / (step+1)
@@ -150,12 +158,9 @@ function gameStart() {
   // Prepare Ship Status Display:
   users.forEach(p => {
     if (p != mySelf) {
-      let enemyEl = mkEl('a', p.userID)
-      enemyLife.appendChild(enemyEl)
-      let div = mkEl('div')
-      enemyEl.appendChild(div)
-      let lifeEl = mkEl('i')
-      div.appendChild(lifeEl)
+      let enemyEl = mkEl('a', enemyLife, p.userID)
+      let div = mkEl('div', enemyEl)
+      let lifeEl = mkEl('i', div)
       p.lifeEl = lifeEl
     }
   })
@@ -183,12 +188,14 @@ function gameStart() {
     if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn',  mySelf.fireIsOn = true)
     if (ev.key == 'ArrowLeft') clentRTC.send('rotJet',  mySelf.rotJet = -1)
     if (ev.key == 'ArrowRight') clentRTC.send('rotJet', mySelf.rotJet = +1)
+    if (ev.key == ' ') clentRTC.send('misOn', 1) // Add energy to Missile
   })
 
   window.addEventListener('keyup', (ev)=> {
     if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn', false)
     if (ev.key == 'ArrowLeft') clentRTC.send('rotJet', 0)
     if (ev.key == 'ArrowRight') clentRTC.send('rotJet', 0)
+    if (ev.key == ' ') clentRTC.send('misOn', 0) // Launch the missle
   })
 }
 if (DEBUG_MODE) window.gameStart = gameStart

@@ -3,16 +3,14 @@ function debug(...args) {
 }
 
 function notify(...args) {
-  let el = mkEl('div')
-  msgList.appendChild(el)
-  let logMsg = mkEl('div')
-  el.appendChild(logMsg)
+  let el = mkEl('div', msgList)
+  let logMsg = mkEl('div', el)
 
   let cssClass = 'info'
   if (args.length > 1) cssClass = args.shift()
 
   log(`Notify ${cssClass}:`, ...args)
-  args.forEach(msg => logMsg.appendChild(mkEl('span', msg)))
+  args.forEach(msg => mkEl('span', logMsg, msg))
 
   el.classList.add('new')
   logMsg.classList.add('logmsg', cssClass)

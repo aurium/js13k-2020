@@ -8,9 +8,10 @@ const DEBUG_MODE = !!queryString.match(/\bdebug=on/);
 const BEAUTY_MODE = !queryString.match(/\braw=on/);
 
 if (DEBUG_MODE) bodyClass.add('debug')
-const mkEl = (tag, txt='')=> {
+const mkEl = (tag, parent, txt='')=> {
   const el = document.createElement(tag)
   el.appendChild(document.createTextNode(txt))
+  parent.appendChild(el)
   return el
 }
 

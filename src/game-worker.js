@@ -42,6 +42,8 @@ onmessage = ({data:[cmd, payload]})=> {
     if (cmdVal < 0 && cmdPlayer.rotInc >-0.1) cmdPlayer.rotJet = cmdVal
     if (cmdVal > 0 && cmdPlayer.rotInc < 0.1) cmdPlayer.rotJet = cmdVal
   }
+  if (cmd == 'misOn')
+    cmdPlayer.misOn = cmdVal
 }
 
 function updateEnergy(player, qtd, canReduceLife) {
@@ -214,6 +216,12 @@ function wwUpdateEntities() {
       player.x += player.velX
       player.y += player.velY
     }
+    if (player.misOn) {
+      player.energy -= 0.1
+      player.misEn += 0.3
+      if (player.misEn > 100) player.misEn = 100
+    }
+    else player.misEn = 0
   })
   planets.forEach(planet => {
     planet.a += planet.aInc
