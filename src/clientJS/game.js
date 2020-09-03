@@ -2,7 +2,9 @@
 
 var gameWorker = null
 var lastGameUpdate = 0
-var newPlayers = [], newPlanets = [], newBooms = [], booms = []
+var newPlayers = [], newPlanets = []
+var newBooms = [], booms = []
+var newMissiles = [], missiles = []
 var shipStatusText = body.querySelector('#shipStatus p')
 var missilEnergyEl = mkEl('i', missilBar)
 var userNotifyedAwayFromSun
@@ -23,6 +25,7 @@ function distToSun(vec) {
 function updateFromRTC(payload) {
   lastGameUpdate = Date.now()
   newBooms = payload.booms
+  newMissiles = payload.missiles
   newPlanets = payload.planets
   newPlayers = payload.players
   newPlayers.forEach(p => {
@@ -83,7 +86,6 @@ function updateEntities() {
     timePct = 1
   }
   const framesPerUpdate = FPS*upDalay/1000
-  var timePctInv = 1 - timePct
   const step = FPS / (1000/upDalay)
   newPlayers.forEach(p => {
     let player = users[p.userID]
@@ -101,23 +103,30 @@ function updateEntities() {
     missilBar.style.opacity =  0
     setTimeout(()=> missilEnergyEl.style.width = 0, 500)
   }
-  newPlanets.forEach((p, i)=> {
-    let planet = planets[i]
-    planet.a   = ( planet.a*step   + p.a   ) / (step+1)
-    planet.rot = ( planet.rot*step + p.rot ) / (step+1)
-  })
-  newBooms.forEach(nB => {
-    let boom = booms.find(b=>b.id==nB.id)
-    if (!boom) {
-      boom = {...nB}
-      booms.push(boom)
+  updateCollection(newPlanets, planets, step)
+  missiles = updateCollection(newMissiles, missiles, step)
+  booms = updateCollection(newBooms, booms, step)
+}
+
+function updateCollection(newCollection, collection, step) {
+  newCollection.forEach((newItem, i) => {
+    let item
+    if (newItem.id) {
+      item = collection.find(item => item.id == newItem.id)
+      if (!item) {
+        item = {...newItem}
+        collection.push(item)
+      }
+    } else {
+      item = collection[i]
     }
-    boom.x = ( boom.x*step + nB.x ) / (step+1)
-    boom.y = ( boom.y*step + nB.y ) / (step+1)
-    boom.radius = ( boom.radius*step + nB.radius ) / (step+1)
+    if (DEBUG_MODE && !item) logErrToUsr('Iten no found!', newItem.id)
+    ;['x','y','radius','a','rot','go','userId'].forEach(att =>
+      item[att] = ( item[att]*step + newItem[att] ) / (step+1)
+    )
   })
-  // Clean old explosions:
-  booms = booms.filter(b => newBooms.find(nB=>b.id==nB.id))
+  // Clean old itens:
+  return collection.filter(item => newCollection.find(newI=>item.id==newI.id))
 }
 
 const sunR1 = 1040
@@ -195,7 +204,7 @@ function gameStart() {
     if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn', false)
     if (ev.key == 'ArrowLeft') clentRTC.send('rotJet', 0)
     if (ev.key == 'ArrowRight') clentRTC.send('rotJet', 0)
-    if (ev.key == ' ') clentRTC.send('misOn', 0) // Launch the missle
+    if (ev.key == ' ') clentRTC.send('misOn', 0) // Launch the missile
   })
 }
 if (DEBUG_MODE) window.gameStart = gameStart

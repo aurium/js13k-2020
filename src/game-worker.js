@@ -1,7 +1,7 @@
 "use strict";
 
 importScripts('shared.js')
-var numPlayers, players = [], booms = [], planets, gameStarted
+var numPlayers, players = [], booms = [], missiles = [], planets, gameStarted
 const sunR3 = 1200
 const constG = 1e-4
 const shipRadius = 30
@@ -25,7 +25,7 @@ onmessage = ({data:[cmd, payload]})=> {
     })
     flyArroundLobby2()
     setInterval(wwUpdateEntities, 17)
-    setInterval(()=> sendCmd('update', {players, planets, booms}), upDalay)
+    setInterval(()=> sendCmd('update', {players, planets, booms, missiles}), upDalay)
   }
   if (cmd == 'updadeUsers') {
     players = payload
@@ -216,12 +216,36 @@ function wwUpdateEntities() {
       player.x += player.velX
       player.y += player.velY
     }
-    if (player.misOn) {
-      player.energy -= 0.1
-      player.misEn += 0.3
-      if (player.misEn > 100) player.misEn = 100
+    // Charge and launch missiles
+    let missile = missiles.find(m => m.id == player.misID)
+    if (player.misOn || (0 < player.misEn && player.misEn < 10)) {
+      if (player.misEn == 0) {
+        missile = { id: mkID(), go: 0 }
+        missiles.push(missile)
+        player.misID = missile.id
+      }
+      if (player.misEn < 100) {
+        if (player.energy > 0.1) {
+          player.energy -= 0.1
+          player.misEn += 0.3
+        } else {
+          if (player.misEn > 0.01) player.misEn -= 0.01
+        }
+      }
+      missile.velX = player.velX
+      missile.velY = player.velY
+      missile.rot = player.rot
+      missile.x = player.x + cos(missile.rot)*shipRadius
+      missile.y = player.y + sin(missile.rot)*shipRadius
     }
-    else player.misEn = 0
+    else if (player.misEn) { // Launch!
+      if (myPlanet) planetSpeedToEntity(myPlanet, missile)
+      missile.energy = player.misEn
+      missile.velX += cos(missile.rot)*2
+      missile.velY += sin(missile.rot)*2
+      missile.go = 1
+      player.misID = player.misEn = 0
+    }
   })
   planets.forEach(planet => {
     planet.a += planet.aInc
@@ -231,5 +255,14 @@ function wwUpdateEntities() {
     boom.x += boom.velX
     boom.y += boom.velY
     boom.radius++
+  })
+  missiles.filter(m=>m.go).forEach(missile => {
+    missile.x += missile.velX
+    missile.y += missile.velY
+    missile.energy -= 0.1
+    if (missile.energy < 0) {
+      explode(missile)
+      missiles = missiles.filter(m => m.id != missile.id)
+    }
   })
 }

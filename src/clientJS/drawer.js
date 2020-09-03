@@ -154,6 +154,7 @@ function updateGameCanvas() {
   updateSun()
   gameCtx.globalCompositeOperation = 'source-over'
   booms.forEach(plotExplosion)
+  missiles.filter(m=>m.go).forEach(plotMissile)
   planets.forEach(plotPlanet)
   users.filter(p=>p.alive).forEach(plotShip)
   if ((frameCounter%updateRadarRate)==0) updateRadar()

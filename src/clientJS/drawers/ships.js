@@ -189,7 +189,55 @@ function plotShip(player) {
     gameCtx.beginPath()
     gameCtx.moveTo(x+radius, y)
     gameCtx.arc(x, y, radius, 0, PI2)
-    gameCtx.closePath()
+    gameCtx.stroke()
+  }
+}
+
+function plotMissile(missile) {
+  const radius = (shipRadius/2)*zoom/divScreen
+  const [x, y] = relativeObjPos(missile)
+  gameCtx.save()
+  gameCtx.translate(x, y)
+  gameCtx.rotate(missile.rot)
+  // Fire
+  let grad = gameCtx.createRadialGradient(-radius*1.1,0, 1, -radius*1.2,0, radius/3)
+  grad.addColorStop(0, '#8FF')
+  grad.addColorStop(1, '#08F')
+  gameCtx.fillStyle = grad
+  gameCtx.beginPath()
+  const bazierX = -radius*1.1
+  gameCtx.moveTo(-radius*.9, 0)
+  gameCtx.bezierCurveTo(
+    bazierX, -radius*.3,
+    bazierX, -radius*.1,
+    -radius*2, 0
+  )
+  gameCtx.bezierCurveTo(
+    bazierX, radius*.1,
+    bazierX, radius*.3,
+    -radius*.9, 0
+  )
+  gameCtx.fill()
+  // Wings and head
+  gameCtx.beginPath()
+  gameCtx.moveTo(-radius, 0)
+  gameCtx.lineTo(-radius*.6, -radius/3)
+  gameCtx.lineTo(0, 0)
+  gameCtx.lineTo(-radius*.6,  radius/3)
+  gameCtx.moveTo(radius, 0)
+  gameCtx.arc(radius*.8, 0, radius*.2, 0, PI2)
+  gameCtx.fillStyle = '#888'
+  gameCtx.fill()
+  // Body
+  gameCtx.fillStyle = '#BBB'
+  gameCtx.fillRect(-radius, -radius*.1, radius*1.6, radius*.2)
+  gameCtx.restore()
+  if (DEBUG_MODE) {
+    gameCtx.strokeStyle = 'rgba(0,255,0,.75)'
+    gameCtx.lineWidth = 0.6
+    gameCtx.beginPath()
+    gameCtx.moveTo(x+radius, y)
+    gameCtx.arc(x, y, radius, 0, PI2)
     gameCtx.stroke()
   }
 }
