@@ -22,10 +22,22 @@ function distToSun(vec) {
   return sqrt(vec.x**2 + vec.y**2)
 }
 
+const initNewItem = (collection)=> (newItem)=> {
+  let source = missiles.find(m => m.id == newItem.src) || users[newItem.src] || newItem
+  let item = collection.find(i => i.id == newItem.id)
+  if (!item) {
+    debug('New Item SRC:', newItem.src, source)
+    item = {...newItem, x:source.x, y:source.y, rot:source.rot}
+    collection.push(item)
+  }
+}
+
 function updateFromRTC(payload) {
   lastGameUpdate = Date.now()
   newBooms = payload.booms
+  newBooms.forEach(initNewItem(booms))
   newMissiles = payload.missiles
+  newMissiles.forEach(initNewItem(missiles))
   newPlanets = payload.planets
   newPlayers = payload.players
   newPlayers.forEach(p => {

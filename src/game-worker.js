@@ -72,7 +72,7 @@ function dye(player) {
 function explode(entity) {
   const id = mkID()
   const myPlanet = planets[entity.land]
-  entity = { ...entity, id, radius:0 }
+  entity = { ...entity, id, radius:0, src: entity.id||entity.userID }
   if (myPlanet) planetSpeedToEntity(myPlanet, entity)
   booms.push(entity)
   setTimeout(()=> booms = booms.filter(b=>b.id!=id), 5000)
@@ -219,11 +219,6 @@ function wwUpdateEntities() {
     // Charge and launch missiles
     let missile = missiles.find(m => m.id == player.misID)
     if (player.misOn || (0 < player.misEn && player.misEn < 10)) {
-      if (player.misEn == 0) {
-        missile = { id: mkID(), go: 0 }
-        missiles.push(missile)
-        player.misID = missile.id
-      }
       if (player.misEn < 100) {
         if (player.energy > 0.1) {
           player.energy -= 0.1
@@ -232,19 +227,15 @@ function wwUpdateEntities() {
           if (player.misEn > 0.01) player.misEn -= 0.01
         }
       }
-      missile.velX = player.velX
-      missile.velY = player.velY
-      missile.rot = player.rot
-      missile.x = player.x + cos(missile.rot)*shipRadius
-      missile.y = player.y + sin(missile.rot)*shipRadius
     }
     else if (player.misEn) { // Launch!
+      missile = { ...player, id: mkID(), src: player.userID }
+      missiles.push(missile)
       if (myPlanet) planetSpeedToEntity(myPlanet, missile)
       missile.energy = player.misEn
       missile.velX += cos(missile.rot)*2
       missile.velY += sin(missile.rot)*2
-      missile.go = 1
-      player.misID = player.misEn = 0
+      player.misEn = 0
     }
   })
   planets.forEach(planet => {
@@ -256,7 +247,7 @@ function wwUpdateEntities() {
     boom.y += boom.velY
     boom.radius++
   })
-  missiles.filter(m=>m.go).forEach(missile => {
+  missiles.forEach(missile => {
     missile.x += missile.velX
     missile.y += missile.velY
     missile.energy -= 0.1

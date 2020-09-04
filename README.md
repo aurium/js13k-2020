@@ -7,7 +7,7 @@ This game is a realtime multiplayer game based on WebRTC.
 
 Your people are fighting for this star system. You all have small infantry ships.
 You need constantly reload energy for propulsion and to launch guided missiles.
-This energy comes from the star, so stay near to fast reload, if you go far away you will die without life support.
+This energy comes from the star, so stay near to fast reload, if you go far away you will die without life support. The good news is you can hide yourself from radar when you are far enough.
 
 Your people will send weapons to reload your small ship, so watch out and get that boxes!
 
@@ -15,6 +15,7 @@ Sometimes one of your opponents can't be found... It is the weapon 404.
 Pray that he doesn't have you in the crosshairs.
 
 If it is safe you can land a planet to restore some damage in the ship.
+But, be cautious, the autopilot won't slow down fast enough if you're above 50% of light speed, then you will explode in the atmosphere.
 
 The controls are:
 * **Left and Right arrows:** Rotate the ship. The secure inertial sensor will prevent you to rotate too fast.
