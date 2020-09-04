@@ -167,7 +167,9 @@ function alivePlayers() {
   return players.filter(p=>p.alive)
 }
 
+var wwUpdateEntitiesTic = 0
 function wwUpdateEntities() {
+  wwUpdateEntitiesTic++
   alivePlayers().forEach(player => {
     updateEnergy(player, 0.05 - calcVecToSun(player)[0]/4e5, true)
     gravitAcceleration(player)
@@ -248,6 +250,9 @@ function wwUpdateEntities() {
     boom.radius++
   })
   missiles.forEach(missile => {
+    if (wwUpdateEntitiesTic%3 == 0) missileRecalc(missile)
+    missile.velX += cos(missile.rot)/30
+    missile.velY += sin(missile.rot)/30
     missile.x += missile.velX
     missile.y += missile.velY
     missile.energy -= 0.1
@@ -256,4 +261,37 @@ function wwUpdateEntities() {
       missiles = missiles.filter(m => m.id != missile.id)
     }
   })
+}
+
+function missileRecalc(missile) {
+  const {x, y, velX, velY, rot} = missile
+  const [[dist, vecToTragetX, vecToTragetY], target] = players
+    .filter(p => p.userID != missile.userID)
+    .map(p => [calcVec(missile, p), p])
+    .sort((v1, v2)=> v1[0][0] - v2[0][0])[0]
+  //log('>>>', target.userID, dist)
+
+  const angleToTarget = Math.atan2(vecToTragetY, vecToTragetX)
+  const deltaAngleToTarget = (rot)=> Math.min(
+      abs(angleToTarget - rot%PI2),
+      abs(PI2-angleToTarget - rot%PI2)
+    )
+
+  // Found missile displacement line function "y = a*x + b":
+  const a = (velY-y)/(velX-x)
+  const b = y - a*x
+  const isAboveMoveLine = (a*target.x + b) < target.y
+  const newRot = missile.rot + (isAboveMoveLine ? 0.2 : -0.2)
+  const curDeltaAngle = deltaAngleToTarget(rot)
+  const newDeltaAngle = deltaAngleToTarget(newRot)
+  //log(curDeltaAngle, newDeltaAngle)
+  //log(isAboveMoveLine, curDeltaAngle < PI*.2, newDeltaAngle < curDeltaAngle)
+  if (curDeltaAngle < PI*.2 || newDeltaAngle < curDeltaAngle) missile.rot = newRot
+
+  // Is it pointing to target?
+  const rotPointUp = (
+    sin(-rot) * vecToTragetX +
+    cos(-rot) * vecToTragetY
+  ) < 0
+  missile.rot += rotPointUp ? -0.1 : 0.1
 }
