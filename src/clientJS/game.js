@@ -27,6 +27,7 @@ const initNewItem = (collection)=> (newItem)=> {
   let item = collection.find(i => i.id == newItem.id)
   if (!item) {
     debug('New Item SRC:', newItem.src, source)
+    if (DEBUG_MODE && !source) source = {x:0, y:0, rot:0}
     item = {...newItem, x:source.x, y:source.y, rot:source.rot}
     collection.push(item)
   }

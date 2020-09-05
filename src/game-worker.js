@@ -31,7 +31,21 @@ onmessage = ({data:[cmd, payload]})=> {
     players = payload
     players.forEach(p => players[p.userID] = p)
   }
-  if (cmd == 'startGame') gameStarted = payload
+  if (cmd == 'startGame') {
+    gameStarted = payload
+    // Creates 10 non owned missiles
+    /*for (let i=0; i<10; i++) {
+      let inc = PI2/10
+      missiles.push({
+        id: mkID(),
+        x: cos(i*inc)*20e3,
+        y: sin(i*inc)*20e3,
+        velX: 0.1,
+        velY: 0.1,
+        rot: 0
+      })
+    }*/
+  }
 
   const cmdPlayer = players[payload[0]]
   const cmdVal = payload[1]
@@ -259,9 +273,18 @@ function wwUpdateEntities() {
     missile.x += missile.velX
     missile.y += missile.velY
     missile.energy -= 0.02
-    if (missile.energy < 0) {
-      explode(missile)
-      missiles = missiles.filter(m => m.id != missile.id)
+    if (missile.energy < 0) explodeMissile(missile)
+  })
+}
+
+function explodeMissile(missile) {
+  explode(missile)
+  missiles = missiles.filter(m => m.id != missile.id)
+  players.filter(p => p.alive).forEach(player => {
+    const distInvPct = 1 - calcVec(missile, player)[0]/(shipRadius*3)
+    if (distInvPct > 0) {
+      updateLife(player, -distInvPct*80)
+      player.rotInc = (rnd()<.5?-.2:.2)
     }
   })
 }
@@ -269,9 +292,10 @@ function wwUpdateEntities() {
 function missileRecalc(missile) {
   const {x, y, velX, velY, rot} = missile
   const [[dist, vecToTragetX, vecToTragetY], target] = players
-    .filter(p => p.userID != missile.userID)
+    .filter(p => p.alive && p.userID != missile.userID)
     .map(p => [calcVec(missile, p), p])
-    .sort((v1, v2)=> v1[0][0] - v2[0][0])[0]
+    .sort((v1, v2)=> v1[0][0] - v2[0][0])[0] || [[]]
+  if (!target) return
 
   const velAngle = Math.atan2(velY, velX)
   const angleToTarget = Math.atan2(vecToTragetY, vecToTragetX)
@@ -282,12 +306,19 @@ function missileRecalc(missile) {
   const b = y - a*x
   const isAboveMoveLine = (a*target.x + b) < target.y
   const newRot = missile.rot + ((deltaMoveToTarget>0) ? .2 : -.2)
-  // Find smaller angle diff:
+  // Find smaller angle diff between target and missile rotation:
   const curDeltaAngle = abs((abs(angleToTarget - rot%PI2) + PI) % PI2 - PI)
-  if (curDeltaAngle < PI*.4) missile.rot = newRot
+  // Correct movement line to intersect the center of the target:
+  // (it does not helps when the target is berrind the missile)
+  if (abs(deltaMoveToTarget)<PI/2 && curDeltaAngle < PI*.5) missile.rot = newRot
 
   // Is it pointing to target? (this is an axis rotation formula to take Y value)
   const rotPointUp = ( sin(-rot)*vecToTragetX + cos(-rot)*vecToTragetY ) < 0
-
+  // Point to the target. It is the best driving solution when far away.
   missile.rot += rotPointUp ? -0.1 : 0.1
+
+  if (
+    // It is near enough and will move away, so explode now!
+    (dist < shipRadius*3 && calcVec({x:x+velX, y:y+velY}, target)[0] > dist)
+  ) explodeMissile(missile)
 }
