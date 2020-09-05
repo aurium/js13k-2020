@@ -163,6 +163,24 @@ function calcSpeed(velX, velY) {
   return sqrt(velX**2 + velY**2)
 }
 
+function calcAcceleration(entity) {
+  let newVelX = entity.velX + cos(entity.rot)/50
+  let newVelY = entity.velY + sin(entity.rot)/50
+  let speed = calcSpeed(entity.velX, entity.velY)
+  let newSpeed = calcSpeed(newVelX, newVelY)
+  if (newSpeed > speed) {
+    if (newSpeed > speedLim) {
+      newVelX /= newSpeed/speedLim
+      newVelY /= newSpeed/speedLim
+    } else if (newSpeed > speedLim/2) {
+      newVelX = (newVelX + entity.velX)/2
+      newVelY = (newVelY + entity.velY)/2
+    }
+  }
+  entity.velX = newVelX
+  entity.velY = newVelY
+}
+
 function alivePlayers() {
   return players.filter(p=>p.alive)
 }
@@ -188,21 +206,7 @@ function wwUpdateEntities() {
       updateEnergy(player, -.05)
       if (myPlanet) planetSpeedToEntity(myPlanet, player)
       player.land = -1
-      let newVelX = player.velX + cos(player.rot)/50
-      let newVelY = player.velY + sin(player.rot)/50
-      let speed = calcSpeed(player.velX, player.velY)
-      let newSpeed = calcSpeed(newVelX, newVelY)
-      if (newSpeed > speed) {
-        if (newSpeed > speedLim) {
-          newVelX /= newSpeed/speedLim
-          newVelY /= newSpeed/speedLim
-        } else if (newSpeed > speedLim/2) {
-          newVelX = (newVelX + player.velX)/2
-          newVelY = (newVelY + player.velY)/2
-        }
-      }
-      player.velX = newVelX
-      player.velY = newVelY
+      calcAcceleration(player)
       player.rotInc *= 0.995 // Helps to stabilize when accelerating.
     }
     if (player.land > -1) {
@@ -250,12 +254,11 @@ function wwUpdateEntities() {
     boom.radius++
   })
   missiles.forEach(missile => {
-    if (wwUpdateEntitiesTic%3 == 0) missileRecalc(missile)
-    missile.velX += cos(missile.rot)/30
-    missile.velY += sin(missile.rot)/30
+    if (wwUpdateEntitiesTic%2) missileRecalc(missile)
+    calcAcceleration(missile)
     missile.x += missile.velX
     missile.y += missile.velY
-    missile.energy -= 0.1
+    missile.energy -= 0.02
     if (missile.energy < 0) {
       explode(missile)
       missiles = missiles.filter(m => m.id != missile.id)
@@ -269,29 +272,22 @@ function missileRecalc(missile) {
     .filter(p => p.userID != missile.userID)
     .map(p => [calcVec(missile, p), p])
     .sort((v1, v2)=> v1[0][0] - v2[0][0])[0]
-  //log('>>>', target.userID, dist)
 
+  const velAngle = Math.atan2(velY, velX)
   const angleToTarget = Math.atan2(vecToTragetY, vecToTragetX)
-  const deltaAngleToTarget = (rot)=> Math.min(
-      abs(angleToTarget - rot%PI2),
-      abs(PI2-angleToTarget - rot%PI2)
-    )
+  const deltaMoveToTarget = angleToTarget - velAngle
 
   // Found missile displacement line function "y = a*x + b":
-  const a = (velY-y)/(velX-x)
+  const a = velY/velX
   const b = y - a*x
   const isAboveMoveLine = (a*target.x + b) < target.y
-  const newRot = missile.rot + (isAboveMoveLine ? 0.2 : -0.2)
-  const curDeltaAngle = deltaAngleToTarget(rot)
-  const newDeltaAngle = deltaAngleToTarget(newRot)
-  //log(curDeltaAngle, newDeltaAngle)
-  //log(isAboveMoveLine, curDeltaAngle < PI*.2, newDeltaAngle < curDeltaAngle)
-  if (curDeltaAngle < PI*.2 || newDeltaAngle < curDeltaAngle) missile.rot = newRot
+  const newRot = missile.rot + ((deltaMoveToTarget>0) ? .2 : -.2)
+  // Find smaller angle diff:
+  const curDeltaAngle = abs((abs(angleToTarget - rot%PI2) + PI) % PI2 - PI)
+  if (curDeltaAngle < PI*.4) missile.rot = newRot
 
-  // Is it pointing to target?
-  const rotPointUp = (
-    sin(-rot) * vecToTragetX +
-    cos(-rot) * vecToTragetY
-  ) < 0
+  // Is it pointing to target? (this is an axis rotation formula to take Y value)
+  const rotPointUp = ( sin(-rot)*vecToTragetX + cos(-rot)*vecToTragetY ) < 0
+
   missile.rot += rotPointUp ? -0.1 : 0.1
 }

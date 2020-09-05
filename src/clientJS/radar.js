@@ -51,12 +51,22 @@ function updateRadar() {
   radarCtx.lineWidth = 1.6
   users.filter(p=>p.alive).forEach(usr => {
     radarCtx.strokeStyle = '#000'
-    radarCtx.fillStyle = usr.isMySelf ? '#00F' : '#C00'
+    radarCtx.fillStyle = usr.isMySelf ? '#00F' : '#D00'
     radarCtx.beginPath()
     //radarCtx.moveTo(radarMid+usr.x*radarZoom, radarMid+usr.y*radarZoom)
     radarCtx.arc(radarMid+usr.x*radarZoom, radarMid+usr.y*radarZoom, 2, 0, PI2)
     radarCtx.closePath()
     radarCtx.fill()
     radarCtx.stroke()
+  })
+
+  // Draw Missiles
+  missiles.forEach(missile => {
+    radarCtx.fillStyle = (missile.userID==mySelf.userID) ? '#00F' : '#D00'
+    radarCtx.fillRect(
+      radarMid + missile.x * radarZoom,
+      radarMid + missile.y * radarZoom,
+      1.3, 1.3
+    )
   })
 }

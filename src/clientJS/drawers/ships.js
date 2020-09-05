@@ -238,6 +238,10 @@ function plotMissile(missile) {
     gameCtx.beginPath()
     gameCtx.moveTo(x+radius, y)
     gameCtx.arc(x, y, radius, 0, PI2)
+    const a = missile.velY/missile.velX
+    const b = y - a*x
+    gameCtx.moveTo(0, a*0 + b)
+    gameCtx.lineTo(3000, a*3000 + b)
     gameCtx.stroke()
   }
 }

@@ -132,8 +132,13 @@ function updateCollection(newCollection, collection, step) {
     } else {
       item = collection[i]
     }
-    if (DEBUG_MODE && !item) logErrToUsr('Iten no found!', newItem.id)
-    ;['x','y','radius','a','rot','go','userId'].forEach(att =>
+    if (DEBUG_MODE) {
+      if (!item) logErrToUsr('Iten no found!', newItem.id)
+      item.velX = newItem.velX
+      item.velY = newItem.velY
+    }
+    item.userID = newItem.userID
+    ;['x','y','radius','a','rot','go'].forEach(att =>
       item[att] = ( item[att]*step + newItem[att] ) / (step+1)
     )
   })
