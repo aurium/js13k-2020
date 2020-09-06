@@ -50,7 +50,10 @@ class UserRTC {
   }
 
   reconnect() {
-    if (!this.connected) this.initICE()
+    if (!this.connected) {
+      this.peerConn.close()
+      this.initICE()
+    }
   }
 
   disconnect() {
@@ -159,6 +162,7 @@ function updateConnDisplay() {
     this.display.iceConnectionState.innerText = this.peerConn.iceConnectionState
     this.display.iceGatheringState.innerText = this.peerConn.iceGatheringState
     this.display.connected.innerText = this.connected
+    if (this.peerConn.iceConnectionState == 'disconnected') this.reconnect()
   }
 }
 
@@ -192,7 +196,7 @@ function createRTCPeerConnection(usr) {
     if (DEBUG_MODE && ev) debug('ON ICE Connection State Change', usr.userID, usr.peerConn.iceConnectionState)
     if (usr.peerConn.iceConnectionState === 'failed') {
       notify(`WebRTC connection fail to ${usr.userID}. Let's try again!`)
-      // TODO...
+      usr.reconnect()
     }
   }
   setTimeout(testICEConnectionState.bind(usr), 1000)
