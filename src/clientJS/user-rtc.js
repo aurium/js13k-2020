@@ -229,7 +229,7 @@ socket.on('peeringMessage', function(message) {
   delete message.fromClient
   delete message.userID
 
-  if (message.type === 'offer' && usr.peerConn.iceConnectionState != 'stable') {
+  if (message.type === 'offer') {
     notify(`${logKind(this)} Got offer from ${userID}. Sending answer to peer.`);
     usr.peerConn.setRemoteDescription(new RTCSessionDescription(message))
     .then(()=> notify(`Remote Description Set Ok for ${userID}.`))
