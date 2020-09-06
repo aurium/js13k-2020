@@ -1,11 +1,14 @@
 "use strict";
 
 importScripts('shared.js')
-var numPlayers, players = [], booms = [], missiles = [], planets, gameStarted
+var numPlayers, players = [], booms = [], missiles = [], planets, planetsAndSun, gameStarted
+const sunR1 = 1040
 const sunR3 = 1200
 const constG = 1e-4
 const shipRadius = 30
 const speedLim = sqrt(7*7 + 7*7)
+
+// TODO: add x,y to planets on update entities and remove all planets position calcs
 
 const sendCmd = (cmd, payload)=> postMessage([cmd, payload])
 
@@ -23,6 +26,10 @@ onmessage = ({data:[cmd, payload]})=> {
         a: p.a + aInc * initAngleInc
       }
     })
+    planetsAndSun = [
+      { a:0, d:0, radius:sunR1 },
+      ...planets
+    ]
     flyArroundLobby2()
     setInterval(wwUpdateEntities, 17)
     setInterval(()=> sendCmd('update', {players, planets, booms, missiles}), upDalay)
@@ -269,6 +276,12 @@ function wwUpdateEntities() {
   })
   missiles.forEach(missile => {
     if (wwUpdateEntitiesTic%2) missileRecalc(missile)
+    if (calcVecToSun(missile)[0] < sunR1) explodeMissile(missile)
+    planetsAndSun.forEach(p => {
+      if (calcVec(missile, planetPos(p))[0] < p.radius) {
+        explodeMissile(missile)
+      }
+    })
     calcAcceleration(missile)
     missile.x += missile.velX
     missile.y += missile.velY
@@ -289,6 +302,12 @@ function explodeMissile(missile) {
   })
 }
 
+function difAngles(a1, a2) {
+  let dif1 = ((a2 - a1) + PI) % PI2 - PI
+  let dif2 = -((a1 - a2) + PI) % PI2 + PI
+  return (abs(dif1) < abs(dif2)) ? dif1 : dif2
+}
+
 function missileRecalc(missile) {
   const {x, y, velX, velY, rot} = missile
   const [[dist, vecToTragetX, vecToTragetY], target] = players
@@ -299,23 +318,39 @@ function missileRecalc(missile) {
 
   const velAngle = Math.atan2(velY, velX)
   const angleToTarget = Math.atan2(vecToTragetY, vecToTragetX)
-  const deltaMoveToTarget = angleToTarget - velAngle
+  const difMoveToTarget = difAngles(velAngle, angleToTarget)
 
   // Found missile displacement line function "y = a*x + b":
   const a = velY/velX
   const b = y - a*x
   const isAboveMoveLine = (a*target.x + b) < target.y
-  const newRot = missile.rot + ((deltaMoveToTarget>0) ? .2 : -.2)
-  // Find smaller angle diff between target and missile rotation:
-  const curDeltaAngle = abs((abs(angleToTarget - rot%PI2) + PI) % PI2 - PI)
+  const newRot = missile.rot + ((difMoveToTarget>0) ? .1 : -.1)
+  // Smaller angle between target and missile rotation:
+  const deltaAngle = abs(difAngles(rot, angleToTarget))
   // Correct movement line to intersect the center of the target:
   // (it does not helps when the target is berrind the missile)
-  if (abs(deltaMoveToTarget)<PI/2 && curDeltaAngle < PI*.5) missile.rot = newRot
+  if (abs(difMoveToTarget)<PI/2 && deltaAngle < PI*.5) missile.rot = newRot
 
   // Is it pointing to target? (this is an axis rotation formula to take Y value)
   const rotPointUp = ( sin(-rot)*vecToTragetX + cos(-rot)*vecToTragetY ) < 0
   // Point to the target. It is the best driving solution when far away.
-  missile.rot += rotPointUp ? -0.1 : 0.1
+  missile.rot += rotPointUp ? -0.03 : 0.03
+
+  planetsAndSun.forEach((planet, i)=> {
+    const pos = planetPos(planet)
+    const [distToPlanet, vecToPX, vecToPY] = calcVec(missile, pos)
+    const angleToPlanet = Math.atan2(vecToPY, vecToPX)
+    const difMoveToPlanet = difAngles(velAngle, angleToPlanet)
+    if (
+         abs(difMoveToPlanet)<(PI/2) && // Está na frente
+         distToPlanet < 3e3          && // Próximo o sufuciente
+         distToPlanet < dist         && // Mais próximo que o alvo
+         abs(a*pos.x + b - pos.y) < planet.radius*1.5 // Realmente pode bater
+       ) {
+      //log('PLANET!', missile.userID||missile.id, difMoveToPlanet)
+      missile.rot = angleToPlanet - ((difMoveToPlanet>0)?PI:-PI)/2
+    }
+  })
 
   if (
     // It is near enough and will move away, so explode now!

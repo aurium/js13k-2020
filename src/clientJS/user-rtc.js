@@ -157,7 +157,7 @@ function updateConnDisplay() {
 function createRTCPeerConnection(usr) {
   usr.peerConn = new RTCPeerConnection({
     iceServers: [
-      {urls: 'stun:stun.l.google.com:19302'}
+      {urls: `stun:stun${Math.floor(rnd()*5)||''}.l.google.com:19302`}
     ]
   });
   usr.peerConn.usr = usr
