@@ -49,7 +49,7 @@ function updateRadar() {
 
   // Draw Ships
   radarCtx.lineWidth = 1.6
-  users.filter(p=>p.alive).forEach(usr => {
+  users.filter(p=>p.life).forEach(usr => {
     radarCtx.strokeStyle = '#000'
     radarCtx.fillStyle = usr.isMySelf ? '#00F' : '#D00'
     radarCtx.beginPath()

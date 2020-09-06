@@ -156,7 +156,7 @@ function updateGameCanvas() {
   booms.forEach(plotExplosion)
   missiles.forEach(plotMissile)
   planets.forEach(plotPlanet)
-  users.filter(p=>p.alive).forEach(plotShip)
+  users.filter(p=>p.life).forEach(plotShip)
   if ((frameCounter%updateRadarRate)==0) updateRadar()
   if (frameCounter%framesToCompute === 0) {
     let delay = frameNow - lastUpdate

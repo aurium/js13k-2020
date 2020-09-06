@@ -85,9 +85,8 @@ function updateLife(player, qtd) {
 }
 
 function dye(player) {
-  player.velX = player.velY = player.life = 0
-  player.alive = false
   explode(player)
+  player.velX = player.velY = player.life = 0
   player.land = -1
 }
 
@@ -204,7 +203,7 @@ function calcAcceleration(entity) {
 }
 
 function alivePlayers() {
-  return players.filter(p=>p.alive)
+  return players.filter(p=>p.life)
 }
 
 var wwUpdateEntitiesTic = 0
@@ -297,7 +296,7 @@ function wwUpdateEntities() {
 function explodeMissile(missile) {
   explode(missile)
   missiles = missiles.filter(m => m.id != missile.id)
-  players.filter(p => p.alive).forEach(player => {
+  alivePlayers().forEach(player => {
     const distInvPct = 1 - calcVec(missile, player)[0]/(shipRadius*3)
     if (distInvPct > 0) {
       updateLife(player, -distInvPct*80)
@@ -314,8 +313,8 @@ function difAngles(a1, a2) {
 
 function missileRecalc(missile) {
   const {x, y, velX, velY, rot} = missile
-  const [[dist, vecToTragetX, vecToTragetY], target] = players
-    .filter(p => p.alive && p.userID != missile.userID)
+  const [[dist, vecToTragetX, vecToTragetY], target] = alivePlayers()
+    .filter(p => p.userID != missile.userID)
     .map(p => [calcVec(missile, p), p])
     .sort((v1, v2)=> v1[0][0] - v2[0][0])[0] || [[]]
   if (!target) return
