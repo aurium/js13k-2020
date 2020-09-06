@@ -50,7 +50,7 @@ function updateFromRTC(payload) {
   if (mySelf.energyEl) mySelf.energyEl.style.width = mySelf.energy + '%'
   let speed = (sqrt(mySelf.velX**2 + mySelf.velY**2) / speedLim) * 100
   if (speed > 99.999) speed = 99.999
-  shipStatusText.innerHTML = `Missiles: ${mySelf.missilTot} &nbsp; Lifes: ${mySelf.reborn} &nbsp; &nbsp; ${speed.toFixed(3)}% of light speed`
+  shipStatusText.innerHTML = `Missiles: ${mySelf.misTot} &nbsp; Lifes: ${mySelf.reborn} &nbsp; &nbsp; ${speed.toFixed(3)}% of light speed`
   if (gameStarted && distToSun(mySelf)>20e3 && !userNotifyedAwayFromSun) {
     delayedTip(0, `You are far away from Sun! Good, you can't be found on radar.`)
     delayedTip(3, `...but you can't recharge. Your life support will fail!`)
@@ -203,7 +203,7 @@ function gameStart() {
   targetZoomDelay = 10
   users.forEach((player) => player.fireIsOn = false )
 
-  delayedTip(5, `You have ${mySelf.missilTot} guided missiles.`)
+  delayedTip(5, `You have ${mySelf.misTot} guided missiles.`)
   delayedTip(6, `It will follow the neerest enemy.`)
   delayedTip(7, 'And its lifetime is the amount of energy you will give to it...')
   delayedTip(8, '...with a long press on the space bar.')

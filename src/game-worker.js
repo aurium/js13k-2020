@@ -1,6 +1,7 @@
 "use strict";
 
 importScripts('shared.js')
+const debug = log
 var numPlayers, players = [], booms = [], missiles = [], planets, planetsAndSun, gameStarted
 const sunR1 = 1040
 const sunR3 = 1200
@@ -244,25 +245,28 @@ function wwUpdateEntities() {
       player.y += player.velY
     }
     // Charge and launch missiles
-    let missile = missiles.find(m => m.id == player.misID)
-    if (player.misOn || (0 < player.misEn && player.misEn < 10)) {
-      if (player.misEn < 100) {
-        if (player.energy > 0.1) {
-          player.energy -= 0.1
-          player.misEn += 0.3
-        } else {
-          if (player.misEn > 0.01) player.misEn -= 0.01
+    if (player.misTot > 0) {
+      if (player.misOn || (0 < player.misEn && player.misEn < 10)) {
+        if (player.misEn < 100) {
+          if (player.energy > 0.1) {
+            player.energy -= 0.1
+            player.misEn += 0.3
+          } else {
+            if (player.misEn > 0.01) player.misEn -= 0.01
+          }
         }
       }
-    }
-    else if (player.misEn) { // Launch!
-      missile = { ...player, id: mkID(), src: player.userID }
-      missiles.push(missile)
-      if (myPlanet) planetSpeedToEntity(myPlanet, missile)
-      missile.energy = player.misEn
-      missile.velX += cos(missile.rot)*2
-      missile.velY += sin(missile.rot)*2
-      player.misEn = 0
+      else if (player.misEn) { // Launch!
+        player.misTot--
+        let missile = { ...player, id: mkID(), src: player.userID }
+        missiles.push(missile)
+        if (myPlanet) planetSpeedToEntity(myPlanet, missile)
+        missile.energy = player.misEn
+        missile.velX += cos(missile.rot)*2
+        missile.velY += sin(missile.rot)*2
+        player.misEn = 0
+        debug(`Launch missile ${missile.id} by ${player.userID}!`)
+      }
     }
   })
   planets.forEach(planet => {
