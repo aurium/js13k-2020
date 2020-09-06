@@ -2,7 +2,7 @@
 
 var gameWorker = null
 var lastGameUpdate = 0
-var newPlayers = [], newPlanets = []
+var winner, newPlayers = [], newPlanets = []
 var newBooms = [], booms = []
 var newMissiles = [], missiles = []
 var shipStatusText = body.querySelector('#shipStatus p')
@@ -15,6 +15,7 @@ var startHostWebWorker = ()=> {
   gameWorker.onmessage = ({data:[cmd, payload]})=> {
     if (cmd == 'started') initWebWorker()
     if (cmd == 'update') broadcastRTC(cmd, payload)
+    if (cmd == 'winner') broadcastRTC(cmd, payload)
   }
 }
 
@@ -50,7 +51,16 @@ function updateFromRTC(payload) {
   if (mySelf.energyEl) mySelf.energyEl.style.width = mySelf.energy + '%'
   let speed = (sqrt(mySelf.velX**2 + mySelf.velY**2) / speedLim) * 100
   if (speed > 99.999) speed = 99.999
-  shipStatusText.innerHTML = `Missiles: ${mySelf.misTot} &nbsp; Lifes: ${mySelf.reborn} &nbsp; &nbsp; ${speed.toFixed(3)}% of light speed`
+
+  if (gameStarted && !mySelf.life && !mySelf.reborn) {
+    mySelf.lost = 1
+    body.classList.add('lost')
+    targetZoom = .3
+  }
+  shipStatusText.innerHTML = (mySelf.lost)
+  ? `You lose. ` + (winner ? winner + ' wins!' : '')
+  : `Missiles: ${mySelf.misTot} &nbsp; Lifes: ${mySelf.reborn} &nbsp; &nbsp; ${speed.toFixed(3)}% of light speed`
+
   if (gameStarted && distToSun(mySelf)>20e3 && !userNotifyedAwayFromSun) {
     delayedTip(0, `You are far away from Sun! Good, you can't be found on radar.`)
     delayedTip(3, `...but you can't recharge. Your life support will fail!`)
@@ -158,7 +168,6 @@ const planets = [
    noize: texture
 */
   { radius: 200, a:0,  d:2e3, r:80,  g:80,  b:80,  noize:30 },
-  //{ radius: 250, a:PI, d:2e3, r:180, g:10,  b:10,  noize:50 },
 
   { radius: 300, a:0,  d:4e3, r:100, g:50,  b:30,  noize:30 },
   { radius: 400, a:PI, d:4e3, r:150, g:80,  b:130, noize:30 },

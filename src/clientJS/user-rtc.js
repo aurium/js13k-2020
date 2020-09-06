@@ -105,6 +105,11 @@ class UserRTCClient extends UserRTC {
   cmd_update({userID, payload}) {
     updateFromRTC(payload)
   }
+  cmd_winner({userID, payload}) {
+    winner = payload
+    if (users[winner] === mySelf) youWin.className = 'show'
+    targetZoom = .3
+  }
 }
 
 

@@ -88,6 +88,9 @@ div#shipLife i, #enemyLife div i {
   color: rgba(55,255,0,.5);
   margin-bottom: 10px;
 }
+.lost #shipStatus p {
+  font-size: 40px;
+}
 
 #enemyLife {
   display: flex;
@@ -319,4 +322,24 @@ h1, h2 { margin-bottom: 10px }
 #roomsList #chatNote {
   text-align: right;
   font-size: 12px;
+}
+
+#youWin {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  line-height: 0;
+  text-align: center;
+  font-size: 1vw;
+  font-weight: bold;
+  color: #FFF;
+  opacity: 0;
+  transition: 3s;
+}
+#youWin.show {
+  line-height: 100vh;
+  text-shadow: 0 0 2vw #FFF;
+  font-size: 15vw;
+  opacity: 0.4;
 }

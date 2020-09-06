@@ -2,7 +2,7 @@
 
 importScripts('shared.js')
 const debug = log
-var numPlayers, players = [], booms = [], missiles = [], planets, planetsAndSun, gameStarted
+var numPlayers, winner, players = [], booms = [], missiles = [], planets, planetsAndSun, gameStarted
 const sunR1 = 1040
 const sunR3 = 1200
 const constG = 1e-4
@@ -95,11 +95,11 @@ function dye(player) {
       let a = PI2*rnd()
       player.x = cos(a) * 14e3
       player.y = sin(a) * 14e3
-      player.reborn--
-      player.misTot++
     })
     timeout(7, ()=> {
       player.life = player.energy = 100
+      player.reborn--
+      player.misTot++
     })
   }
 }
@@ -223,6 +223,15 @@ function alivePlayers() {
 var wwUpdateEntitiesTic = 0
 function wwUpdateEntities() {
   wwUpdateEntitiesTic++
+
+  // Test for a winner
+  if (winner) return;
+  let whoCanPlay = players.filter(p=> p.life || p.reborn)
+  if (gameStarted && whoCanPlay.length==1) {
+    winner = whoCanPlay[0].userID
+    sendCmd('winner', winner)
+  }
+
   alivePlayers().forEach(player => {
     updateEnergy(player, 0.05 - calcVecToSun(player)[0]/4e5, true)
     gravitAcceleration(player)
