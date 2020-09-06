@@ -11,6 +11,7 @@ const speedLim = sqrt(7*7 + 7*7)
 
 // TODO: add x,y to planets on update entities and remove all planets position calcs
 
+const timeout = (secs, func)=> setTimeout(func, secs*1000)
 const sendCmd = (cmd, payload)=> postMessage([cmd, payload])
 
 sendCmd('started') // Notify WebWorker is alive to init.
@@ -79,6 +80,7 @@ function updateEnergy(player, qtd, canReduceLife) {
 }
 
 function updateLife(player, qtd) {
+  if (!player.life) return;
   player.life += qtd
   if (player.life < 0) dye(player)
   if (player.life > 100) player.life = 100
@@ -86,8 +88,20 @@ function updateLife(player, qtd) {
 
 function dye(player) {
   explode(player)
-  player.velX = player.velY = player.life = 0
+  player.velX = player.velY = player.rotInc = player.life = 0
   player.land = -1
+  if (player.reborn > 0) {
+    timeout(6, ()=> {
+      let a = PI2*rnd()
+      player.x = cos(a) * 14e3
+      player.y = sin(a) * 14e3
+      player.reborn--
+      player.misTot++
+    })
+    timeout(7, ()=> {
+      player.life = player.energy = 100
+    })
+  }
 }
 
 function explode(entity) {
@@ -96,7 +110,7 @@ function explode(entity) {
   entity = { ...entity, id, radius:0, src: entity.id||entity.userID }
   if (myPlanet) planetSpeedToEntity(myPlanet, entity)
   booms.push(entity)
-  setTimeout(()=> booms = booms.filter(b=>b.id!=id), 5000)
+  timeout(5, ()=> booms = booms.filter(b=>b.id!=id))
 }
 
 function planetSpeedToEntity(planet, entity) {
@@ -107,7 +121,7 @@ function planetSpeedToEntity(planet, entity) {
 const lobbyStart = Date.now()
 function flyArroundLobby2() {
   if (gameStarted) return players.forEach(p => p.fireIsOn = false)
-  setTimeout(flyArroundLobby2, 50)
+  timeout(.1, flyArroundLobby2)
   let baseRot = (Date.now()-lobbyStart) / 9e4
   players.forEach((player, i) => {
     player.rot = baseRot + i*(PI2/numPlayers)
@@ -299,8 +313,8 @@ function explodeMissile(missile) {
   alivePlayers().forEach(player => {
     const distInvPct = 1 - calcVec(missile, player)[0]/(shipRadius*3)
     if (distInvPct > 0) {
-      updateLife(player, -distInvPct*80)
       player.rotInc = (rnd()<.5?-.2:.2)
+      updateLife(player, -distInvPct*80)
     }
   })
 }
