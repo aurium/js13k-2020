@@ -62,6 +62,9 @@ class UserRTC {
   }
 
   send(cmd, payload=null) {
+    if (this.dataChannel.readyState != 'open') {
+      return debug(`Can't send "${cmd}" to ${this.userID}. DataChanne is "${this.dataChannel.readyState}"`)
+    }
     try {
       this.dataChannel.send(
         JSON.stringify([cmd, {userID:this.userID, payload}])
