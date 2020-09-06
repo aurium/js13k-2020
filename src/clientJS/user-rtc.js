@@ -247,7 +247,7 @@ socket.on('peeringMessage', function(message) {
     .then(()=> notify(`Remote Description Set Ok for ${userID}.`))
     .catch(logErrToUsr(`Remote Description Set FAIL for ${userID}.`));
 
-  } else if (message.type === 'candidate') {
+  } else if (message.type === 'candidate' && message.candidate) {
     debug(`${usr.kind} got identity candidate from ${userID}:`, message.candidate)
     usr.peerConn.addIceCandidate(message)
     .catch((err)=> {
