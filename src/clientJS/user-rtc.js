@@ -63,7 +63,7 @@ class UserRTC {
 
   send(cmd, payload=null) {
     if (this.dataChannel.readyState != 'open') {
-      return debug(`Can't send "${cmd}" to ${this.userID}. DataChanne is "${this.dataChannel.readyState}"`)
+      return debug(`Can't send "${cmd}" to ${this.userID}. DataChannel is "${this.dataChannel.readyState}"`)
     }
     try {
       this.dataChannel.send(

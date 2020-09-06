@@ -42,7 +42,7 @@ function usrDisconn(userID, lostMyWS) {
     let usr = getUserRTC(userID)
     if (usr && isRoomOwner) usr.disconnect()
     users = users.filter(u => u.userID != userID)
-    delete users[userID]
+    users.forEach(u => users[u.userID] = u)
     sendUsersToWW()
   }
   updateRoomList()
