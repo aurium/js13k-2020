@@ -21,7 +21,7 @@ if $COPY_ONLY; then
 
 else
 
-  function js_filter() {
+  function js_compress() {
     ( $NO_DEBUG && sed -r 's#(const|var|let) DEBUG_MODE#//#g' || cat ) |
     ( $NO_DEBUG && sed -r 's#(window.)?DEBUG_MODE#false#g' || cat ) |
     ( $NO_DEBUG && sed -r 's#function debug\(#function neverUsedFunc(#g' || cat ) |
@@ -62,18 +62,16 @@ else
   sed -ri "s|<link .*href=\"style.css\">|<style>$STYLE</style>|" public/index.html
 
   echo "(()=>{ $(cat src/server.js) })()" |
-  js_filter |
-  terser --compress --mangle > public/server.js
+  js_compress > public/server.js
 
   echo "(()=>{ $(cat src/game-worker.js) })()" |
-  js_filter |
-  terser --compress --mangle > public/game-worker.js
+  js_compress > public/game-worker.js
 
   echo "(()=>{$(
     grep 'clientJS' src/index.html    |
     sed -r 's#.*src="(.*)".*#src/\1#' |
     xargs cat
-  )})()" | js_filter > public/client.js
+  )})()" | js_compress > public/client.js
 
   terser src/shared.js --compress --mangle > public/shared.js
 
