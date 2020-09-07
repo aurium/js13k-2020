@@ -16,7 +16,7 @@ class Room {
 
   constructor(gameID, ownerSocket, numPlayers, isPublic) {
     this.gameID = gameID
-    forgotThisRoom(this.gameID, 30)
+    forgotThisRoom(this.gameID, 90)
     log(`Usr ${ownerSocket.userID} is creating room ${this.gameID} for ${numPlayers}. isPublic: ${isPublic}`)
     numPlayers = parseInt(numPlayers)
     if (!numPlayers || 2 > numPlayers || numPlayers > 10) {
@@ -51,8 +51,6 @@ class Room {
       log(`The room ${this.gameID} is full! Removing it from public lobby.`)
       // Remove from public rooms list.
       this.isPublic = false
-      // Forgot this room after some time.
-      forgotThisRoom(this.gameID, 60)
     }
 
     socket.emit('numPlayers', this.numPlayers)
@@ -116,6 +114,14 @@ module.exports = {
     socket.on('join', (gameID) => {
       if (rooms[gameID]) rooms[gameID].addPlayer(socket)
       else socket.emit('roomNotFound', gameID)
+    });
+
+    // socket.on('gameStart', (msg) => {
+    //   if (socket.room) socket.room.gameStarted = 1
+    // });
+
+    socket.on('gameEnd', (msg) => {
+      if (socket.room) forgotThisRoom(socket.room.gameID, 1)
     });
 
     socket.on('chat', (msg) => {

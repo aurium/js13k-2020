@@ -15,7 +15,10 @@ var startHostWebWorker = ()=> {
   gameWorker.onmessage = ({data:[cmd, payload]})=> {
     if (cmd == 'started') initWebWorker()
     if (cmd == 'update') broadcastRTC(cmd, payload)
-    if (cmd == 'winner') broadcastRTC(cmd, payload)
+    if (cmd == 'winner') {
+      broadcastRTC(cmd, payload)
+      socket.emit('gameEnd')
+    }
   }
 }
 
@@ -190,6 +193,7 @@ function gameStart() {
     if (DEBUG_MODE) logErrToUsr('Double call gameStart()')()
     return false
   }
+  //socket.emit('gameStart')
   // Prepare Ship Status Display:
   users.forEach(p => {
     if (p != mySelf) {
