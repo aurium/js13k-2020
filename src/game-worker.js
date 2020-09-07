@@ -99,7 +99,7 @@ function dye(player) {
     timeout(7, ()=> {
       player.life = player.energy = 100
       player.reborn--
-      player.misTot++
+      player.misTot+=10
     })
   }
 }

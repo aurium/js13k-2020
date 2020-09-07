@@ -50,6 +50,7 @@ if (queryString.match(/\bgame=/)) {
     if (ev.key == 'Enter') {
       if (chatInput.value) socket.emit('chat', chatInput.value)
       chatInput.value = chatInput.className = ''
+      chatInput.blur()
     }
   })
   socket.on('chat', ({userID, msg})=> {
