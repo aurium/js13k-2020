@@ -130,6 +130,23 @@ div#shipLife i, #enemyLife div i {
   display: block;
 }
 
+#chatInput {
+  position: absolute;
+  left: 20vw;
+  width: 60vw;
+  bottom: 20px;
+  background: #FFF;
+  opacity: 0;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  transition: 0.6s;
+}
+#chatInput.show {
+  bottom: 20vh;
+  opacity: 0.6;
+}
+
 #msgList {
   position: absolute;
   top: 5px;

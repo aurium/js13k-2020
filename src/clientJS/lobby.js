@@ -40,12 +40,20 @@ if (queryString.match(/\bgame=/)) {
 
   window.addEventListener('keyup', ev => {
     if (ev.key == 'Enter') {
-      let msg = prompt('Write a message to the other players:')
-      if (msg) socket.emit('chat', msg)
+      chatInput.className = 'show'
+      chatInput.focus()
+    }
+  })
+  chatInput.addEventListener('keydown', ev => ev.stopPropagation())
+  chatInput.addEventListener('keyup', ev => {
+    ev.stopPropagation()
+    if (ev.key == 'Enter') {
+      if (chatInput.value) socket.emit('chat', chatInput.value)
+      chatInput.value = chatInput.className = ''
     }
   })
   socket.on('chat', ({userID, msg})=> {
-    notify('chat', userID+':', msg)
+    notify('chat', getName(userID)+':', msg)
   })
 
   socket.on('youAreTheOwner', ()=> {

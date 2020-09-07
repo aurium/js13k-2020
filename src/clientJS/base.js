@@ -16,8 +16,7 @@ const mkEl = (tag, parent, txt='')=> {
 }
 
 function getName(user) {
-  if (user.userID) return user.userID.split('\n')[0]
-  else user.split('\n')[0]
+  return (user.userID ? user.userID : user).split('\n')[0]
 }
 
 function repeat(num, func) {
