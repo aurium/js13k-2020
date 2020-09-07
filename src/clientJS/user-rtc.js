@@ -253,6 +253,9 @@ socket.on('peeringMessage', function(message) {
 
   } else if (message.type === 'candidate' && message.candidate) {
     debug(`${usr.kind} got identity candidate from ${userID}:`, message.candidate)
+    if (DEBUG_MODE && !(usr.peerConn.remoteDescription && usr.peerConn.remoteDescription.type)) {
+      debug('I DONT HAVE REMOTE DESCRIPTION!', usr.peerConn.remoteDescription)
+    }
     usr.peerConn.addIceCandidate(message)
     .catch((err)=> {
       logErrToUsr(`Add ICE Candidate FAIL for ${userID}.`)(err)
