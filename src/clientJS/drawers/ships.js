@@ -173,7 +173,7 @@ function plotShip(player) {
   gameCtx.fillStyle = 'rgba(255,255,255,0.6)'
   gameCtx.font = `normal ${8/divScreen+5}px sans-serif`
   gameCtx.textAlign = 'center'
-  gameCtx.fillText(player.userID, 0, -radius - 16/divScreen)
+  gameCtx.fillText(getName(player), 0, -radius - 16/divScreen)
   gameCtx.rotate(player.rot)
   if (player.fireIsOn) drawShipFire(quarter)
   if (player.rotJet!=0) drawShipRotJet(quarter, player.rotJet)

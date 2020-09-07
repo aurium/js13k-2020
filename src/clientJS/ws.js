@@ -1,6 +1,9 @@
 var socket = io({ upgrade: false, transports: ["websocket"] });
 
-if (!localStorage.userID) localStorage.userID = mkID()
+if (!(localStorage.userID||'').match(/\n/)) {
+  let nick = prompt('Set your player name:')
+  localStorage.userID = (nick ? nick+'\n' : 'unnamed-') + mkID()
+}
 
 socket.on('connect', () => {
   notify('Conected to the server');

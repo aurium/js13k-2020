@@ -11,7 +11,7 @@ function updateRoomList() {
     <p>players:</p>
     <div id="players">${
       users
-      .map(u => `<span class="${u.connected?'conn':''}">${u.userID}</span>`)
+      .map(u => `<span class="${u.connected?'conn':''}">${getName(u)}</span>`)
       .join(' &nbsp; ')
     }</div>
     <p id="chatNote">Press enter to chat.</p>

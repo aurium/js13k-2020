@@ -61,7 +61,7 @@ function updateFromRTC(payload) {
     targetZoom = .3
   }
   shipStatusText.innerHTML = (mySelf.lost)
-  ? `You lose. ` + (winner ? winner + ' wins!' : '')
+  ? `You lose. ` + (winner ? getName(winner) + ' wins!' : '')
   : `Missiles: ${mySelf.misTot} &nbsp; Lifes: ${mySelf.reborn} &nbsp; &nbsp; ${speed.toFixed(3)}% of light speed`
 
   if (gameStarted && distToSun(mySelf)>20e3 && !userNotifyedAwayFromSun) {
@@ -119,7 +119,7 @@ function updateEntities() {
       player.y   = ( player.y*step   + p.y   ) / (step+1)
       player.rot = ( player.rot*step + p.rot ) / (step+1)
     }
-    else debug(`Player ${p.userID} was deleted?`)
+    else debug(`Player ${getName(p)} was deleted?`)
   })
   if (mySelf.misEn) {
     missilBar.style.opacity =  1
@@ -197,7 +197,7 @@ function gameStart() {
   // Prepare Ship Status Display:
   users.forEach(p => {
     if (p != mySelf) {
-      let enemyEl = mkEl('a', enemyLife, p.userID)
+      let enemyEl = mkEl('a', enemyLife, getName(p))
       let div = mkEl('div', enemyEl)
       let lifeEl = mkEl('i', div)
       p.lifeEl = lifeEl

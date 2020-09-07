@@ -90,7 +90,7 @@ class Room {
 }
 
 const mockSocket = {
-  userID: 'Aurium',
+  userID: 'Aurium\n0',
   emit: ()=>0,
   join: ()=>0,
   to: ()=> ({emit:()=>0})
@@ -162,9 +162,11 @@ module.exports = {
 
 function peeringMessage(message) {
   log(`Client ${this.userID} peeringMessage:`, message?message.type:'<nullish>');
-  if (message.fromClient) {
-    this.room.owner.emit('peeringMessage', message);
-  } else {
-    this.room.emitTo(message.userID, 'peeringMessage', message);
+  if (this.room) {
+    if (message.fromClient) {
+      this.room.owner.emit('peeringMessage', message);
+    } else {
+      this.room.emitTo(message.userID, 'peeringMessage', message);
+    }
   }
 }
