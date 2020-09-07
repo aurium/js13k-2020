@@ -20,6 +20,7 @@ But, be cautious, the autopilot won't slow down fast enough if you're above 50% 
 The controls are:
 * **Left and Right arrows:** Rotate the ship. The secure inertial sensor will prevent you to rotate too fast.
 * **Up arrow:** Accelerate the ship.
+* **Down arrow:** slow down the ship.
 * **Space bar:** Launch guided missiles.
 
 You can't exceed light speed. As you become near to that, less you propulsion will take effect.

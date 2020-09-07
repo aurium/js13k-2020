@@ -36,6 +36,24 @@ function drawShipRotJet(quarter, dir) {
   gameCtx.stroke()
 }
 
+function drawShipBrake(quarter) {
+  gameCtx.beginPath()
+  gameCtx.moveTo(0, 0)
+  gameCtx.moveTo(cos(.8)*quarter, sin(.8)*quarter)
+  gameCtx.arc(0, 0, quarter*1.15, .8, 2.5, 0)
+  gameCtx.moveTo(cos(-.8)*quarter, sin(-.8)*quarter)
+  gameCtx.arc(0, 0, quarter*1.15, -.8, -2.5, 1)
+  gameCtx.moveTo(0, 0)
+  gameCtx.lineWidth = quarter/2.5
+
+  const grad = gameCtx.createRadialGradient(0,0, quarter, 0,0, quarter*1.4)
+  grad.addColorStop(0, '#0FF')
+  grad.addColorStop(1, 'rgba(0,0,255,0)')
+  gameCtx.strokeStyle = grad
+  //gameCtx.strokeStyle = 'rgba(0,80,255,0.4)'
+  gameCtx.stroke()
+}
+
 function drawShip(canvas, isMySelf) {
   var grad
   const quarter = shipCanvasSize/4
@@ -47,7 +65,7 @@ function drawShip(canvas, isMySelf) {
     //ctx.fillRect(-quarter*2, -quarter*2, shipCanvasSize, shipCanvasSize)
   }
 
-  // Nacele Esq
+  // Nacele
   function mkNacele(side) {
     ctx.beginPath()
     let ini = PI*(5-side*2)/10
@@ -176,6 +194,7 @@ function plotShip(player) {
   gameCtx.fillText(getName(player), 0, -radius - 16/divScreen)
   gameCtx.rotate(player.rot)
   if (player.fireIsOn) drawShipFire(quarter)
+  if (player.re) drawShipBrake(quarter)
   if (player.rotJet!=0) drawShipRotJet(quarter, player.rotJet)
   gameCtx.drawImage(
     canvas,

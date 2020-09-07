@@ -95,6 +95,9 @@ class UserRTCHost extends UserRTC {
   cmd_fireIsOn({userID, payload}) {
     sendWWCmd('fireIsOn', [userID, payload])
   }
+  cmd_re({userID, payload}) {
+    sendWWCmd('re', [userID, payload])
+  }
   cmd_rotJet({userID, payload}) {
     sendWWCmd('rotJet', [userID, payload])
   }

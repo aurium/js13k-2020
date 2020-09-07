@@ -60,6 +60,8 @@ onmessage = ({data:[cmd, payload]})=> {
   const cmdVal = payload[1]
   if (cmd == 'fireIsOn')
     cmdPlayer.fireIsOn = cmdVal
+  if (cmd == 're')
+    cmdPlayer.re = cmdVal
   if (cmd == 'rotJet') {
     cmdPlayer.rotJet = 0
     if (cmdVal < 0 && cmdPlayer.rotInc >-0.1) cmdPlayer.rotJet = cmdVal
@@ -74,7 +76,7 @@ function updateEnergy(player, qtd, canReduceLife) {
   if (player.energy <= 0) {
     if (canReduceLife) updateLife(player, -0.1)
     player.energy = 0
-    player.fireIsOn = false
+    player.fireIsOn = player.re = 0
   }
   if (player.energy > 100) player.energy = 100
 }
@@ -120,12 +122,12 @@ function planetSpeedToEntity(planet, entity) {
 
 const lobbyStart = Date.now()
 function flyArroundLobby2() {
-  if (gameStarted) return players.forEach(p => p.fireIsOn = false)
+  if (gameStarted) return players.forEach(p => p.fireIsOn = 0)
   timeout(.1, flyArroundLobby2)
   let baseRot = (Date.now()-lobbyStart) / 9e4
   players.forEach((player, i) => {
     player.rot = baseRot + i*(PI2/numPlayers)
-    player.fireIsOn = true
+    player.fireIsOn = 1
     player.velX = cos(player.rot) * 2
     player.velY = sin(player.rot) * 2
     player.x = +sin(player.rot)*10e3
@@ -246,12 +248,18 @@ function wwUpdateEntities() {
     if (-0.001 < player.rotInc && player.rotInc < 0.001) player.rotInc = 0
     player.rot += player.rotInc
     let myPlanet = planets[player.land]
+    if (player.re) {
+      updateEnergy(player, -.02)
+      player.velX -= sign(player.velX)/30
+      player.velY -= sign(player.velY)/30
+      player.rotInc *= 0.99
+    }
     if (player.fireIsOn) {
       updateEnergy(player, -.05)
       if (myPlanet) planetSpeedToEntity(myPlanet, player)
       player.land = -1
       calcAcceleration(player)
-      player.rotInc *= 0.995 // Helps to stabilize when accelerating.
+      player.rotInc *= 0.99 // Helps to stabilize when accelerating.
     }
     if (player.land > -1) {
       updateLife(player, 0.02)

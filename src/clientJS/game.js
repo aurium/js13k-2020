@@ -214,7 +214,7 @@ function gameStart() {
 
   targetZoom = 1
   targetZoomDelay = 10
-  users.forEach((player) => player.fireIsOn = false )
+  users.forEach((player) => player.fireIsOn = 0 )
 
   delayedTip(5, `You have ${mySelf.misTot} guided missiles.`)
   delayedTip(6, `It will follow the neerest enemy.`)
@@ -224,14 +224,16 @@ function gameStart() {
   delayedTip(15, 'Your people will send some aid boxes. Go get then!')
 
   window.addEventListener('keydown', (ev)=> {
-    if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn',  mySelf.fireIsOn = true)
+    if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn',  mySelf.fireIsOn = 1)
+    if (ev.key == 'ArrowDown') clentRTC.send('re',      mySelf.re = 1)
     if (ev.key == 'ArrowLeft') clentRTC.send('rotJet',  mySelf.rotJet = -1)
     if (ev.key == 'ArrowRight') clentRTC.send('rotJet', mySelf.rotJet = +1)
     if (ev.key == ' ') clentRTC.send('misOn', 1) // Add energy to Missile
   })
 
   window.addEventListener('keyup', (ev)=> {
-    if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn', false)
+    if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn', 0)
+    if (ev.key == 'ArrowDown') clentRTC.send('re', 0)
     if (ev.key == 'ArrowLeft') clentRTC.send('rotJet', 0)
     if (ev.key == 'ArrowRight') clentRTC.send('rotJet', 0)
     if (ev.key == ' ') clentRTC.send('misOn', 0) // Launch the missile
