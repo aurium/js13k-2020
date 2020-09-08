@@ -161,7 +161,6 @@ function updateGameCanvas() {
   if (frameCounter%framesToCompute === 0) {
     let delay = frameNow - lastUpdate
     FPS = round(framesToCompute*1000/delay)
-    fps.innerText = 'FPS: ' + FPS
     if (FPS > 33) {
       alertFPS++
     } else if ((!gameStarted || quality < QUALITY.MEDIUM) && FPS > 22) {
