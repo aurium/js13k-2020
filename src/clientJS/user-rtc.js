@@ -144,7 +144,6 @@ function createConnDisplay() {
     ['User', 'userID'],
     ['Signal', 'signalingState'],
     ['ICE', 'iceConnectionState'],
-    ['Gathering', 'iceGatheringState'],
     ['Connected', 'connected']
   ].forEach(([label, key])=> {
     if (!this.isClient || key != 'userID') {
@@ -163,7 +162,6 @@ function updateConnDisplay() {
     if (!this.isClient) this.display.userID.innerText = getName(this)
     this.display.signalingState.innerText = this.peerConn.signalingState
     this.display.iceConnectionState.innerText = this.peerConn.iceConnectionState
-    this.display.iceGatheringState.innerText = this.peerConn.iceGatheringState
     this.display.connected.innerText = this.connected
     if (this.peerConn.iceConnectionState == 'disconnected') this.reconnect()
   }
