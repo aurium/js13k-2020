@@ -30,6 +30,15 @@ else
     sed -r 's/\b(function |const |var |let |if\()/\n\1/g'
   }
 
+  function crush() {
+    node -e "
+      crush = require('./crush');
+      src = '';
+      process.stdin.on('data', (chunk)=> src += chunk.toString() );
+      process.stdin.on('end', ()=> process.stdout.write(crush(src)+\"$1\") );
+    "
+  }
+
   index_step1=$(mktemp)
   if $NO_DEBUG; then
     grep -vi 'debug' src/index.html > $index_step1
