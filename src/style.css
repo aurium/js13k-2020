@@ -139,6 +139,7 @@ div#shipLife i, #enemyLife div i {
   top: 5px;
   right: 10px;
   text-align: right;
+  text-shadow: 0 0 4px #000;
 }
 #msgList > div {
   position: relative;
@@ -171,9 +172,7 @@ div#shipLife i, #enemyLife div i {
   padding: 8px 6px;
   border-radius: 10px;
   background: rgba(0,100,255,0.333);
-  box-shadow: inset 0 0 15px rgba(0,255,255,0.333);
   color: #FFF;
-  text-shadow: 0 0 5px #FFF;
   font-size: 20px;
   overflow: hidden;
 }
@@ -183,22 +182,18 @@ div#shipLife i, #enemyLife div i {
 
 .logmsg.chat {
   background: rgba(120,120,120,0.333);
-  box-shadow: inset 0 0 15px rgba(200,200,200,0.333);
   font-size: 15px;
 }
 .logmsg.chat span:first-child {
   letter-spacing: -1px;
-  text-shadow: 0 0 3px #000;
 }
 
 .logmsg.tip {
   background: rgba(0,150,0,0.5);
-  box-shadow: inset 0 0 15px rgba(0,255,0,0.5);
 }
 
 .logmsg.error {
   background: rgba(200,0,0,0.5);
-  box-shadow: inset 0 0 15px rgba(255,0,0,0.5);
 }
 .logmsg.error span:first-child {
   font-weight: bold;
