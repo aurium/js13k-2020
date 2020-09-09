@@ -4,6 +4,7 @@ var gameWorker = null
 var lastGameUpdate = 0
 var winner, newPlayers = [], newPlanets = []
 var newBooms = [], booms = []
+var newBoxes = [], boxes = []
 var newMissiles = [], missiles = []
 var shipStatusText = body.querySelector('#shipStatus p')
 var missilEnergyEl = mkEl('i', missilBar)
@@ -38,6 +39,8 @@ const initNewItem = (collection)=> (newItem)=> {
 
 function updateFromRTC(payload) {
   lastGameUpdate = Date.now()
+  newBoxes = payload.boxes
+  newBoxes.forEach(initNewItem(boxes))
   newBooms = payload.booms
   newBooms.forEach(initNewItem(booms))
   newMissiles = payload.missiles
@@ -130,6 +133,7 @@ function updateEntities() {
   }
   updateCollection(newPlanets, planets, step)
   missiles = updateCollection(newMissiles, missiles, step)
+  boxes = updateCollection(newBoxes, boxes, step)
   booms = updateCollection(newBooms, booms, step)
 }
 

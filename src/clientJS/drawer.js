@@ -153,6 +153,7 @@ function updateGameCanvas() {
   gameCtx.globalCompositeOperation = 'source-over'
   updateSun()
   gameCtx.globalCompositeOperation = 'source-over'
+  boxes.forEach(plotBox)
   booms.forEach(plotExplosion)
   missiles.forEach(plotMissile)
   planets.forEach(plotPlanet)

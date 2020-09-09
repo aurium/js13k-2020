@@ -212,6 +212,44 @@ function plotShip(player) {
   }
 }
 
+function plotBox(box) {
+  const radius = shipRadius*zoom/divScreen
+  const [x, y] = relativeObjPos(box)
+  gameCtx.save()
+  gameCtx.translate(x, y)
+  gameCtx.rotate(frameNow/1000%PI2)
+  if (DEBUG_MODE) {
+    gameCtx.beginPath()
+    gameCtx.moveTo(radius, 0)
+    gameCtx.arc(0, 0, radius, 0, PI2)
+    gameCtx.strokeStyle = '#08F'
+    gameCtx.stroke()
+  }
+  gameCtx.fillStyle = '#269'
+  gameCtx.beginPath()
+  gameCtx.moveTo(radius*.7,-radius*.9)
+  gameCtx.lineTo(radius*.9,-radius*.7)
+  gameCtx.lineTo(radius*.9, radius*.9)
+  gameCtx.lineTo(0, 0)
+  gameCtx.fill()
+  gameCtx.fillStyle = '#158'
+  gameCtx.beginPath()
+  gameCtx.moveTo(-radius*.9, radius*.7)
+  gameCtx.lineTo(-radius*.7, radius*.9)
+  gameCtx.lineTo( radius*.9, radius*.9)
+  gameCtx.lineTo(0, 0)
+  gameCtx.fill()
+  gameCtx.fillStyle = '#37A'
+  gameCtx.fillRect(-radius*.9,-radius*.9,radius*1.6,radius*1.6)
+  // Name it
+  gameCtx.rotate(PI/4)
+  gameCtx.fillStyle = '#FFF'
+  gameCtx.font = `normal ${radius/3}px sans-serif`
+  gameCtx.textAlign = 'center'
+  gameCtx.fillText('WEAPON', -radius/8, radius/8)
+  gameCtx.restore()
+}
+
 function plotMissile(missile) {
   const radius = (shipRadius/2)*zoom/divScreen
   const [x, y] = relativeObjPos(missile)

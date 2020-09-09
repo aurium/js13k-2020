@@ -2,12 +2,13 @@
 
 importScripts('shared.js')
 const debug = log
-var numPlayers, winner, players = [], booms = [], missiles = [], planets, planetsAndSun, gameStarted
+var numPlayers, winner, players = [], boxes = [], booms = [], missiles = [], planets, planetsAndSun, gameStarted
 const sunR1 = 1040
 const sunR3 = 1200
 const constG = 1e-4
 const shipRadius = 30
 const speedLim = sqrt(7*7 + 7*7)
+const numOfBoxLaunchers = 12
 
 // TODO: add x,y to planets on update entities and remove all planets position calcs
 
@@ -34,7 +35,7 @@ onmessage = ({data:[cmd, payload]})=> {
     ]
     flyArroundLobby2()
     setInterval(wwUpdateEntities, 17)
-    setInterval(()=> sendCmd('update', {players, planets, booms, missiles}), upDalay)
+    setInterval(()=> sendCmd('update', {players, planets, boxes, booms, missiles}), upDalay)
   }
   if (cmd == 'updadeUsers') {
     players = payload
@@ -54,6 +55,22 @@ onmessage = ({data:[cmd, payload]})=> {
         rot: 0
       })
     }*/
+    const mkBox = (pos, dist, vel)=> {
+      let inc = PI2/numOfBoxLaunchers
+      boxes.push({
+        id: mkID(),
+        x: cos(pos*inc)*dist,
+        y: sin(pos*inc)*dist,
+        velX: cos((pos+numOfBoxLaunchers/3)*inc)*vel,
+        velY: sin((pos+numOfBoxLaunchers/3)*inc)*vel
+      })
+    }
+    for (let i=0; i<numOfBoxLaunchers; i++) mkBox(i, 20e3, 2)
+    let newBoxLauncherPos = 0
+    setInterval(()=> {
+      mkBox(newBoxLauncherPos++, 22e3, 1)
+      if (newBoxLauncherPos == numOfBoxLaunchers) newBoxLauncherPos = 0
+    }, 20e3)
   }
 
   const cmdPlayer = players[payload[0]]
@@ -101,7 +118,7 @@ function dye(player) {
     timeout(7, ()=> {
       player.life = player.energy = 100
       player.reborn--
-      player.misTot+=10
+      if (player.misTot < 3) player.misTot = 3
     })
   }
 }
@@ -158,23 +175,25 @@ function angleToVec(a, size=1) {
   }
 }
 
-function gravitAcceleration(player) {
-  if (player.land > -1) return;
+function gravitAcceleration(entity, canLand) {
+  if (entity.land > -1) return;
   // Calcs sun attraction:
-  let [dist, dirX, dirY] = calcVecToSun(player)
+  let [dist, dirX, dirY] = calcVecToSun(entity)
   let attraction = (sunR3**2*constG) / dist**1.5 // reduced pow 2 to long affect
-  player.velX += attraction * dirX
-  player.velY += attraction * dirY
+  entity.velX += attraction * dirX
+  entity.velY += attraction * dirY
   // Calcs planets attraction:
-  planets.forEach((planet, i)=> {
-    [dist, dirX, dirY] = calcVec(player, planetPos(planet))
+  //planets.forEach((planet, i)=> {
+  for (let planet,i=0; planet=planets[i]; i++) {
+    [dist, dirX, dirY] = calcVec(entity, planetPos(planet))
     if (dist < (planet.radius + shipRadius)) {
-      playerTouchPlanet(player, planet, i, dist, dirX, dirY)
+      if (canLand) playerTouchPlanet(entity, planet, i, dist, dirX, dirY)
+      else return 1
     }
     attraction = (planet.radius**2.5*constG) / dist**2
-    player.velX += attraction * dirX
-    player.velY += attraction * dirY
-  })
+    entity.velX += attraction * dirX
+    entity.velY += attraction * dirY
+  }
 }
 
 function playerTouchPlanet(player, planet, planetIndex, dist, dirX, dirY) {
@@ -236,7 +255,7 @@ function wwUpdateEntities() {
 
   alivePlayers().forEach(player => {
     updateEnergy(player, 0.05 - calcVecToSun(player)[0]/4e5, true)
-    gravitAcceleration(player)
+    gravitAcceleration(player, true)
     if (player.rotJet<0) {
       if (player.rotInc>-0.1) player.rotInc -= 0.001
       else player.rotJet = 0
@@ -298,16 +317,35 @@ function wwUpdateEntities() {
         debug(`Launch missile ${missile.id} by ${player.userID}!`)
       }
     }
+    // Get Weapon Box
+    boxes.forEach(box => {
+      if (calcVec(player, box)[0] < shipRadius*2) {
+        player.misTot += 2
+        boxes = boxes.filter(b => b.id != box.id)
+      }
+    })
   })
+
   planets.forEach(planet => {
     planet.a += planet.aInc
     planet.rot += planet.rotInc
   })
+
   booms.forEach(boom => {
     boom.x += boom.velX
     boom.y += boom.velY
     boom.radius++
   })
+
+  boxes.forEach(box => {
+    if (gravitAcceleration(box) || calcVecToSun(box)[0] < sunR1) {
+      explode(box)
+      boxes = boxes.filter(b => b.id != box.id)
+    }
+    box.x += box.velX
+    box.y += box.velY
+  })
+
   missiles.forEach(missile => {
     if (wwUpdateEntitiesTic%2) missileRecalc(missile)
     if (calcVecToSun(missile)[0] < sunR1) explodeMissile(missile)

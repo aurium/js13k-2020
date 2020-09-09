@@ -69,4 +69,14 @@ function updateRadar() {
       1.3, 1.3
     )
   })
+
+  // Draw Boxes
+  boxes.forEach(box => {
+    radarCtx.fillStyle = 'rgba(127,255,0,.1)'
+    radarCtx.fillRect(
+      radarMid + box.x * radarZoom,
+      radarMid + box.y * radarZoom,
+      1.3, 1.3
+    )
+  })
 }

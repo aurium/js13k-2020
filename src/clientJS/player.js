@@ -25,7 +25,7 @@ class Player {
     this.life = 100
     this.energy = 100
     this.reborn = 3
-    this.misTot = 30
+    this.misTot = 3
   }
 
   disconnect() { /* placeholder only */ }
