@@ -38,7 +38,7 @@ body.mouse-alive canvas {
   image-rendering: crisp-edges;
 }
 
-#radarCanvas {
+#radar {
   display: block;
   position: absolute;
   top: 2px;
@@ -50,8 +50,8 @@ body.mouse-alive canvas {
   background: rgba(0,0,0,.75);
   transition: 4s;
 }
-.before-init #radarCanvas { top: -410px }
-.lobby1 #radarCanvas {
+.before-init #radar { top: -410px }
+.lobby1 #radar {
   width: 170px;
   height: 170px;
 }

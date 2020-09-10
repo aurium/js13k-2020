@@ -21,6 +21,28 @@ var FPS = 30
 var stars1 = [], stars2 = [], stars3 = []
 var frameNow
 
+const mkCanvas = (w,h)=> {
+  let el = mkEl('canvas', body)
+  el.width = w
+  el.height = h
+  return el
+}
+// <canvas id="gameCanvas"></canvas>
+// <canvas id="radarCanvas" width="400" height="400"></canvas>
+// <canvas id="canvBG3" width="2048" height="2048"></canvas>
+// <canvas id="canvShip1" width="300" height="300"></canvas>
+// <canvas id="canvShip2" width="300" height="300"></canvas>
+const canvBG1 = mkCanvas()
+const canvBG2 = mkCanvas()
+const canvBG3 = mkCanvas(2048, 2048)
+const canvBG4 = mkCanvas()
+const canvShip1 = mkCanvas(300, 300)
+const canvShip2 = mkCanvas(300, 300)
+const gameCanvas = mkCanvas()
+const radarCanvas = mkCanvas(400, 400)
+gameCanvas.id = 'gameCanvas'
+radarCanvas.id = 'radar'
+
 function setQuality(newQuality, msg='', force) {
   if (FORCE_QUALITY) newQuality = FORCE_QUALITY
   //if (force) notify('Force screen reset')

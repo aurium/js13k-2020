@@ -2,7 +2,6 @@
 
 const radarCtx = radarCanvas.getContext('2d')
 
-const updateRadarRate = 5
 const radarSize = 400
 const radarMid = radarSize / 2
 var radarZoom = 0.01

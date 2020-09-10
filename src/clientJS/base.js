@@ -61,6 +61,7 @@ var quality = 0
 var zoom = 0.05
 var targetZoom = 2
 var targetZoomDelay = 10
+const updateRadarRate = 5
 
 const shipRadius = 30
 const shipRadiusWithFire = 60
