@@ -58,10 +58,15 @@ function updateFromRTC(payload) {
   let speed = (sqrt(mySelf.velX**2 + mySelf.velY**2) / speedLim) * 100
   if (speed > 99.999) speed = 99.999
 
-  if (gameStarted && !mySelf.life && !mySelf.reborn) {
-    mySelf.lost = 1
-    body.classList.add('lost')
-    targetZoom = .3
+  if (gameStarted) {
+    if (!mySelf.life && !mySelf.reborn) {
+      mySelf.lost = 1
+      body.classList.add('lost')
+      targetZoom = .3
+    }
+    else if (speed > 50) targetZoom = .7
+    else if (mySelf.land > -1) targetZoom = 1.5
+    else targetZoom = 1
   }
   shipStatusText.innerHTML = (mySelf.lost)
   ? `You lose. ` + (winner ? getName(winner) + ' wins!' : '')

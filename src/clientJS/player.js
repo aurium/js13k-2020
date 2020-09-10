@@ -2,7 +2,7 @@
 
 const playerAttrsWithoutPos = [
   'energy', 'life', 'reborn',
-  'velX', 'velY', 'rotInc',
+  'velX', 'velY', 'rotInc', 'land',
   'misTot', 'misEn', 'fireIsOn', 're', 'rotJet'
 ]
 const playerAttrs = [ 'x', 'y', 'rot', ...playerAttrsWithoutPos ]
@@ -26,6 +26,7 @@ class Player {
     this.energy = 100
     this.reborn = 3
     this.misTot = 3
+    this.land = -1
   }
 
   disconnect() { /* placeholder only */ }
