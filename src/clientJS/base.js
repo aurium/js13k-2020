@@ -30,6 +30,15 @@ Object.keys(canvasCtxProto).sort().forEach(fName => {
   if (DEBUG_MODE) log(`${sigla} -> ${fName}`)
 })
 
+canvasCtxProto.g = function(type, destination, x1,y1,r1, x2,y2,r2, ...colorStops) {
+  const grad = type ? this.cRG(x1,y1,r1, x2,y2,r2) :  this.cLG(x1,y1, x2,y2)
+  colorStops.forEach((color, i) => {
+    let pos = (color[1]/100) || (i/(colorStops.length-1))
+    grad.addColorStop(pos, color[0])
+  })
+  this[destination](grad)
+}
+
 function getName(user) {
   return (user.userID ? user.userID : user).split('\n')[0]
 }

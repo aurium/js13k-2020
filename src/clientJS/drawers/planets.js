@@ -30,13 +30,18 @@ function drawPlanet(planet, index) {
   // Draw sun light/shadow mask:
   ctx4.fS('#FFF')
   ctx4.fR(0,0,diameter,diameter)
-  let grad = ctx4.cRG(
+  // let grad = ctx4.cRG(
+  //   radius*0.5, radius, radius*0.2,
+  //   radius*0.8, radius, radius*1.2
+  // )
+  // grad.addColorStop(0, 'rgba(255,255,255, 0)')
+  // grad.addColorStop(1, 'rgba(  1,  1,  1, 1)')
+  // ctx4.fS(grad)
+  ctx4.g(1, 'fS',
     radius*0.5, radius, radius*0.2,
-    radius*0.8, radius, radius*1.2
+    radius*0.8, radius, radius*1.2,
+    ['rgba(255,255,255, 0)'], ['rgba(  1,  1,  1, 1)']
   )
-  grad.addColorStop(0, 'rgba(255,255,255, 0)')
-  grad.addColorStop(1, 'rgba(  1,  1,  1, 1)')
-  ctx4.fS(grad)
   ctx4.bP()
   ctx4.a(radius, radius, radius, 0, PI2)
   ctx4.cP()

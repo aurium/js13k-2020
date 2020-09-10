@@ -3,10 +3,11 @@
 const shipCanvasSize = 300
 
 function drawShipFire(quarter) {
-  let grad = gameCtx.cRG(-quarter*1.1,0, 2, -quarter*1.2,0, quarter/3)
-  grad.addColorStop(0, '#8FF')
-  grad.addColorStop(1, '#08F')
-  gameCtx.fS(grad)
+  // let grad = gameCtx.cRG(-quarter*1.1,0, 2, -quarter*1.2,0, quarter/3)
+  // grad.addColorStop(0, '#8FF')
+  // grad.addColorStop(1, '#08F')
+  // gameCtx.fS(grad)
+  gameCtx.g(1,'fS', -quarter*1.1,0, 2, -quarter*1.2,0, quarter/3, ['#8FF'], ['#08F'])
   gameCtx.bP()
   const wav = 1.15
   gameCtx.moT(-quarter*.8, 0)
@@ -28,10 +29,11 @@ function drawShipRotJet(quarter, dir) {
   gameCtx.lT( quarter*.5,  -quarter*1.5*dir)
   gameCtx.moT(-quarter*.75,  quarter*.65*dir)
   gameCtx.lT(-quarter*.5,   quarter*1.5*dir)
-  const grad = gameCtx.cRG(0,0, quarter*.8, 0,0, quarter*1.5)
-  grad.addColorStop(0, 'rgba(255,255,255,0.5)')
-  grad.addColorStop(1, 'rgba(255,255,255,0)')
-  gameCtx.sS(grad)
+  // const grad = gameCtx.cRG(0,0, quarter*.8, 0,0, quarter*1.5)
+  // grad.addColorStop(0, 'rgba(255,255,255,0.5)')
+  // grad.addColorStop(1, 'rgba(255,255,255,0)')
+  // gameCtx.sS(grad)
+  gameCtx.g(1,'sS', 0,0, quarter*.8, 0,0, quarter*1.5, ['rgba(255,255,255,0.5)'], ['rgba(255,255,255,0)'])
   gameCtx.lW(2)
   gameCtx.st()
 }
@@ -46,10 +48,11 @@ function drawShipBrake(quarter) {
   gameCtx.moT(0, 0)
   gameCtx.lW(quarter/2.5)
 
-  const grad = gameCtx.cRG(0,0, quarter, 0,0, quarter*1.4)
-  grad.addColorStop(0, '#0FF')
-  grad.addColorStop(1, 'rgba(0,0,255,0)')
-  gameCtx.sS(grad)
+  // const grad = gameCtx.cRG(0,0, quarter, 0,0, quarter*1.4)
+  // grad.addColorStop(0, '#0FF')
+  // grad.addColorStop(1, 'rgba(0,0,255,0)')
+  // gameCtx.sS(grad)
+  gameCtx.g(1,'sS', 0,0, quarter, 0,0, quarter*1.4, ['#0FF'], ['rgba(0,0,255,0)'])
   //gameCtx.sS('rgba(0,80,255,0.4)')
   gameCtx.st()
 }
@@ -72,11 +75,15 @@ function drawShip(canvas, isMySelf) {
     ctx.moT(cos(ini)*quarter, -sin(ini)*quarter)
     ctx.a(0, 0, quarter, ini, PI*(5-side*8)/10, side>0)
     ctx.cP()
-    grad = ctx.cLG(quarter*side,0, quarter*side*.6,0)
-    grad.addColorStop( 0, '#BBB')
-    grad.addColorStop(.5, isMySelf ? '#369' : '#943')
-    grad.addColorStop( 1, '#222')
-    ctx.fS(grad)
+    // grad = ctx.cLG(quarter*side,0, quarter*side*.6,0)
+    // grad.addColorStop( 0, '#BBB')
+    // grad.addColorStop(.5, isMySelf ? '#369' : '#943')
+    // grad.addColorStop( 1, '#222')
+    // ctx.fS(grad)
+    ctx.g(0,'fS',
+      quarter*side,0,0, quarter*side*.6,0,0,
+      ['#BBB'], [isMySelf ? '#369' : '#943'], ['#222']
+    )
     ctx.f()
   }
   mkNacele(-1) // Left
@@ -99,11 +106,15 @@ function drawShip(canvas, isMySelf) {
     -quarter*0.6, 0
   )
   ctx.cP()
-  grad = ctx.cLG(0,0, 0,quarter/2)
-  grad.addColorStop(0.0, '#333')
-  grad.addColorStop(0.5, '#999')
-  grad.addColorStop(1.0, '#333')
-  ctx.fS(grad)
+  // grad = ctx.cLG(0,0, 0,quarter/2)
+  // grad.addColorStop(0.0, '#333')
+  // grad.addColorStop(0.5, '#999')
+  // grad.addColorStop(1.0, '#333')
+  // ctx.fS(grad)
+  ctx.g(0,'fS',
+    0,0,0, 0,quarter/2,0,
+    ['#333'], ['#999'], ['#333']
+  )
   ctx.f()
 
   // Main Body
@@ -123,11 +134,15 @@ function drawShip(canvas, isMySelf) {
     0           , -quarter*1.2
   )
   ctx.cP()
-  grad = ctx.cLG(-quarter/2,0, quarter/2,0)
-  grad.addColorStop(0.0, '#444')
-  grad.addColorStop(0.5, '#BBB')
-  grad.addColorStop(1.0, '#444')
-  ctx.fS(grad)
+  // grad = ctx.cLG(-quarter/2,0, quarter/2,0)
+  // grad.addColorStop(0.0, '#444')
+  // grad.addColorStop(0.5, '#BBB')
+  // grad.addColorStop(1.0, '#444')
+  // ctx.fS(grad)
+  ctx.g(0,'fS',
+    -quarter/2,0,0, quarter/2,0,0,
+    ['#444'], ['#BBB'], ['#444']
+  )
   ctx.f()
 
   // Glass
@@ -145,12 +160,16 @@ function drawShip(canvas, isMySelf) {
     0           , -quarter
   )
   ctx.cP()
-  grad = ctx.cLG(-quarter*.3,0, quarter*.3,0)
-  grad.addColorStop(0.0, '#222')
-  grad.addColorStop(0.4, '#888')
-  grad.addColorStop(0.6, '#888')
-  grad.addColorStop(1.0, '#222')
-  ctx.fS(grad)
+  // grad = ctx.cLG(-quarter*.3,0, quarter*.3,0)
+  // grad.addColorStop(0.0, '#222')
+  // grad.addColorStop(0.4, '#888')
+  // grad.addColorStop(0.6, '#888')
+  // grad.addColorStop(1.0, '#222')
+  // ctx.fS(grad)
+  ctx.g(0,'fS',
+    -quarter*.3,0,0, quarter*.3,0,0,
+    ['#222'], ['#888'], ['#888'], ['#222']
+  )
   ctx.f()
 
   // Color
@@ -257,10 +276,11 @@ function plotMissile(missile) {
   gameCtx.tr(x, y)
   gameCtx.ro(missile.rot)
   // Fire
-  let grad = gameCtx.cRG(-radius*1.1,0, 1, -radius*1.2,0, radius/3)
-  grad.addColorStop(0, '#8FF')
-  grad.addColorStop(1, '#08F')
-  gameCtx.fS(grad)
+  // let grad = gameCtx.cRG(-radius*1.1,0, 1, -radius*1.2,0, radius/3)
+  // grad.addColorStop(0, '#8FF')
+  // grad.addColorStop(1, '#08F')
+  // gameCtx.fS(grad)
+  gameCtx.g(1,'fS', -radius*1.1,0, 1, -radius*1.2,0, ['#8FF'], ['#08F'])
   gameCtx.bP()
   const bazierX = -radius*1.1
   gameCtx.moT(-radius*.9, 0)
