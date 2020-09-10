@@ -368,7 +368,7 @@ function explodeMissile(missile) {
   alivePlayers().forEach(player => {
     const distInvPct = 1 - calcVec(missile, player)[0]/(shipRadius*3)
     if (distInvPct > 0) {
-      player.rotInc = (rnd()<.5?-.2:.2)
+      player.rotInc = (rnd()<.5?-.15:.15)
       updateLife(player, -distInvPct*80)
     }
   })
