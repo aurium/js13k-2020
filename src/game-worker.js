@@ -254,7 +254,11 @@ function wwUpdateEntities() {
   }
 
   alivePlayers().forEach(player => {
-    updateEnergy(player, 0.05 - calcVecToSun(player)[0]/4e5, true)
+    const distToSun = calcVecToSun(player)[0]
+    updateEnergy(player, 0.05 - distToSun/4e5, true)
+    if (distToSun < sunR3) {
+      updateLife(player, (distToSun-sunR3)/200)
+    }
     gravitAcceleration(player, true)
     if (player.rotJet<0) {
       if (player.rotInc>-0.1) player.rotInc -= 0.001
