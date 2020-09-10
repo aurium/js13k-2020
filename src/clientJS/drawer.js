@@ -44,8 +44,8 @@ function setQuality(newQuality, msg='', force) {
     gameCanvas.height = winH
 
     gameCtx = gameCanvas.getContext('2d')
-    gameCtx.fillStyle = '#000'
-    gameCtx.fillRect(0, 0, winW, winH)
+    gameCtx.fS('#000')
+    gameCtx.fR(0, 0, winW, winH)
 
     canvBG1.width = canvBG2.width = canvBG4.width = round(winW/3)*2
     canvBG1.height = canvBG2.height = canvBG4.height = round(winH/3)*2
@@ -96,7 +96,7 @@ function plotBgTile(canvas, tileX, tileY, scale) {
   tileY %= hs; if (tileY > 0) tileY -= hs
   for (let x = tileX; x < winW; x += ws) {
     for (let y = tileY; y < winH; y += hs) {
-      gameCtx.drawImage(canvas, 0, 0, w, h, x, y, ws, hs)
+      gameCtx.dI(canvas, 0, 0, w, h, x, y, ws, hs)
     }
   }
 }
@@ -104,22 +104,22 @@ function plotBgTile(canvas, tileX, tileY, scale) {
 function updateBg() {
   const {x, y, velX, velY} = mySelf
 
-  gameCtx.globalCompositeOperation = 'source-over'
-  gameCtx.fillStyle = `#000`
-  gameCtx.fillRect(0, 0, winW, winH)
+  gameCtx.gCO('source-over')
+  gameCtx.fS(`#000`)
+  gameCtx.fR(0, 0, winW, winH)
 
   // Plot level 3 stars
-  gameCtx.globalCompositeOperation = 'screen'
+  gameCtx.gCO('screen')
   plotBgTile(canvBG4, -x/15, -y/15, 1)
 
   // Plot Nebulas
   if (BEAUTY_MODE) {
-    gameCtx.globalCompositeOperation = 'lighten'
+    gameCtx.gCO('lighten')
     plotBgTile(canvBG3, -(x+9000)/10, -(y+7000)/10, 2/divScreen)
   }
 
   // Plot level 2 stars
-  gameCtx.globalCompositeOperation = 'screen'
+  gameCtx.gCO('screen')
   plotBgTile(canvBG2, -x/6, -y/6, 1)
 
   // Plot level 1 stars
@@ -150,7 +150,7 @@ function updateGameCanvas() {
   if (1 < zoom && zoom < 1.001) zoom = 1
 
   updateBg()
-  gameCtx.globalCompositeOperation = 'source-over'
+  gameCtx.gCO('source-over')
   boxes.forEach(plotBox)
   booms.forEach(plotExplosion)
   missiles.forEach(plotMissile)
@@ -186,7 +186,7 @@ function updateGameCanvas() {
 
 function initDrawer() {
   setQuality(QUALITY.HIGH, '')
-  gameCtx.imageSmoothingEnabled = true
+  gameCtx.iSE(true)
   gameCtx.imageSmoothingQuality = 'low'
   debug('Create BG 3 (Nebulas)')
   drawPlasma(seed1)

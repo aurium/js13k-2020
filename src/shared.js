@@ -13,6 +13,7 @@ const sqrt = Math.sqrt
 const mkID = ()=> rnd().toString(36).split('.')[1]
 const upDalay = 200 // interval to the WebWorker send updates
 
-function log(...args) {
-  console.log((new Date).toJSON().replace(/.*T(.*)\..*/, '$1'), ...args)
-}
+const log = console.log
+// function log(...args) {
+//   console.log((new Date).toJSON().replace(/.*T(.*)\..*/, '$1'), ...args)
+// }

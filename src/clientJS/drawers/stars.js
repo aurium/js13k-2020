@@ -21,7 +21,7 @@ function drawStars(canvas, stars, maxSize) {
   const ctx = canvas.getContext('2d')
   const w = canvas.width, h = canvas.height
   ctx.clearRect(0, 0, w, h)
-  const imgData = ctx.getImageData(0, 0, w, h)
+  const imgData = ctx.gID(0, 0, w, h)
   const pixels = imgData.data
   stars.forEach(({x:xPct,y:yPct,size:sizeOrig,r,g,b}) => {
     let x = round( (w-4) * xPct + 2 )
@@ -37,5 +37,5 @@ function drawStars(canvas, stars, maxSize) {
       plotPix(pixels, w, x,y-i, r,g,b,a)
     }
   })
-  ctx.putImageData(imgData, 0, 0)
+  ctx.pID(imgData, 0, 0)
 }

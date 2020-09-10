@@ -26,7 +26,7 @@ function drawPlasma(seed) {
   const seedSize = seed.length
   if (seedSize !== seed[0].length || Math.log2(seedSize) % 1 !== 0)
     throw Error('Seed width and height must to be equal and power of 2.')
-  const imgData = ctx.getImageData(0, 0, size, size)
+  const imgData = ctx.gID(0, 0, size, size)
   const pixels = imgData.data
   let step = size / seedSize
   for (let y=0; y<seedSize; y++) for (let x=0; x<seedSize; x++) {
@@ -84,9 +84,9 @@ function drawPlasma(seed) {
     }
     step /= 2
   }
-  ctx.putImageData(imgData, 0, 0)
+  ctx.pID(imgData, 0, 0)
   if (DEBUG_MODE) {
-    ctx.fillStyle = 'green'
-    ctx.fillText('Nebulas', 50, 50)
+    ctx.fS('green')
+    ctx.fT('Nebulas', 50, 50)
   }
 }

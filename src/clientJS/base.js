@@ -15,6 +15,21 @@ const mkEl = (tag, parent, txt='')=> {
   return el
 }
 
+const canvasCtxProto = CanvasRenderingContext2D.prototype
+Object.keys(canvasCtxProto).sort().forEach(fName => {
+  let sigla = fName[0] + fName.replace(/[^A-Z]/g, '')
+  if (canvasCtxProto[sigla]) sigla = fName[0] + fName[1] + fName.replace(/[^A-Z]/g, '')
+  try {
+    if (typeof(canvasCtxProto[fName]) == 'function') {
+      canvasCtxProto[sigla] = canvasCtxProto[fName]
+    }
+    else throw 1
+  } catch (err) {
+    canvasCtxProto[sigla] = function (val){ this[fName] = val }
+  }
+  if (DEBUG_MODE) log(`${sigla} -> ${fName}`)
+})
+
 function getName(user) {
   return (user.userID ? user.userID : user).split('\n')[0]
 }
