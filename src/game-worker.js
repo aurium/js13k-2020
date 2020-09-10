@@ -269,8 +269,8 @@ function wwUpdateEntities() {
     let myPlanet = planets[player.land]
     if (player.re) {
       updateEnergy(player, -.02)
-      player.velX -= sign(player.velX)/30
-      player.velY -= sign(player.velY)/30
+      player.velX *= 0.99
+      player.velY *= 0.99
       player.rotInc *= 0.99
     }
     if (player.fireIsOn) {
