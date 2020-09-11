@@ -72,6 +72,7 @@ else
   sed -ri "s|<link .*href=\"style.css\">|<style>$STYLE</style>|" public/index.html
 
   echo "(()=>{ $(cat src/server.js) })()" |
+  sed -r 's/log\(/void\(/g' |
   js_compress > public/server.js
 
   echo "(()=>{ $(cat src/game-worker.js) })()" |

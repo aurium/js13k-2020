@@ -155,9 +155,9 @@ function updateCollection(newCollection, collection, step) {
       item = collection[i]
     }
     if (DEBUG_MODE) {
-      if (!item) logErrToUsr('Iten no found!', newItem.id)
-      item.velX = newItem.velX
-      item.velY = newItem.velY
+      if (!item) logErrToUsr('Iten not found!', newItem.id)
+      // item.velX = newItem.velX
+      // item.velY = newItem.velY
     }
     item.userID = newItem.userID
     ;['x','y','radius','a','rot','go'].forEach(att =>

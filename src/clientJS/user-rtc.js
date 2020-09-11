@@ -45,7 +45,7 @@ class UserRTC {
       debug(`${logKind(this)} Create ICE offer to ${getName(this)}...`)
       this.peerConn.createOffer()
       .then(onLocalSessionCreated.bind(this))
-      .catch(logErrToUsr(`${logKind(this)} Create Offer to ${getName(this)} FAIL.`));
+      //.catch(logErrToUsr(`${logKind(this)} Create Offer to ${getName(this)} FAIL.`));
     }
   }
 
@@ -79,9 +79,9 @@ class UserRTC {
 
   cmd_connected({userID}) {
     if (userID == this.userID) this.connected = true
-    else return logErrToUsr(`${logKind(this)} Bad Conn confirmation.`)(userID+'≠'+this.userID)
-    if (isRoomOwner) notify(`${logKind(this)} ${getName(this)} is connected.`)
-    else notify(`You're Connected!`)
+    //else return logErrToUsr(`${logKind(this)} Bad Conn confirmation.`)(userID+'≠'+this.userID)
+    //if (isRoomOwner) notify(`${logKind(this)} ${getName(this)} is connected.`)
+    //else notify(`You're Connected!`)
     updateUsersStatus()
   }
 
@@ -135,7 +135,7 @@ function onLocalSessionCreated(desc) {
       ...this.peerConn.localDescription.toJSON()
     });
   })
-  .catch(logErrToUsr(`Set Local Description to ${logKind(this)} ${getName(this)} FAIL.`));
+  //.catch(logErrToUsr(`Set Local Description to ${logKind(this)} ${getName(this)} FAIL.`));
 }
 
 function createConnDisplay() {
@@ -228,50 +228,50 @@ socket.on('peeringMessage', function(message) {
     message && (message.type||'<no type>', message)
   );
   if (!message) return null;
-  const badMsgLog = logErrToUsr('Bad peering message.')
-  if (!userID) return badMsgLog('No userID.');
+  //const badMsgLog = logErrToUsr('Bad peering message.')
+  //if (!userID) return badMsgLog('No userID.');
   var usr = clentRTC;
   if (message.fromClient) usr = getUserRTC(userID);
-  if (!usr) return badMsgLog(`There is no user "${getName(userID)}".`);
+  //if (!usr) return badMsgLog(`There is no user "${getName(userID)}".`);
 
   delete message.fromClient
   delete message.userID
 
   if (message.type === 'offer') {
-    notify(`${logKind(this)} Got offer from ${getName(userID)}. Sending answer to peer.`);
+    //notify(`${usr.kind} Got offer from ${getName(userID)}. Sending answer to peer.`);
     usr.peerConn.setRemoteDescription(new RTCSessionDescription(message))
-    .then(()=> notify(`Remote Description Set Ok for ${getName(userID)}.`))
-    .catch(logErrToUsr(`Remote Description Set FAIL for ${getName(userID)}.`));
+    //.then(()=> notify(`Remote Description Set Ok for ${getName(userID)}.`))
+    //.catch(logErrToUsr(`Remote Description Set FAIL for ${getName(userID)}.`));
     usr.peerConn.createAnswer()
     .then(onLocalSessionCreated.bind(usr))
-    .catch(logErrToUsr('Answer FAIL'));
+    //.catch(logErrToUsr('Answer FAIL'));
 
   } else if (message.type === 'answer') {
-    notify(`${usr.kind} got peer answer from ${getName(userID)}!`);
+    //notify(`${usr.kind} got peer answer from ${getName(userID)}!`);
     usr.peerConn.setRemoteDescription(new RTCSessionDescription(message))
-    .then(()=> notify(`Remote Description Set Ok for ${getName(userID)}.`))
-    .catch(logErrToUsr(`Remote Description Set FAIL for ${getName(userID)}.`));
+    //.then(()=> notify(`Remote Description Set Ok for ${getName(userID)}.`))
+    //.catch(logErrToUsr(`Remote Description Set FAIL for ${getName(userID)}.`));
 
-  } else if (message.type === 'candidate' && message.candidate) {
+  } else if (message.type === 'candidate') {
     debug(`${usr.kind} got identity candidate from ${getName(userID)}:`, message.candidate)
     if (DEBUG_MODE && !(usr.peerConn.remoteDescription && usr.peerConn.remoteDescription.type)) {
       debug('I DONT HAVE REMOTE DESCRIPTION!', usr.peerConn.remoteDescription)
     }
     usr.peerConn.addIceCandidate(message)
-    .catch((err)=> {
+    /*.catch((err)=> {
       logErrToUsr(`Add ICE Candidate FAIL for ${getName(userID)}.`)(err)
       // TODO: restart negotiation
-    });
+    });*/
   }
 });
 
 function initDataChannel(usr) {
   usr.dataChannel.onopen = ()=> {
-    notify(`${logKind(usr)} ${getName(usr)}'s Channel Opened!`);
+    debug(`${logKind(usr)} ${getName(usr)}'s Channel Opened!`);
     usr.send('connected')
   }
   usr.dataChannel.onclose = ()=> {
-    notify(`${getName(usr)}'s Channel closed.`);
+    debug(`${getName(usr)}'s Channel closed.`);
     usr.connected = false;
     updateUsersStatus()
   }
@@ -279,6 +279,6 @@ function initDataChannel(usr) {
     const [cmd, payload] = JSON.parse(ev.data)
     //debug(usr.kind, `Got game cmd ${cmd} payload:`, payload)
     if (usr['cmd_'+cmd]) usr['cmd_'+cmd](payload)
-    else logErrToUsr('Bad game command:')(cmd)
+    //else logErrToUsr('Bad game command:')(cmd)
   }
 }

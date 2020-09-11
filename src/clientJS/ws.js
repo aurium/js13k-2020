@@ -6,13 +6,13 @@ if (!(localStorage.userID||'').match(/\n/)) {
 }
 
 socket.on('connect', () => {
-  notify('Conected to the server');
+  debug('Connected to the server');
   socket.emit('myID', localStorage.userID);
 });
 
-socket.on('disconnect', () => notify('Server Connection lost!'));
+//socket.on('disconnect', () => notify('Server Connection lost!'));
 
-socket.on('error', (msg) => logErrToUsr('Server connection error! ' + msg));
+//socket.on('error', (msg) => logErrToUsr('Server connection error! ' + msg));
 
 socket.on('notify', (msg) => notify(msg));
-socket.on('notifyErr', logErrToUsr('Srv Error:'));
+//socket.on('notifyErr', logErrToUsr('Srv Error:'));

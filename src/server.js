@@ -20,7 +20,7 @@ class Room {
     log(`Usr ${ownerSocket.userID} is creating room ${this.gameID} for ${numPlayers}. isPublic: ${isPublic}`)
     numPlayers = parseInt(numPlayers)
     if (!numPlayers || 2 > numPlayers || numPlayers > 10) {
-      ownerSocket.emit('notifyErr', `The number of players must to be between 2 and 10`)
+      ownerSocket.emit('notify', `The number of players must to be between 2 and 10`)
       log(`numPlayers fail to ${this.gameID}.`)
       return
     }
@@ -37,14 +37,14 @@ class Room {
     log(`Adding ${socket.userID} to ${this.gameID}...`)
     if (this.players.length >= this.numPlayers) {
       log(`Fail. The room ${this.gameID} is full.`)
-      return socket.emit('notifyErr', `The room ${this.gameID} is full.`)
+      return socket.emit('notify', `The room ${this.gameID} is full.`)
     }
 
     this.players.push(socket)
     socket.join(this.gameID)
     socket.room = this
     log(`The room ${this.gameID} now have ${this.players.length} players.`)
-    socket.emit('notify', 'You was added to the room ' + this.gameID)
+    //socket.emit('notify', 'You was added to the room ' + this.gameID)
 
     if (this.players.length == this.numPlayers) {
       // It is full!

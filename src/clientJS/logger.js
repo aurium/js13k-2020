@@ -24,4 +24,4 @@ function delayedTip(secs, msg) {
   setTimeout(()=> notify('tip', msg), secs*1000)
 }
 
-const logErrToUsr = (title)=> (msg)=> notify('error', title, msg)
+//const logErrToUsr = (title)=> (msg)=> notify('error', title, msg)
