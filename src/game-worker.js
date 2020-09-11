@@ -12,7 +12,7 @@ const numOfBoxLaunchers = 12
 
 // TODO: add x,y to planets on update entities and remove all planets position calcs
 
-const timeout = (secs, func)=> setTimeout(func, secs*1000)
+//const timeout = (secs, func)=> setTimeout(func, secs*1000)
 const sendCmd = (cmd, payload)=> postMessage([cmd, payload])
 
 sendCmd('started') // Notify WebWorker is alive to init.
@@ -110,16 +110,16 @@ function dye(player) {
   player.velX = player.velY = player.rotInc = player.life = 0
   player.land = -1
   if (player.reborn > 0) {
-    timeout(6, ()=> {
+    setTimeout(()=> {
       let a = PI2*rnd()
       player.x = cos(a) * 14e3
       player.y = sin(a) * 14e3
-    })
-    timeout(7, ()=> {
+    }, 6000)
+    setTimeout(()=> {
       player.life = player.energy = 100
       player.reborn--
       if (player.misTot < 3) player.misTot = 3
-    })
+    }, 7000)
   }
 }
 
@@ -129,7 +129,7 @@ function explode(entity) {
   entity = { ...entity, id, radius:0, src: entity.id||entity.userID }
   if (myPlanet) planetSpeedToEntity(myPlanet, entity)
   booms.push(entity)
-  timeout(5, ()=> booms = booms.filter(b=>b.id!=id))
+  setTimeout(()=> booms = booms.filter(b=>b.id!=id), 5000)
 }
 
 function planetSpeedToEntity(planet, entity) {
@@ -140,7 +140,7 @@ function planetSpeedToEntity(planet, entity) {
 const lobbyStart = Date.now()
 function flyArroundLobby2() {
   if (gameStarted) return players.forEach(p => p.fireIsOn = 0)
-  timeout(.1, flyArroundLobby2)
+  setTimeout(flyArroundLobby2, 100)
   let baseRot = (Date.now()-lobbyStart) / 9e4
   players.forEach((player, i) => {
     player.rot = baseRot + i*(PI2/numPlayers)
