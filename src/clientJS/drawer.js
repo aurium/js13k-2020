@@ -211,6 +211,6 @@ function initDrawer() {
   gameCtx.iSE(true)
   gameCtx.imageSmoothingQuality = 'low'
   debug('Create BG 3 (Nebulas)')
-  drawPlasma(seed1)
+  drawPlasma()
   updateGameCanvas()
 }
