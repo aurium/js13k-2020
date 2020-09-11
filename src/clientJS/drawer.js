@@ -135,10 +135,8 @@ function updateBg() {
   plotBgTile(canvBG4, -x/15, -y/15, 1)
 
   // Plot Nebulas
-  if (BEAUTY_MODE) {
-    gameCtx.gCO('lighten')
-    plotBgTile(canvBG3, -(x+9000)/10, -(y+7000)/10, 2/divScreen)
-  }
+  gameCtx.gCO('lighten')
+  plotBgTile(canvBG3, -(x+9000)/10, -(y+7000)/10, 2/divScreen)
 
   // Plot level 2 stars
   gameCtx.gCO('screen')

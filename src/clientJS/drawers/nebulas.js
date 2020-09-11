@@ -34,7 +34,7 @@ function drawPlasma() {
     let color = seed[y][x].split('')
     for (let i=0; i<4; i++) pixels[pos+i] = parseInt(color[i]+color[i], 16)
   }
-  while (step > 1 && BEAUTY_MODE) {
+  while (step > 1) {
     for (let y=0; y<size; y+=step) for (let x=0; x<size; x+=step) {
       let pos = (y*size + x) * 4
       let yUp = y==0 ? size-step : y-step

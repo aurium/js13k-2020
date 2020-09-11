@@ -29,7 +29,7 @@ function drawStars(canvas, stars, maxSize) {
     let size = sizeOrig / divScreen
     let a = (maxSize<3 && divScreen>2) ? 128 : 255;
     plotPix(pixels, w, x,y, r,g,b,a)
-    if (BEAUTY_MODE) for (let i=0; i<7; i++) {
+    for (let i=0; i<7; i++) {
       let a = (size-i)*255 / (maxSize/divScreen)
       plotPix(pixels, w, x+i,y, r,g,b,a)
       plotPix(pixels, w, x-i,y, r,g,b,a)

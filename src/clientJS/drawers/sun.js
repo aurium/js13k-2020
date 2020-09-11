@@ -38,7 +38,7 @@ function updateSun() {
   const r1 = sunR1*zoom / divScreen
   const r2 = sunR2*zoom / divScreen
   const r3 = sunR3*zoom / divScreen
-  if (BEAUTY_MODE) drawSunRays(x,y,r1,r2,r3)
+  drawSunRays(x,y,r1,r2,r3)
 
   // const grad = gameCtx.cRG(x,y,r1/3, x,y,r3)
   // grad.addColorStop(0.00, '#F40')

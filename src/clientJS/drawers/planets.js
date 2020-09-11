@@ -19,12 +19,11 @@ function drawPlanet(planet, index) {
   ctx1.fS(`rgb(${r},${g},${b})`)
   ctx1.fR(0,0,diameter,diameter)
 
-  if (BEAUTY_MODE) {
-    const imgData = ctx1.gID(0, 0, diameter, diameter)
-    const pixels = imgData.data
-    pixels.forEach((c,i)=> pixels[i] = (i%4==3)? c : c-(rnd()-.5)*noize )
-    ctx1.pID(imgData, 0, 0)
-  }
+  // Make a random texture
+  const imgData = ctx1.gID(0, 0, diameter, diameter)
+  const pixels = imgData.data
+  pixels.forEach((c,i)=> pixels[i] = (i%4==3)? c : c-(rnd()-.5)*noize )
+  ctx1.pID(imgData, 0, 0)
 
   // Draw sun light/shadow mask:
   ctx4.fS('#FFF')
@@ -104,7 +103,7 @@ function plotPlanet(p) {
   // Plot base texture
   gameCtx.ro(rot)
   gameCtx.dI(p.c1, 0, 0, diamOrig, diamOrig, c, c, diamDest, diamDest)
-  if (BEAUTY_MODE) {
+  //if (BEAUTY_MODE) {
     /*
     // Plot shadow texture
     gameCtx.dI(
@@ -134,6 +133,6 @@ function plotPlanet(p) {
       c, c,
       diamDest, diamDest
     )
-  }
+  //}
   gameCtx.re()
 }
