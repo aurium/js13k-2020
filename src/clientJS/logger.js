@@ -16,8 +16,8 @@ function notify(...args) {
   logMsg.classList.add('logmsg', cssClass)
 
   setTimeout(()=> el.classList.remove('new'), 200)
-  setTimeout(()=> el.classList.add('remove'), 15000)
-  setTimeout(()=> msgList.removeChild(el), 18000)
+  setTimeout(()=> el.classList.add('remove'), 20000)
+  setTimeout(()=> msgList.removeChild(el), 23000)
 }
 
 function delayedTip(secs, msg) {
