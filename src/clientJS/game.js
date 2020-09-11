@@ -222,7 +222,7 @@ function gameStart() {
   bodyClass.add('game-on')
 
   targetZoom = 1
-  targetZoomDelay = 10
+  targetZoomDelay = 30
   users.forEach((player) => player.fireIsOn = 0 )
 
   delayedTip(10, `Controls take time to take effect. Be cautious.`)
