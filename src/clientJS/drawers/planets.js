@@ -1,12 +1,14 @@
 function drawPlanet(planet, index) {
   var {radius,a/*angulo rotação*/,d/*distancia*/,r,g,b} = planet, noize = 30
   const diameter = radius*2
-  ;['c1','c2','c3','c4'].forEach(c => {
+  /*;['c1','c2','c3','c4'].forEach(c => {
     planet[c] = mkCanvas(diameter, diameter)
-  })
+  })*/
+  planet.c1 = mkCanvas(diameter, diameter)
+  planet.c4 = mkCanvas(diameter, diameter)
   const ctx1 = planet.c1.getContext('2d')
-  const ctx2 = planet.c2.getContext('2d')
-  const ctx3 = planet.c3.getContext('2d')
+  //const ctx2 = planet.c2.getContext('2d')
+  //const ctx3 = planet.c3.getContext('2d')
   const ctx4 = planet.c4.getContext('2d')
 
   // Draw round base planet texture:
@@ -35,7 +37,7 @@ function drawPlanet(planet, index) {
   // grad.addColorStop(1, 'rgba(  1,  1,  1, 1)')
   // ctx4.fS(grad)
   ctx4.g(1, 'fS',
-    radius*0.5, radius, radius*0.2,
+    radius*0.2, radius, radius*0.2,
     radius*0.8, radius, radius*1.2,
     ['rgba(255,255,255, 0)'], ['rgba(  1,  1,  1, 1)']
   )
@@ -44,7 +46,7 @@ function drawPlanet(planet, index) {
   ctx4.cP()
   ctx4.f()
 
-  if (BEAUTY_MODE) for (let dist=10; dist<radius; dist+=5) {
+  /*if (BEAUTY_MODE) for (let dist=10; dist<radius; dist+=5) {
     let numCrats = round((dist/15)*Math.log2(dist*6/radius))
     if (numCrats<1) numCrats = 1
     let z = sin(PI*(1-dist/radius)/2) // Inclinação da cratera. Achata na extremidade.
@@ -79,7 +81,7 @@ function drawPlanet(planet, index) {
         ctx.re()
       })
     })
-  }
+  }*/
 }
 planets.forEach(drawPlanet)
 
@@ -103,6 +105,7 @@ function plotPlanet(p) {
   gameCtx.ro(rot)
   gameCtx.dI(p.c1, 0, 0, diamOrig, diamOrig, c, c, diamDest, diamDest)
   if (BEAUTY_MODE) {
+    /*
     // Plot shadow texture
     gameCtx.dI(
       p.c2,
@@ -119,6 +122,7 @@ function plotPlanet(p) {
       c+(divScreen>1?0:sin(rot-a-PI/2)), c+(divScreen>1?0:cos(rot-a-PI/2)),
       diamDest, diamDest
     )
+    */
     gameCtx.ro(-rot)
     // Plot sun light and shadow
     gameCtx.ro(a)
