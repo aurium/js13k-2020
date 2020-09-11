@@ -217,10 +217,6 @@ function createRTCPeerConnection(usr) {
   }
 }
 
-function getUserRTC(userID) {
-  return users.find(u => u.userID === userID);
-}
-
 socket.on('peeringMessage', function(message) {
   const userID = (message||{}).userID
   debug(
@@ -231,7 +227,7 @@ socket.on('peeringMessage', function(message) {
   //const badMsgLog = logErrToUsr('Bad peering message.')
   //if (!userID) return badMsgLog('No userID.');
   var usr = clentRTC;
-  if (message.fromClient) usr = getUserRTC(userID);
+  if (message.fromClient) usr = users[userID];
   //if (!usr) return badMsgLog(`There is no user "${getName(userID)}".`);
 
   delete message.fromClient

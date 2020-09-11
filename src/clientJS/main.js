@@ -22,7 +22,7 @@ function usrsConn(usrIDs) {
     // Init Client RTCPeerConnection:
     if (!clentRTC) clentRTC = new UserRTCClient(localStorage.userID, true)
     usrIDs.forEach(userID => {
-      let usr = getUserRTC(userID)
+      let usr = users[userID]
       if (!usr) {
         let Klass = isRoomOwner ? UserRTCHost : Player
         let usr = new Klass(userID)
@@ -39,7 +39,7 @@ function usrsConn(usrIDs) {
 function usrDisconn(userID, lostMyWS) {
   if (!lostMyWS) notify(`WS User disconnected: ${userID}`)
   if (!gameStarted) {
-    let usr = getUserRTC(userID)
+    let usr = users[userID]
     if (usr && isRoomOwner) usr.disconnect()
     users = users.filter(u => u.userID != userID)
     users.forEach(u => users[u.userID] = u)
@@ -54,10 +54,10 @@ function updateUsersStatus() {
 
 socket.on('RTCStatus', (userStatuses) => {
   if (!isRoomOwner) userStatuses.forEach(([userID, conn]) => {
-    getUserRTC(userID).connected = conn
+    users[userID].connected = conn
   })
-  if (gameStarted) xxx()
-  else updateRoomList()
+  //if (gameStarted) xxx()
+  if (!gameStarted) updateRoomList()
 })
 
 initDrawer()
