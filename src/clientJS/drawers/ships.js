@@ -280,7 +280,7 @@ function plotMissile(missile) {
   // grad.addColorStop(0, '#8FF')
   // grad.addColorStop(1, '#08F')
   // gameCtx.fS(grad)
-  gameCtx.g(1,'fS', -radius*1.1,0, 1, -radius*1.2,0, ['#8FF'], ['#08F'])
+  gameCtx.g(1,'fS', -radius*1.1,0, 1, -radius*1.2,0, radius/3, ['#8FF'], ['#08F'])
   gameCtx.bP()
   const bazierX = -radius*1.1
   gameCtx.moT(-radius*.9, 0)
