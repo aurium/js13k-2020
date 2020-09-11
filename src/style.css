@@ -20,7 +20,7 @@ canvas {
   display: none;
   z-index: 1;
 }
-.playing canvas {
+.game-on canvas {
   cursor: none;
 }
 body.mouse-alive canvas {
