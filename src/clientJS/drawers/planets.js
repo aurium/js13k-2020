@@ -1,11 +1,8 @@
 function drawPlanet(planet, index) {
-  var {radius,a/*angulo rotação*/,d/*distancia*/,r,g,b,noize} = planet
+  var {radius,a/*angulo rotação*/,d/*distancia*/,r,g,b} = planet, noize = 30
   const diameter = radius*2
   ;['c1','c2','c3','c4'].forEach(c => {
-    planet[c] = document.createElement('canvas')
-    planet[c].width = diameter
-    planet[c].height = diameter
-    body.appendChild(planet[c])
+    planet[c] = mkCanvas(diameter, diameter)
   })
   const ctx1 = planet.c1.getContext('2d')
   const ctx2 = planet.c2.getContext('2d')
