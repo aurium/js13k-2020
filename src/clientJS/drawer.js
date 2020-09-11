@@ -99,14 +99,6 @@ body.addEventListener('mousemove', ()=> {
 
 if (navigator.userAgent.match(/Firefox\//)) bodyClass.add('firefox')
 
-function plotPix(pixelsArr, w, x,y, r,g,b,a) {
-  let pos = (y*w + x) * 4
-  pixelsArr[pos+0] = r
-  pixelsArr[pos+1] = g
-  pixelsArr[pos+2] = b
-  pixelsArr[pos+3] = a
-}
-
 function plotBgTile(canvas, tileX, tileY, scale) {
   let w = canvas.width
   let h = canvas.height
@@ -135,11 +127,11 @@ function updateBg() {
   plotBgTile(canvBG4, -x/15, -y/15, 1)
 
   // Plot Nebulas
-  gameCtx.gCO('lighten')
+  //gameCtx.gCO('lighten')
   plotBgTile(canvBG3, -(x+9000)/10, -(y+7000)/10, 2/divScreen)
 
   // Plot level 2 stars
-  gameCtx.gCO('screen')
+  //gameCtx.gCO('screen')
   plotBgTile(canvBG2, -x/6, -y/6, 1)
 
   // Plot level 1 stars
