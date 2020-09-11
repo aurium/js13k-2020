@@ -90,7 +90,8 @@ function plotPlanet(p) {
   const {rot, radius, a, d} = p
   const diamOrig = radius*2
   const diamDest = diamOrig*zoom / divScreen
-  const [x, y] = relativeObjPos({ x: cos(a)*d, y: sin(a)*d })
+  //const [x, y] = relativeObjPos({ x: cos(a)*d, y: sin(a)*d })
+  const [x, y] = relativeObjPos(p)
   const c = -radius*zoom / divScreen
   if (DEBUG_MODE) {
     gameCtx.sS('#0F0')

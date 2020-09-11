@@ -195,7 +195,7 @@ const planets = [
   { radius: 200, a:PI/2 , d:16e3, r:100,  g:80,   b:50,  noize:50 },
   { radius: 300, a:PI   , d:16e3, r:120,  g:120,  b:100, noize:30 },
   { radius: 200, a:PI*1.6,d:16e3, r:120,  g:50,   b:100, noize:50 },
-].map(p=>({...p, rot:0}))
+].map(p=>({...p, rot:0, x:0, y:0}))
 
 function gameStart() {
   if (gameStarted) {

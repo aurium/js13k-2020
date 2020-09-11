@@ -164,9 +164,13 @@ function calcVecToSun(vec) {
   return calcVec(vec, {x:0, y:0})
 }
 
-function planetPos(planet) {
-  return angleToVec(planet.a, planet.d)
-}
+// function planetPos(planet) {
+//   return {
+//     x: planet.x,
+//     y: planet.y
+//   }
+//   //return angleToVec(planet.a, planet.d)
+// }
 
 function angleToVec(a, size=1) {
   return {
@@ -185,7 +189,7 @@ function gravitAcceleration(entity, canLand) {
   // Calcs planets attraction:
   //planets.forEach((planet, i)=> {
   for (let planet,i=0; planet=planets[i]; i++) {
-    [dist, dirX, dirY] = calcVec(entity, planetPos(planet))
+    [dist, dirX, dirY] = calcVec(entity, planet)
     if (dist < (planet.radius + shipRadius)) {
       if (canLand) playerTouchPlanet(entity, planet, i, dist, dirX, dirY)
       else return 1
@@ -286,10 +290,9 @@ function wwUpdateEntities() {
     }
     if (player.land > -1) {
       updateLife(player, 0.02)
-      let {x:planetX, y:planetY} = planetPos(myPlanet)
       let {x, y} = angleToVec(player.a, myPlanet.radius+shipRadius)
-      player.x = planetX + x
-      player.y = planetY + y
+      player.x = myPlanet.x + x
+      player.y = myPlanet.y + y
       player.rot = player.a
       player.a += myPlanet.rotInc
       player.rotInc = player.velX = player.velY = 0
@@ -333,6 +336,9 @@ function wwUpdateEntities() {
   planets.forEach(planet => {
     planet.a += planet.aInc
     planet.rot += planet.rotInc
+    let pos = angleToVec(planet.a, planet.d)
+    planet.x = pos.x
+    planet.y = pos.y
   })
 
   booms.forEach(boom => {
@@ -354,7 +360,7 @@ function wwUpdateEntities() {
     if (wwUpdateEntitiesTic%2) missileRecalc(missile)
     if (calcVecToSun(missile)[0] < sunR1) explodeMissile(missile)
     planetsAndSun.forEach(p => {
-      if (calcVec(missile, planetPos(p))[0] < p.radius) {
+      if (calcVec(missile, p)[0] < p.radius) {
         explodeMissile(missile)
       }
     })
@@ -413,15 +419,14 @@ function missileRecalc(missile) {
   missile.rot += rotPointUp ? -0.03 : 0.03
 
   planetsAndSun.forEach((planet, i)=> {
-    const pos = planetPos(planet)
-    const [distToPlanet, vecToPX, vecToPY] = calcVec(missile, pos)
+    const [distToPlanet, vecToPX, vecToPY] = calcVec(missile, planet)
     const angleToPlanet = Math.atan2(vecToPY, vecToPX)
     const difMoveToPlanet = difAngles(velAngle, angleToPlanet)
     if (
          abs(difMoveToPlanet)<(PI/2) && // Está na frente
          distToPlanet < 3e3          && // Próximo o sufuciente
          distToPlanet < dist         && // Mais próximo que o alvo
-         abs(a*pos.x + b - pos.y) < planet.radius*1.5 // Realmente pode bater
+         abs(a*planet.x + b - planet.y) < planet.radius*1.5 // Realmente pode bater
        ) {
       //log('PLANET!', missile.userID||missile.id, difMoveToPlanet)
       missile.rot = angleToPlanet - ((difMoveToPlanet>0)?PI:-PI)/2

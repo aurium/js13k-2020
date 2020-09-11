@@ -36,10 +36,9 @@ function updateRadar() {
   radarCtx.sS('#080')
   radarCtx.bP()
   if ((frameCounter%(updateRadarRate*3))==0) planets.forEach(planet => {
-    let dist = planet.d * radarZoom
     let radius = planet.radius * radarZoom * 0.8
-    let x = radarMid + cos(planet.a) * dist
-    let y = radarMid + sin(planet.a) * dist
+    let x = radarMid + planet.x * radarZoom
+    let y = radarMid + planet.y * radarZoom
     radarCtx.moT(x+radius, y)
     radarCtx.a(x, y, radius, 0, PI2)
   })
