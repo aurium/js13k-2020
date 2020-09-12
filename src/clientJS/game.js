@@ -73,8 +73,10 @@ function updateFromRTC(payload) {
   : `Missiles: ${mySelf.misTot} &nbsp; Lifes: ${mySelf.reborn} &nbsp; &nbsp; ${speed.toFixed(3)}% of light speed`
 
   if (gameStarted && distToSun(mySelf)>20e3 && !userNotifyedAwayFromSun) {
-    delayedTip(0, `You are far away from Sun! Good, you can't be found on radar.`)
-    delayedTip(3, `...but you can't recharge. Your life support will fail!`)
+    //delayedTip(0, `You are far away from Sun! Good, you can't be found on radar.`)
+    //delayedTip(3, `...but you can't recharge.`)
+    notify(`You are far away from Sun! Good, you can't be found on radar.`)
+    setTimeout(()=> notify(`...but you can't recharge.`), 3000)
     userNotifyedAwayFromSun = 1
     setTimeout(()=> userNotifyedAwayFromSun = 0, 6e4)
   }
@@ -225,19 +227,19 @@ function gameStart() {
   targetZoomDelay = 30
   users.forEach((player) => player.fireIsOn = 0 )
 
-  delayedTip(10, `Controls take time to take effect. Be cautious.`)
+  //delayedTip(10, `Controls take time to take effect. Be cautious.`)
 
   //delayedTip(10, `You have ${mySelf.misTot} guided missiles.`)
   //delayedTip(11, `It will follow the neerest enemy.`)
   //delayedTip(12, 'And its lifetime is the amount of energy you will give to it...')
   //delayedTip(13, '...with a long press on the space bar.')
 
-  delayedTip(20, 'Your people will send some aid boxes. Go get then!')
+  //delayedTip(20, 'Your people will send some aid boxes. Go get then!')
 
   //delayedTip(30, 'In space, lack of friction is your worst enemy.')
   //delayedTip(31, 'Use the down arrow to brake and facilitate maneuvers.')
 
-  delayedTip(60, 'You can land a planet to auto-fix damages in your ship.')
+  //delayedTip(60, 'You can land a planet to auto-fix damages in your ship.')
 
   window.addEventListener('keydown', (ev)=> {
     if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn',  mySelf.fireIsOn = 1)

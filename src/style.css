@@ -171,34 +171,12 @@ div#shipLife i, #enemyLife div i {
 .logmsg {
   display: inline-block;
   white-space: nowrap;
-  padding: 8px 6px;
+  padding: 8px 12px;
   border-radius: 10px;
   background: rgba(0,100,255,.4);
   color: #FFF;
   font-size: 20px;
   overflow: hidden;
-}
-.logmsg span {
-  margin: 0 6px;
-}
-
-.logmsg.chat {
-  background: rgba(120,120,120,.4);
-  font-size: 15px;
-}
-.logmsg.chat span:first-child {
-  letter-spacing: -1px;
-}
-
-.logmsg.tip {
-  background: rgba(0,150,0,.5);
-}
-
-.logmsg.error {
-  background: rgba(200,0,0,.5);
-}
-.logmsg.error span:first-child {
-  font-weight: bold;
 }
 
 #lobby {

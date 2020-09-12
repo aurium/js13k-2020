@@ -54,7 +54,7 @@ if (queryString.match(/\bgame=/)) {
     }
   })
   socket.on('chat', ({userID, msg})=> {
-    notify('chat', getName(userID)+':', msg)
+    notify(getName(userID)+': '+msg)
   })
 
   socket.on('youAreTheOwner', ()=> {
