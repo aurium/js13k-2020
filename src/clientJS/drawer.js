@@ -1,18 +1,5 @@
 "use strict";
 
-var FORCE_QUALITY = false
-if (queryString.match(/.*\bquality=([0-9]).*/)) {
-  FORCE_QUALITY = queryString.replace(/.*\bquality=([0-9]).*/, '$1')
-  if (FORCE_QUALITY && Object.values(QUALITY).indexOf(parseInt(FORCE_QUALITY))==-1) {
-    alert(
-      `⚠️ Bad quality parameter (${FORCE_QUALITY}) ⚠️\n\n` +
-      'The valid quality values are:\n' +
-      Object.entries(QUALITY).map(([k,v])=>`   ${v} - ${k}`).join('\n')
-    )
-  }
-  FORCE_QUALITY = parseInt(FORCE_QUALITY)
-}
-
 var gameCtx = null
 var winW = window.innerWidth
 var winH = window.innerHeight
@@ -44,7 +31,6 @@ gameCanvas.id = 'gameCanvas'
 radarCanvas.id = 'radar'
 
 function setQuality(newQuality, force) {
-  if (FORCE_QUALITY) newQuality = FORCE_QUALITY
   //if (force) notify('Force screen reset')
   if (quality !== newQuality || force) {
     let name = Object.entries(QUALITY).find(([k,v])=> v === newQuality)[0]
