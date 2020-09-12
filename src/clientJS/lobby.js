@@ -96,9 +96,7 @@ if (queryString.match(/\bgame=/)) {
     }
   })
 
-  let label = mkEl('label', lobby)
-  label.style.fontWeight = 'bold'
-  label.innerHTML = 'Create a new room:'
+  let label = mkEl('label', lobby, 'Create a new room:')
 
   label = mkEl('label', lobby)
   label.innerText = 'Players:'
