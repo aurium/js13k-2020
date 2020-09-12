@@ -152,12 +152,6 @@ module.exports = {
     log(`Socket ${socket.id} connected.`);
   },
 
-  stat: (req, res) => {
-    storage.get('games', 0).then(games => {
-      res.send(`<h1>Games played: ${games}</h1>`);
-    });
-  }
-
 };
 
 function peeringMessage(message) {
