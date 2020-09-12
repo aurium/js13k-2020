@@ -88,14 +88,14 @@ onmessage = ({data:[cmd, payload]})=> {
     cmdPlayer.misOn = cmdVal
 }
 
-function updateEnergy(player, qtd, canReduceLife) {
-  player.energy += qtd
-  if (player.energy <= 0) {
+function updateEy(player, qtd, canReduceLife) {
+  player.ey += qtd
+  if (player.ey <= 0) {
     if (canReduceLife) updateLife(player, -0.1)
-    player.energy = 0
+    player.ey = 0
     player.fireIsOn = player.re = 0
   }
-  if (player.energy > 100) player.energy = 100
+  if (player.ey > 100) player.ey = 100
 }
 
 function updateLife(player, qtd) {
@@ -116,7 +116,7 @@ function dye(player) {
       player.y = sin(a) * 14e3
     }, 6000)
     setTimeout(()=> {
-      player.life = player.energy = 100
+      player.life = player.ey = 100
       player.reborn--
       if (player.misTot < 3) player.misTot = 3
     }, 7000)
@@ -149,7 +149,7 @@ function flyArroundLobby2() {
     player.velY = sin(player.rot) * 2
     player.x = +sin(player.rot)*10e3
     player.y = -cos(player.rot)*10e3
-    player.energy = 100
+    player.ey = 100
   })
 }
 
@@ -259,7 +259,7 @@ function wwUpdateEntities() {
 
   alivePlayers().forEach(player => {
     const distToSun = calcVecToSun(player)[0]
-    updateEnergy(player, 0.05 - distToSun/4e5, true)
+    updateEy(player, 0.05 - distToSun/4e5, true)
     if (distToSun < sunR3) {
       updateLife(player, (distToSun-sunR3)/200)
     }
@@ -276,13 +276,13 @@ function wwUpdateEntities() {
     player.rot += player.rotInc
     let myPlanet = planets[player.land]
     if (player.re) {
-      updateEnergy(player, -.02)
+      updateEy(player, -.02)
       player.velX *= 0.99
       player.velY *= 0.99
       player.rotInc *= 0.99
     }
     if (player.fireIsOn) {
-      updateEnergy(player, -.05)
+      updateEy(player, -.05)
       if (myPlanet) planetSpeedToEntity(myPlanet, player)
       player.land = -1
       calcAcceleration(player)
@@ -304,8 +304,8 @@ function wwUpdateEntities() {
     if (player.misTot > 0) {
       if (player.misOn || (0 < player.misEn && player.misEn < 10)) {
         if (player.misEn < 100) {
-          if (player.energy > 0.1) {
-            player.energy -= 0.1
+          if (player.ey > 0.1) {
+            player.ey -= 0.1
             player.misEn += 0.3
           } else {
             if (player.misEn > 0.01) player.misEn -= 0.01
@@ -317,7 +317,7 @@ function wwUpdateEntities() {
         let missile = { ...player, id: mkID(), src: player.userID }
         missiles.push(missile)
         if (myPlanet) planetSpeedToEntity(myPlanet, missile)
-        missile.energy = player.misEn
+        missile.ey = player.misEn
         missile.velX += cos(missile.rot)*2
         missile.velY += sin(missile.rot)*2
         player.misEn = 0
@@ -367,8 +367,8 @@ function wwUpdateEntities() {
     calcAcceleration(missile)
     missile.x += missile.velX
     missile.y += missile.velY
-    missile.energy -= 0.02
-    if (missile.energy < 0) explodeMissile(missile)
+    missile.ey -= 0.02
+    if (missile.ey < 0) explodeMissile(missile)
   })
 }
 

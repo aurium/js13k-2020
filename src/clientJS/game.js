@@ -7,7 +7,7 @@ var newBooms = [], booms = []
 var newBoxes = [], boxes = []
 var newMissiles = [], missiles = []
 var shipStatusText = body.querySelector('#shipStatus p')
-var missilEnergyEl = mkEl('i', missilBar)
+var missilEyEl = mkEl('i', missilBar)
 var userNotifyedAwayFromSun
 
 var startHostWebWorker = ()=> {
@@ -54,7 +54,7 @@ function updateFromRTC(payload) {
       if (player.lifeEl) player.lifeEl.style.width = player.life + '%'
     }
   })
-  if (mySelf.energyEl) mySelf.energyEl.style.width = mySelf.energy + '%'
+  if (mySelf.eyEl) mySelf.eyEl.style.width = mySelf.ey + '%'
   let speed = (sqrt(mySelf.velX**2 + mySelf.velY**2) / speedLim) * 100
   if (speed > 99.999) speed = 99.999
 
@@ -133,10 +133,10 @@ function updateEntities() {
   })
   if (mySelf.misEn) {
     missilBar.style.opacity =  1
-    missilEnergyEl.style.width = mySelf.misEn + '%'
+    missilEyEl.style.width = mySelf.misEn + '%'
   } else {
     missilBar.style.opacity =  0
-    setTimeout(()=> missilEnergyEl.style.width = 0, 500)
+    setTimeout(()=> missilEyEl.style.width = 0, 500)
   }
   updateCollection(newPlanets, planets, step)
   missiles = updateCollection(newMissiles, missiles, step)
@@ -215,7 +215,7 @@ function gameStart() {
     }
   })
   mySelf.lifeEl = body.querySelector('#shipLife i')
-  mySelf.energyEl = body.querySelector('#shipEnergy i')
+  mySelf.eyEl = body.querySelector('#shipEy i')
 
   if (isRoomOwner) sendWWCmd('startGame', true)
   gameStarted = true
