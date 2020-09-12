@@ -15,10 +15,6 @@ class UserRTC {
     this.isClient = isClient
     this.connected = false
     this.initICE()
-    if (!isRoomOwner || !isClient) {
-      createConnDisplay.bind(this)()
-      this.updateDisplayInterval = setInterval(updateConnDisplay.bind(this), 200)
-    }
     this.init()
   }
 
@@ -59,8 +55,6 @@ class UserRTC {
   disconnect() {
     this.peerConn.close()
     this.peerConn = null
-    clearInterval(this.updateDisplayInterval)
-    removeConnDisplay.bind(this)()
     if (this.onDisconnect) this.onDisconnect()
   }
 
@@ -136,35 +130,6 @@ function onLocalSessionCreated(desc) {
     });
   })
   //.catch(logErrToUsr(`Set Local Description to ${logKind(this)} ${getName(this)} FAIL.`));
-}
-
-function createConnDisplay() {
-  this.display = mkEl('div', connStatus);
-  [
-    ['User', 'userID'],
-    ['Signal', 'signalingState'],
-    ['ICE', 'iceConnectionState'],
-    ['Connected', 'connected']
-  ].forEach(([label, key])=> {
-    if (!this.isClient || key != 'userID') {
-      const el = mkEl('span', this.display, label + ': ')
-      this.display[key] = mkEl('span', el, '...')
-    }
-  })
-}
-
-function removeConnDisplay() {
-  connStatus.removeChild(this.display)
-}
-
-function updateConnDisplay() {
-  if (this.peerConn) {
-    if (!this.isClient) this.display.userID.innerText = getName(this)
-    this.display.signalingState.innerText = this.peerConn.signalingState
-    this.display.iceConnectionState.innerText = this.peerConn.iceConnectionState
-    this.display.connected.innerText = this.connected
-    if (this.peerConn.iceConnectionState == 'disconnected') this.reconnect()
-  }
 }
 
 function createRTCPeerConnection(usr) {

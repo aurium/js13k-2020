@@ -277,37 +277,6 @@ h1, h2 { margin-bottom: 10px }
   cursor: pointer;
 }
 
-#connStatus {
-  position: absolute;
-  display: table;
-  left: 10px;
-  bottom: 0;
-  padding: 5px;
-  min-width: 400px;
-  border-radius: 10px 10px 0 0;
-  background: rgba(0,0,0,.9);
-  font-size: 12px;
-  opacity: .6;
-  transition: 2s;
-}
-.before-init #connStatus, .lobby1 #connStatus {
-  bottom: -100px;
-}
-.lobby2 #connStatus {
-  padding: 15px;
-  border-radius: 25px 25px 0 0;
-  font-size: 16px;
-  opacity: 1;
-}
-
-#connStatus div {
-  display: table-row;
-}
-#connStatus div > span {
-  display: table-cell;
-  padding: 5px;
-}
-
 #roomsList #chatNote {
   text-align: right;
   font-size: 12px;
