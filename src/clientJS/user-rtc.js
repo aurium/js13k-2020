@@ -161,7 +161,7 @@ function createRTCPeerConnection(usr) {
     if (!usr.peerConn) return;
     if (DEBUG_MODE && ev) debug('ON ICE Connection State Change', getName(usr), usr.peerConn.iceConnectionState)
     if (usr.peerConn.iceConnectionState === 'failed') {
-      notify(`WebRTC connection fail to ${getName(usr)}. Let's try again!`)
+      //notify(`WebRTC connection fail to ${getName(usr)}. Let's try again!`)
       usr.reconnect()
     }
   }

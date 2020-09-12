@@ -6,7 +6,7 @@ if (DEBUG_MODE) {
 }
 
 socket.on('disconnect', () => {
-  notify('Disconnected from my Web Socket.')
+  //notify('Disconnected from my Web Socket.')
   users.forEach(u => usrDisconn(u.userID, true));
   if (!gameStarted) users = [];
 });
@@ -37,7 +37,7 @@ function usrsConn(usrIDs) {
 }
 
 function usrDisconn(userID, lostMyWS) {
-  if (!lostMyWS) notify(`WS User disconnected: ${userID}`)
+  if (!lostMyWS && DEBUG_MODE) notify(`WS User disconnected: ${userID}`)
   if (!gameStarted) {
     let usr = users[userID]
     if (usr && isRoomOwner) usr.disconnect()

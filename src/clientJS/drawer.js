@@ -43,17 +43,17 @@ const radarCanvas = mkCanvas(400, 400)
 gameCanvas.id = 'gameCanvas'
 radarCanvas.id = 'radar'
 
-function setQuality(newQuality, msg='', force) {
+function setQuality(newQuality, force) {
   if (FORCE_QUALITY) newQuality = FORCE_QUALITY
   //if (force) notify('Force screen reset')
   if (quality !== newQuality || force) {
     let name = Object.entries(QUALITY).find(([k,v])=> v === newQuality)[0]
-    if (quality !== 0 && quality < newQuality) {
-      notify(msg+` Great! Render quality up to "${name.toLowerCase()}".`)
-    }
-    if (quality !== 0 && quality > newQuality) {
-      notify(msg+` Render quality down to "${name.toLowerCase()}".`)
-    }
+    // if (quality !== 0 && quality < newQuality) {
+    //   notify(msg+` Great! Render quality up to "${name.toLowerCase()}".`)
+    // }
+    // if (quality !== 0 && quality > newQuality) {
+    //   notify(msg+` Render quality down to "${name.toLowerCase()}".`)
+    // }
     quality = newQuality
     divScreen = 5 - quality
     debug(`Current render quality: ${name} (${quality})`)
@@ -88,7 +88,7 @@ function setQuality(newQuality, msg='', force) {
   }
 }
 
-window.addEventListener('resize', ()=> setQuality(quality, '', true))
+window.addEventListener('resize', ()=> setQuality(quality, true))
 
 var hideMouseTimeout = null
 body.addEventListener('mousemove', ()=> {
@@ -186,18 +186,18 @@ function updateGameCanvas() {
     }
     lastUpdate = frameNow
     if (alertFPS < -2) {
-      if (quality > 1) setQuality(quality - 1, 'Low FPS.')
+      if (quality > 1) setQuality(quality - 1)
       alertFPS = 0
     }
     if (alertFPS > 600/framesToCompute) {
-      if (quality < QUALITY.HIGH) setQuality(quality + 1, 'High FPS.')
+      if (quality < QUALITY.HIGH) setQuality(quality + 1)
       alertFPS = 0
     }
   }
 }
 
 function initDrawer() {
-  setQuality(QUALITY.HIGH, '')
+  setQuality(QUALITY.HIGH)
   gameCtx.iSE(true)
   gameCtx.imageSmoothingQuality = 'low'
   debug('Create BG 3 (Nebulas)')
