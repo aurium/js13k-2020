@@ -69,7 +69,6 @@ function updateRadar() {
   })
 
   // Draw Boxes
-  /*
   boxes.forEach(box => {
     radarCtx.fS('rgba(127,255,0,.1)')
     radarCtx.fR(
@@ -78,5 +77,4 @@ function updateRadar() {
       1.3, 1.3
     )
   })
-  */
 }
