@@ -26,7 +26,8 @@ else
     ( $NO_DEBUG && sed -r 's#(window.)?DEBUG_MODE#false#g' || cat ) |
     ( $NO_DEBUG && sed -r 's#function debug\(#function neverUsedFunc(#g' || cat ) |
     ( $NO_DEBUG && sed -r 's#debug\(#void(#g' || cat ) |
-    sed -r 's/\b(const|var)\b/let/g' |
+    sed -r 's#"use strict"##' |
+    sed -r 's#\b(const|var)\b#let#g' |
     terser --compress --mangle |
     ( $NO_DEBUG && cat || sed -r 's/\b(function |const |var |let |if\()/\n\1/g' )
   }
