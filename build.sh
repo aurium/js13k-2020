@@ -28,7 +28,7 @@ else
     ( $NO_DEBUG && sed -r 's#debug\(#void(#g' || cat ) |
     sed -r 's/\b(const|var)\b/let/g' |
     terser --compress --mangle |
-    sed -r 's/\b(function |const |var |let |if\()/\n\1/g'
+    ( $NO_DEBUG && cat || sed -r 's/\b(function |const |var |let |if\()/\n\1/g' )
   }
 
   function crush() {
@@ -84,7 +84,7 @@ else
     xargs cat
   )})()" | js_compress > public/client.js
 
-  terser src/shared.js --compress --mangle > public/shared.js
+  cp src/shared.js public/shared.js
 
 fi
 
