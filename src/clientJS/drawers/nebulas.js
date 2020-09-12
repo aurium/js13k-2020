@@ -1,20 +1,20 @@
 const seed = [
-  '..F. ..F. ..F4 ..F. ..F. ..F. .... .... .... .... .... .... ..F. ..F. ..F. ..F.',
-  '..F2 ..F8 .FFf .8F8 ..F4 ..F. .... .... .... .... .... .... .... .... .... ..F.',
-  '..F. ..F4 ..Ff ..F8 ..F2 ..F. .... .... .... .... .... .... .... .... .... ..F.',
-  '..F. ..F. ..F. ..F. ..F. ..F. .... .... .... .... .... .... F... F... F... ....',
-  '.... .... .... .... .... .... .... .... F... F... F... F... F... F..3 F... ....',
-  '.... .... .... .... .... .... F... F... F... F..4 F..4 F..1 F..4 F..1 F... ....',
-  '.... .... .... .... .... .... F... F..2 F4.4 F..4 F... F..4 F..2 F... F... ....',
-  '.... .... .... .... .... F... F... F..f F8.f F8.8 FF.F F..8 F... F... .... ....',
-  '.... .... .... .... F... F... F..4 F..f F4.8 F... FC.8 F8.6 F..2 F... .... ....',
-  '.... .... .... .... F... F..2 F..8 F..8 F..4 F..2 F..2 F..3 F... F... .... ....',
-  '.... .... .... F... F..1 F..4 F... F... F... F... F... F... F... .... .... ....',
-  '.... .... .... F... F..2 F... F... .... .... .... F... F... F... .... .... ....',
-  '.... .... .... F... F... F... .... .... .... F.8. F.8. F.84 F.8. F... F.F. ..F.',
-  '.... .... .... .... .... .... .... .... .... F.F. F.88 F.F4 F.F8 F.F4 ..F2 ..F.',
-  '.... .... .... .... .... .... .... .... .... F.8. F.F. F.F8 8.FF 8.F8 ..F4 ..F.',
-  '.... ..F. ..F. ..F. .... .... .... .... .... F... 8.F. 8.F. 8.F. ..F4 ..F. ..F.',
+  '00F0 00F0 00F4 00F0 00F0 00F0       00F0 00F0 00F0 00F0',
+  '00F2 00F8 0FFf 08F8 00F4 00F0          00F0',
+  '00F0 00F4 00Ff 00F8 00F2 00F0          00F0',
+  '00F0 00F0 00F0 00F0 00F0 00F0       F000 F000 F000 ',
+  '        F000 F000 F000 F000 F000 F003 F000 ',
+  '      F000 F000 F000 F004 F004 F001 F004 F001 F000 ',
+  '      F000 F002 F404 F004 F000 F004 F002 F000 F000 ',
+  '     F000 F000 F00f F80f F808 FF0F F008 F000 F000  ',
+  '    F000 F000 F004 F00f F408 F000 FC08 F806 F002 F000  ',
+  '    F000 F002 F008 F008 F004 F002 F002 F003 F000 F000  ',
+  '   F000 F001 F004 F000 F000 F000 F000 F000 F000 F000   ',
+  '   F000 F002 F000 F000    F000 F000 F000   ',
+  '   F000 F000 F000    F080 F080 F084 F080 F000 F0F0 00F0',
+  '         F0F0 F088 F0F4 F0F8 F0F4 00F2 00F0',
+  '         F080 F0F0 F0F8 80FF 80F8 00F4 00F0',
+  ' 00F0 00F0 00F0      F000 80F0 80F0 80F0 00F4 00F0 00F0',
 ]
 
 function drawPlasma() {
@@ -22,7 +22,7 @@ function drawPlasma() {
   const size = canvBG3.width
   // if (size !== canvBG3.height || Math.log2(size) % 1 !== 0)
   //   throw Error('Canvas width and height must to be equal and power of 2.')
-  seed = seed.map(l => l.replace(/\./g, '0').split(' '))
+  seed = seed.map(l => l.split(' '))
   const seedSize = seed.length
   // if (seedSize !== seed[0].length || Math.log2(seedSize) % 1 !== 0)
   //   throw Error('Seed width and height must to be equal and power of 2.')
@@ -32,7 +32,7 @@ function drawPlasma() {
   for (let y=0; y<seedSize; y++) for (let x=0; x<seedSize; x++) {
     let pos = (y*step*size + x*step) * 4
     let color = seed[y][x].split('')
-    for (let i=0; i<4; i++) pixels[pos+i] = parseInt(color[i]+color[i], 16)
+    for (let i=0; i<4; i++) pixels[pos+i] = parseInt(color[i]+color[i]||'00', 16)
   }
   while (step > 1) {
     for (let y=0; y<size; y+=step) for (let x=0; x<size; x+=step) {
