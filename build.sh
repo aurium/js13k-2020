@@ -75,8 +75,8 @@ else
   sed -r 's/log\(/void\(/g' |
   js_compress > public/server.js
 
-  echo "(()=>{ $(cat src/game-worker.js) })()" |
-  js_compress > public/game-worker.js
+  echo "(()=>{ $(cat src/ww.js) })()" |
+  js_compress > public/ww.js
 
   echo "(()=>{$(
     grep 'clientJS' src/index.html    |

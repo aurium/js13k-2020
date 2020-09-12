@@ -12,7 +12,7 @@ var userNotifyedAwayFromSun
 
 var startHostWebWorker = ()=> {
   startHostWebWorker = (()=>0)
-  gameWorker = new Worker('game-worker.js')
+  gameWorker = new Worker('ww.js')
   gameWorker.onmessage = ({data:[cmd, payload]})=> {
     if (cmd == 'started') initWebWorker()
     if (cmd == 'update') broadcastRTC(cmd, payload)
