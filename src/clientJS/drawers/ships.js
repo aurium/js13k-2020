@@ -208,9 +208,11 @@ function plotShip(player) {
   gameCtx.s()
   gameCtx.tr(x, y)
   gameCtx.fS('rgba(255,255,255,0.6)')
-  gameCtx.font = `normal ${8/divScreen+5}px sans-serif`
-  gameCtx.tA('center')
-  gameCtx.fT(getName(player), 0, -radius - 16/divScreen)
+  if (!player.isMySelf) {
+    gameCtx.font = `normal ${8/divScreen+5}px sans-serif`
+    gameCtx.tA('center')
+    gameCtx.fT(getName(player), 0, -radius - 16/divScreen)
+  }
   gameCtx.ro(player.rot)
   if (player.fireIsOn) drawShipFire(quarter)
   if (player.re) drawShipBrake(quarter)
