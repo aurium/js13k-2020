@@ -67,9 +67,9 @@ if (queryString.match(/\bgame=/)) {
     numPlayers = num;
   })
 
-  socket.on('forgotingRoom', ()=> {
-    debug("The server is forgoting this room.")
-  })
+  // socket.on('forgotingRoom', ()=> {
+  //   debug("The server is forgoting this room.")
+  // })
 
 } else {
   // User is in the public lobby.

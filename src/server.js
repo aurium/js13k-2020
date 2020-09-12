@@ -6,7 +6,7 @@ function forgotThisRoom(gameID, minutes) {
   setTimeout(()=>{
     if (rooms[gameID]) {
       log(`Forgot room ${gameID}, after ${minutes} minutes.`)
-      rooms[gameID].emit('forgotingRoom')
+      //rooms[gameID].emit('forgotingRoom')
       delete rooms[gameID]
     }
   }, minutes*60*1000)
