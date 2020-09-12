@@ -8,7 +8,7 @@ const sunR3 = 1200
 const constG = 1e-4
 const shipRadius = 30
 const speedLim = sqrt(7*7 + 7*7)
-const numOfBoxLaunchers = 12
+const numOfBoxLaunchers = 24
 
 // TODO: add x,y to planets on update entities and remove all planets position calcs
 
@@ -70,7 +70,7 @@ onmessage = ({data:[cmd, payload]})=> {
     setInterval(()=> {
       mkBox(newBoxLauncherPos++, 22e3, 1)
       if (newBoxLauncherPos == numOfBoxLaunchers) newBoxLauncherPos = 0
-    }, 20e3)
+    }, 10e3)
   }
 
   const cmdPlayer = players[payload[0]]
