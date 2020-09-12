@@ -76,12 +76,12 @@ function setQuality(newQuality, force) {
 
 window.addEventListener('resize', ()=> setQuality(quality, true))
 
-var hideMouseTimeout = null
+/*var hideMouseTimeout = null
 body.addEventListener('mousemove', ()=> {
   bodyClass.add('mouse-alive')
   clearTimeout(hideMouseTimeout)
   hideMouseTimeout = setTimeout(()=> bodyClass.remove('mouse-alive'), 1000)
-})
+})*/
 
 if (navigator.userAgent.match(/Firefox\//)) bodyClass.add('firefox')
 

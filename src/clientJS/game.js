@@ -220,7 +220,7 @@ function gameStart() {
   if (isRoomOwner) sendWWCmd('startGame', true)
   gameStarted = true
   lobby.classList.add('hidden')
-  bodyClass.remove('lobby2')
+  //bodyClass.remove('lobby2')
   bodyClass.add('game-on')
 
   targetZoom = 1

@@ -2,13 +2,11 @@
 
 setTimeout(()=> {
   roomsList.innerHTML = 'Loading...'
-  bodyClass.remove('before-init')
 }, 100)
 
 function updateRoomList() {
   roomsList.innerHTML = `
-    <h2>Room ${socket.room} for ${numPlayers} players.</h2>
-    <p>players:</p>
+    <h2>Room ${socket.room} for ${numPlayers} players</h2>
     <div id="players">${
       users
       .map(u => `<span class="${u.connected?'conn':''}">${getName(u)}</span>`)
@@ -26,7 +24,7 @@ if (queryString.match(/\bgame=/)) {
   currentLobby = 2
   targetZoom = 0.3
 
-  if (!gameStarted) bodyClass.add('lobby2')
+  //if (!gameStarted) bodyClass.add('lobby2')
 
   socket.room = queryString.replace(/.*\bgame=([^&]*).*/, '$1')
   socket.emit('join', socket.room)
@@ -83,7 +81,7 @@ if (queryString.match(/\bgame=/)) {
     mySelf.x = (mySelf.x*49 + cos(a) * 6000) / 50
     mySelf.y = (mySelf.y*49 + sin(a) * 2500) / 50
   }, 33)
-  bodyClass.add('lobby1')
+  //bodyClass.add('lobby1')
 
   socket.on('rooms', (rooms)=> {
     if (rooms.length) {
@@ -117,15 +115,13 @@ if (queryString.match(/\bgame=/)) {
   inputPub.checked = true
   mkEl('span', lobby, 'Public')
 
-  const btCreate = mkEl('button', lobby)
+  const btCreate = mkEl('button', lobby, 'Create')
   btCreate.id = 'btCreateRoom'
-  btCreate.innerText = 'Create'
   btCreate.onclick = ()=> {
     socket.emit('creteRoom', {num:inputNum.value, pub:inputPub.checked})
-    btCreate.style.opacity = 0.5
-    btCreate.onclick = ()=> alert('The request was sent.')
+    lobby.classList.add('hidden')
   }
   socket.on('romCreated', (gameID)=> {
-    document.location.href = `?game=${gameID}${DEBUG_MODE?'&debug=on':''}`
+    document.location.href = `?game=${gameID}`
   })
 }
