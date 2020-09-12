@@ -89,14 +89,14 @@ class Room {
 
 }
 
-const mockSocket = {
-  userID: 'Aurium\n0',
-  emit: ()=>0,
-  join: ()=>0,
-  to: ()=> ({emit:()=>0})
-}
-const testRoom = new Room('test', mockSocket, 2, true)
-testRoom.disconnect(mockSocket)
+// const mockSocket = {
+//   userID: 'Aurium\n0',
+//   emit: ()=>0,
+//   join: ()=>0,
+//   to: ()=> ({emit:()=>0})
+// }
+// const testRoom = new Room('test', mockSocket, 2, true)
+// testRoom.disconnect(mockSocket)
 
 module.exports = {
 
