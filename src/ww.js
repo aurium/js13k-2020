@@ -75,8 +75,8 @@ onmessage = ({data:[cmd, payload]})=> {
 
   const cmdPlayer = players[payload[0]]
   const cmdVal = payload[1]
-  if (cmd == 'fireIsOn')
-    cmdPlayer.fireIsOn = cmdVal
+  if (cmd == 'fOn')
+    cmdPlayer.fOn = cmdVal
   if (cmd == 're')
     cmdPlayer.re = cmdVal
   if (cmd == 'rotJet') {
@@ -93,7 +93,7 @@ function updateEy(player, qtd, canReduceLife) {
   if (player.ey <= 0) {
     if (canReduceLife) updateLife(player, -0.1)
     player.ey = 0
-    player.fireIsOn = player.re = 0
+    player.fOn = player.re = 0
   }
   if (player.ey > 100) player.ey = 100
 }
@@ -139,12 +139,12 @@ function planetSpeedToEntity(planet, entity) {
 
 const lobbyStart = Date.now()
 function flyArroundLobby2() {
-  if (gameStarted) return players.forEach(p => p.fireIsOn = 0)
+  if (gameStarted) return players.forEach(p => p.fOn = 0)
   setTimeout(flyArroundLobby2, 100)
   let baseRot = (Date.now()-lobbyStart) / 9e4
   players.forEach((player, i) => {
     player.rot = baseRot + i*(PI2/numPlayers)
-    player.fireIsOn = 1
+    player.fOn = 1
     player.velX = cos(player.rot) * 2
     player.velY = sin(player.rot) * 2
     player.x = +sin(player.rot)*10e3
@@ -281,7 +281,7 @@ function wwUpdateEntities() {
       player.velY *= 0.99
       player.rotInc *= 0.99
     }
-    if (player.fireIsOn) {
+    if (player.fOn) {
       updateEy(player, -.05)
       if (myPlanet) planetSpeedToEntity(myPlanet, player)
       player.land = -1

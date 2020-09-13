@@ -214,7 +214,7 @@ function plotShip(player) {
     gameCtx.fT(getName(player), 0, -radius - 16/divScreen)
   }
   gameCtx.ro(player.rot)
-  if (player.fireIsOn) drawShipFire(quarter)
+  if (player.fOn) drawShipFire(quarter)
   if (player.re) drawShipBrake(quarter)
   if (player.rotJet!=0) drawShipRotJet(quarter, player.rotJet)
   gameCtx.dI(

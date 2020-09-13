@@ -225,7 +225,7 @@ function gameStart() {
 
   targetZoom = 1
   targetZoomDelay = 30
-  users.forEach((player) => player.fireIsOn = 0 )
+  users.forEach((player) => player.fOn = 0 )
 
   //delayedTip(10, `Controls take time to take effect. Be cautious.`)
 
@@ -242,7 +242,7 @@ function gameStart() {
   //delayedTip(60, 'You can land a planet to auto-fix damages in your ship.')
 
   window.addEventListener('keydown', (ev)=> {
-    if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn',  mySelf.fireIsOn = 1)
+    if (ev.key == 'ArrowUp') clentRTC.send('fOn',  mySelf.fOn = 1)
     if (ev.key == 'ArrowDown') clentRTC.send('re',      mySelf.re = 1)
     if (ev.key == 'ArrowLeft') clentRTC.send('rotJet',  mySelf.rotJet = -1)
     if (ev.key == 'ArrowRight') clentRTC.send('rotJet', mySelf.rotJet = +1)
@@ -250,7 +250,7 @@ function gameStart() {
   })
 
   window.addEventListener('keyup', (ev)=> {
-    if (ev.key == 'ArrowUp') clentRTC.send('fireIsOn', 0)
+    if (ev.key == 'ArrowUp') clentRTC.send('fOn', 0)
     if (ev.key == 'ArrowDown') clentRTC.send('re', 0)
     if (ev.key == 'ArrowLeft') clentRTC.send('rotJet', 0)
     if (ev.key == 'ArrowRight') clentRTC.send('rotJet', 0)

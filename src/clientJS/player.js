@@ -3,7 +3,7 @@
 const playerAttrsWithoutPos = [
   'ey', 'life', 'reborn',
   'velX', 'velY', 'rotInc', 'land',
-  'misTot', 'misEn', 'fireIsOn', 're', 'rotJet'
+  'misTot', 'misEn', 'fOn', 're', 'rotJet'
 ]
 const playerAttrs = [ 'x', 'y', 'rot', ...playerAttrsWithoutPos ]
 

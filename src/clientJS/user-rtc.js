@@ -86,8 +86,8 @@ class UserRTCHost extends UserRTC {
   init() {
     debug('UserRTC Host created.', getName(this))
   }
-  cmd_fireIsOn({userID, payload}) {
-    sendWWCmd('fireIsOn', [userID, payload])
+  cmd_fOn({userID, payload}) {
+    sendWWCmd('fOn', [userID, payload])
   }
   cmd_re({userID, payload}) {
     sendWWCmd('re', [userID, payload])
