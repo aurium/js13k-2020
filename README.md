@@ -9,10 +9,7 @@ Your people are fighting for this star system. You all have small infantry ships
 You need constantly reload energy for propulsion and to launch guided missiles.
 This energy comes from the star, so stay near to fast reload, if you go far away you will die without life support. The good news is you can hide yourself from radar when you are far enough.
 
-Your people will send weapons to reload your small ship, so watch out and get that boxes!
-
-Sometimes one of your opponents can't be found... It is the weapon 404.
-Pray that he doesn't have you in the crosshairs.
+Your people will send boxes with weapons to reload your small ship, so watch out and get that boxes!
 
 If it is safe you can land a planet to restore some damage in the ship.
 But, be cautious, the autopilot won't slow down fast enough if you're above 50% of light speed, then you will explode in the atmosphere.
@@ -22,6 +19,8 @@ The controls are:
 * **Up arrow:** Accelerate the ship.
 * **Down arrow:** slow down the ship.
 * **Space bar:** Launch guided missiles.
+
+In space, lack of friction is your worst enemy. Use the down arrow to brake and facilitate maneuvers.
 
 You can't exceed light speed. As you become near to that, less you propulsion will take effect.
 
