@@ -114,7 +114,7 @@ function updateBg() {
 
   // Plot Nebulas
   //gameCtx.gCO('lighten')
-  plotBgTile(canvBG3, -(x+9000)/10, -(y+7000)/10, 2/divScreen)
+  plotBgTile(canvBG3, -(x+9000)/9, -(y+7000)/9, 2/divScreen)
 
   // Plot level 2 stars
   //gameCtx.gCO('screen')
