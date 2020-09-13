@@ -16,6 +16,8 @@ body {
 canvas {
   display: none;
   z-index: 1;
+}
+.game-on canvas {
   cursor: none;
 }
 
