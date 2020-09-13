@@ -25,7 +25,7 @@ onmessage = ({data:[cmd, payload]})=> {
       let aInc = sunOrbitalSpeed(p.d)/p.d  // translation speed
       return {
         ...p, aInc,
-        rotInc: 0.001 + rnd()*0.001,
+        roI: 0.001 + rnd()*0.001,
         a: p.a + aInc * initAngleInc
       }
     })
@@ -81,8 +81,8 @@ onmessage = ({data:[cmd, payload]})=> {
     cmdPlayer.re = cmdVal
   if (cmd == 'rotJet') {
     cmdPlayer.rotJet = 0
-    if (cmdVal < 0 && cmdPlayer.rotInc >-0.1) cmdPlayer.rotJet = cmdVal
-    if (cmdVal > 0 && cmdPlayer.rotInc < 0.1) cmdPlayer.rotJet = cmdVal
+    if (cmdVal < 0 && cmdPlayer.roI >-0.1) cmdPlayer.rotJet = cmdVal
+    if (cmdVal > 0 && cmdPlayer.roI < 0.1) cmdPlayer.rotJet = cmdVal
   }
   if (cmd == 'misOn')
     cmdPlayer.misOn = cmdVal
@@ -107,7 +107,7 @@ function updateLife(player, qtd) {
 
 function dye(player) {
   explode(player)
-  player.velX = player.velY = player.rotInc = player.life = 0
+  player.velX = player.velY = player.roI = player.life = 0
   player.land = -1
   if (player.reborn > 0) {
     setTimeout(()=> {
@@ -265,28 +265,28 @@ function wwUpdateEntities() {
     }
     gravitAcceleration(player, true)
     if (player.rotJet<0) {
-      if (player.rotInc>-0.1) player.rotInc -= 0.001
+      if (player.roI>-0.1) player.roI -= 0.001
       else player.rotJet = 0
     }
     if (player.rotJet>0) {
-      if (player.rotInc<0.1) player.rotInc += 0.001
+      if (player.roI<0.1) player.roI += 0.001
       else player.rotJet = 0
     }
-    if (-0.001 < player.rotInc && player.rotInc < 0.001) player.rotInc = 0
-    player.rot += player.rotInc
+    if (-0.001 < player.roI && player.roI < 0.001) player.roI = 0
+    player.rot += player.roI
     let myPlanet = planets[player.land]
     if (player.re) {
       updateEy(player, -.02)
       player.velX *= 0.99
       player.velY *= 0.99
-      player.rotInc *= 0.99
+      player.roI *= 0.99
     }
     if (player.fOn) {
       updateEy(player, -.05)
       if (myPlanet) planetSpeedToEntity(myPlanet, player)
       player.land = -1
       calcAcceleration(player)
-      player.rotInc *= 0.99 // Helps to stabilize when accelerating.
+      player.roI *= 0.99 // Helps to stabilize when accelerating.
     }
     if (player.land > -1) {
       updateLife(player, 0.02)
@@ -294,8 +294,8 @@ function wwUpdateEntities() {
       player.x = myPlanet.x + x
       player.y = myPlanet.y + y
       player.rot = player.a
-      player.a += myPlanet.rotInc
-      player.rotInc = player.velX = player.velY = 0
+      player.a += myPlanet.roI
+      player.roI = player.velX = player.velY = 0
     } else {
       player.x += player.velX
       player.y += player.velY
@@ -335,7 +335,7 @@ function wwUpdateEntities() {
 
   planets.forEach(planet => {
     planet.a += planet.aInc
-    planet.rot += planet.rotInc
+    planet.rot += planet.roI
     let pos = angleToVec(planet.a, planet.d)
     planet.x = pos.x
     planet.y = pos.y
@@ -378,7 +378,7 @@ function explodeMissile(missile) {
   alivePlayers().forEach(player => {
     const distInvPct = 1 - calcVec(missile, player)[0]/(shipRadius*3)
     if (distInvPct > 0) {
-      player.rotInc = (rnd()<.5?-.15:.15)
+      player.roI = (rnd()<.5?-.15:.15)
       updateLife(player, -distInvPct*80)
     }
   })

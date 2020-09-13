@@ -177,7 +177,7 @@ const planets = [
 /* radius: planet size/2
    a: rotation angle
    d: distance
-   rotInc: rotation speed
+   roI: rotation speed
    r,g,b: color
    noize: texture
 */
