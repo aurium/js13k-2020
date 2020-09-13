@@ -279,7 +279,7 @@ function wwUpdateEntities() {
       updateEy(player, -.02)
       player.velX *= 0.99
       player.velY *= 0.99
-      player.roI *= 0.9
+      player.roI *= 0.94
     }
     if (player.fOn) {
       updateEy(player, -.05)
